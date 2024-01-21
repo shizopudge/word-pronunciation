@@ -1,0 +1,96 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+/// Consumer удержания
+@immutable
+class HoldConsumer extends StatefulWidget {
+  /// Если true, то consumer активен
+  final bool isEnabled;
+
+  /// Дочерний виджет
+  final Widget? child;
+
+  /// Постройщик дочернего виджета
+  final Widget Function(BuildContext context, bool isHeldDown)? builder;
+
+  /// Обработчик на взаимодействие с виджетом
+  final ValueChanged<bool>? listener;
+
+  /// Создает consumer удержания
+  const HoldConsumer({
+    this.isEnabled = true,
+    this.child,
+    this.builder,
+    this.listener,
+    super.key,
+  })  : assert(child != null || builder != null,
+            'child or builder should not be null'),
+        assert(
+            (child != null && builder == null) ||
+                (builder != null && child == null),
+            'if child != null then builder should be null and vice versa');
+
+  @override
+  State<HoldConsumer> createState() => _HoldConsumerState();
+}
+
+class _HoldConsumerState extends State<HoldConsumer> {
+  /// {@template child_held_down_controller}
+  /// Контроллер зажатия дочернего виджета
+  /// {@endtemplate}
+  late final ValueNotifier<bool> _childHeldDownController;
+
+  @override
+  void initState() {
+    super.initState();
+    _childHeldDownController = ValueNotifier<bool>(false);
+    if (widget.listener != null) {
+      _childHeldDownController.addListener(_listener);
+    }
+  }
+
+  @override
+  void dispose() {
+    if (widget.listener != null) {
+      _childHeldDownController.removeListener(_listener);
+    }
+    _childHeldDownController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTapDown: widget.isEnabled ? _handleTapDown : null,
+        onTapUp: widget.isEnabled ? _handleTapUp : null,
+        onTapCancel: widget.isEnabled ? _handleTapCancel : null,
+        child: AnimatedBuilder(
+          animation: _childHeldDownController,
+          builder: (context, _) =>
+              widget.builder?.call(context, _isChildHeldDown) ??
+              widget.child ??
+              const SizedBox.shrink(),
+        ),
+      );
+
+  /// Слушатель
+  void _listener() => widget.listener?.call(_childHeldDownController.value);
+
+  /// Обработчик на зажатие виджета
+  void _handleTapDown(TapDownDetails event) => _isChildHeldDown = true;
+
+  /// Обработчик на отжатие виджета
+  void _handleTapUp(TapUpDetails event) => _isChildHeldDown = false;
+
+  /// Обработчик на отжатие виджета
+  void _handleTapCancel() => _isChildHeldDown = false;
+
+  /// Устанавливает новое значение для контроллера зажатия дочернего виджета.
+  /// Возвращает true, если дочерний виджет зажат
+  set _isChildHeldDown(bool newValue) {
+    if (_childHeldDownController.value == newValue) return;
+    _childHeldDownController.value = newValue;
+  }
+
+  bool get _isChildHeldDown => _childHeldDownController.value;
+}
