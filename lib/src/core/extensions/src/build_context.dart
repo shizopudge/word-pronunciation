@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:word_pronunciation/src/core/router/router.dart';
 import 'package:word_pronunciation/src/core/theme/theme.dart';
 import 'package:word_pronunciation/src/features/app/domain/entity/dependencies.dart';
@@ -21,6 +22,9 @@ extension BuildContextX on BuildContext {
 
   /// Возвращает тему приложения
   ThemeData get theme => Theme.of(this);
+
+  /// Локализация
+  AppLocalizations? get localization => AppLocalizations.of(this);
 
   /// Возвращает stream подключения к интернету
   Stream<bool> get hasConnect =>

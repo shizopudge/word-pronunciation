@@ -11,6 +11,7 @@ import 'package:word_pronunciation/src/core/key_local_storage/key_local_storage.
 import 'package:word_pronunciation/src/core/logger/logger.dart';
 import 'package:word_pronunciation/src/core/router/router.dart';
 import 'package:word_pronunciation/src/core/theme/theme.dart';
+import 'package:word_pronunciation/src/features/app/domain/entity/app_initialization_step.dart';
 import 'package:word_pronunciation/src/features/app/domain/entity/dependencies.dart';
 import 'package:word_pronunciation/src/features/app/domain/entity/initialization_progress.dart';
 
@@ -42,8 +43,7 @@ class AppInitializationDatasource implements IAppInitializationDatasource {
       DeviceOrientation.portraitDown,
     ]);
     _initializeExceptionCatchers();
-    final dependencies = await _initializeDependencies(onProgress: onProgress)
-        .timeout(const Duration(seconds: 90));
+    final dependencies = await _initializeDependencies(onProgress: onProgress);
     stopwatch.stop();
     L.log('App was initialized in ${stopwatch.elapsed.inSeconds} seconds');
     return dependencies;
@@ -59,7 +59,7 @@ class AppInitializationDatasource implements IAppInitializationDatasource {
       currentStep++;
       final percent = (currentStep * 100 ~/ totalSteps).clamp(0, 100);
       onProgress?.call(
-        InitializationProgress(message: step.key, progress: percent),
+        InitializationProgress(step: step.key, progress: percent),
       );
       L.log(
           'Initialization | $currentStep/$totalSteps ($percent%) | "${step.key}"');
@@ -95,9 +95,9 @@ class AppInitializationDatasource implements IAppInitializationDatasource {
     };
   }
 
-  final Map<String, _InitializationStep> _initializationSteps =
-      <String, _InitializationStep>{
-    'Initializing KeyLocalStorage': (dependencies) async {
+  final Map<AppInitializationStep, _InitializationStep> _initializationSteps =
+      <AppInitializationStep, _InitializationStep>{
+    AppInitializationStep.keyLocalStorage: (dependencies) async {
       try {
         final sharedPreferences = await SharedPreferences.getInstance();
         dependencies.keyLocalStorage =
@@ -111,14 +111,14 @@ class AppInitializationDatasource implements IAppInitializationDatasource {
         rethrow;
       }
     },
-    'Initializing AppRouter': (dependencies) =>
+    AppInitializationStep.appRouter: (dependencies) =>
         dependencies.router = AppRouter(),
-    'Initializing AppTheme': (dependencies) =>
+    AppInitializationStep.appTheme: (dependencies) =>
         dependencies.appTheme = AppTheme(appColors: AppColors()),
-    'Initializing BLoC observer': (dependencies) =>
+    AppInitializationStep.blocObserver: (dependencies) =>
         Bloc.observer = const AppBlocObserver(),
-    'Initializing AppConnect': (dependencies) =>
+    AppInitializationStep.appConnect: (dependencies) =>
         dependencies.appConnect = AppConnect(),
-    'App initialized': (_) => L.log('App successfully initialized'),
+    AppInitializationStep.end: (_) => L.log('App successfully initialized'),
   };
 }

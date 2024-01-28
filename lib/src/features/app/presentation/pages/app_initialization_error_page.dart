@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:word_pronunciation/src/core/extensions/extensions.dart';
-import 'package:word_pronunciation/src/core/theme/theme.dart';
 import 'package:word_pronunciation/src/core/ui_kit/ui_kit.dart';
 import 'package:word_pronunciation/src/features/app/bloc/app_initialization.dart';
 import 'package:word_pronunciation/src/features/app/di/app_initialization_scope.dart';
@@ -26,9 +25,6 @@ class AppInitializationErrorPage extends StatefulWidget {
 
 class _AppInitializationErrorPageState
     extends State<AppInitializationErrorPage> {
-  /// Возвращает тему приложения
-  static final ThemeData _theme = AppTheme(appColors: AppColors()).data;
-
   /// {@template scroll_controller}
   /// Контроллер скролла
   /// {@endtemplate}
@@ -55,63 +51,60 @@ class _AppInitializationErrorPageState
   }
 
   @override
-  Widget build(BuildContext context) => MaterialApp(
-        theme: _theme,
-        home: AnnotatedRegion<SystemUiOverlayStyle>(
-          value: SystemUiOverlayStyle.dark
-              .copyWith(statusBarColor: Colors.transparent),
-          child: Scaffold(
-            body: SafeArea(
-              child: AnimatedBuilder(
-                animation: Listenable.merge(
-                  [
-                    _isScrollableController,
-                    _scrollController,
-                  ],
-                ),
-                builder: (context, child) => FadeBottomMask(
-                  startsAt: 0.65,
-                  isEnabled: _isFadeMaskEnabled,
-                  child: CustomScrollView(
-                    controller: _scrollController,
-                    slivers: [
-                      // Заголовок "Ошибка"
-                      SliverPersistentHeader(
-                        delegate: ErrorTitle(),
-                        pinned: true,
-                      ),
+  Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.dark
+            .copyWith(statusBarColor: Colors.transparent),
+        child: Scaffold(
+          body: SafeArea(
+            child: AnimatedBuilder(
+              animation: Listenable.merge(
+                [
+                  _isScrollableController,
+                  _scrollController,
+                ],
+              ),
+              builder: (context, child) => FadeBottomMask(
+                startsAt: 0.65,
+                isEnabled: _isFadeMaskEnabled,
+                child: CustomScrollView(
+                  controller: _scrollController,
+                  slivers: [
+                    // Заголовок "Ошибка"
+                    SliverPersistentHeader(
+                      delegate: ErrorTitle(),
+                      pinned: true,
+                    ),
 
-                      // Текст ошибки
-                      SliverFillRemaining(
-                        hasScrollBody: false,
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                                  bottom: 96, left: 24, right: 24) +
-                              EdgeInsets.only(
-                                  bottom: context.mediaQuery.padding.bottom),
-                          child: Text(
-                            widget.message,
-                            textAlign: TextAlign.center,
-                            textDirection: TextDirection.ltr,
-                            style: context.theme.textTheme.bodyMedium?.copyWith(
-                              color: context.colors.grey,
-                            ),
+                    // Текст ошибки
+                    SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                                bottom: 96, left: 24, right: 24) +
+                            EdgeInsets.only(
+                                bottom: context.mediaQuery.padding.bottom),
+                        child: Text(
+                          widget.message,
+                          textAlign: TextAlign.center,
+                          textDirection: TextDirection.ltr,
+                          style: context.theme.textTheme.bodyMedium?.copyWith(
+                            color: context.colors.grey,
                           ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerDocked,
-            floatingActionButton: RestartButton(onRestart: _restart),
           ),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
+          floatingActionButton: RestartButton(onRestart: _restart),
         ),
       );
 
-  /// Перезагружает приложение
+  /// Перезапускает приложение
   void _restart() => AppInitializationScope.of(context)
       .bloc
       .add(const AppInitializationEvent.initialize());

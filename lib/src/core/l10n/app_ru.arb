@@ -1,0 +1,11 @@
+{
+  "@@locale": "ru",
+
+  "appInitializationStart": "Начало инициализации приложения",
+  "appInitializationKeyLocalStorage": "Инициализация локального ключ-значение хранилища",
+  "appInitializationAppRouter": "Создание роутера",
+  "appInitializationAppTheme": "Загрузка темы",
+  "appInitializationBlocObserver": "Создание наблюдателя за состоянием приложения",
+  "appInitializationAppConnect": "Проверка подключения",
+  "appInitializationEnd": "Инициализации приложения завершена"
+}

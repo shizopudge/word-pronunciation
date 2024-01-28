@@ -179,7 +179,7 @@ mixin _$AppInitializationState {
             Dependencies dependencies)
         success,
     required TResult Function(
-            String message,
+            IErrorHandler errorHandler,
             InitializationProgress initializationProgress,
             Dependencies? dependencies)
         error,
@@ -194,7 +194,7 @@ mixin _$AppInitializationState {
             Dependencies dependencies)?
         success,
     TResult? Function(
-            String message,
+            IErrorHandler errorHandler,
             InitializationProgress initializationProgress,
             Dependencies? dependencies)?
         error,
@@ -209,7 +209,7 @@ mixin _$AppInitializationState {
             Dependencies dependencies)?
         success,
     TResult Function(
-            String message,
+            IErrorHandler errorHandler,
             InitializationProgress initializationProgress,
             Dependencies? dependencies)?
         error,
@@ -333,7 +333,7 @@ class __$$ProgressInitializationStateImplCopyWithImpl<$Res>
 class _$ProgressInitializationStateImpl
     implements _ProgressInitializationState {
   const _$ProgressInitializationStateImpl(
-      {this.initializationProgress = InitializationProgress.initial,
+      {this.initializationProgress = InitializationProgress.start,
       this.dependencies});
 
   @override
@@ -379,7 +379,7 @@ class _$ProgressInitializationStateImpl
             Dependencies dependencies)
         success,
     required TResult Function(
-            String message,
+            IErrorHandler errorHandler,
             InitializationProgress initializationProgress,
             Dependencies? dependencies)
         error,
@@ -397,7 +397,7 @@ class _$ProgressInitializationStateImpl
             Dependencies dependencies)?
         success,
     TResult? Function(
-            String message,
+            IErrorHandler errorHandler,
             InitializationProgress initializationProgress,
             Dependencies? dependencies)?
         error,
@@ -415,7 +415,7 @@ class _$ProgressInitializationStateImpl
             Dependencies dependencies)?
         success,
     TResult Function(
-            String message,
+            IErrorHandler errorHandler,
             InitializationProgress initializationProgress,
             Dependencies? dependencies)?
         error,
@@ -568,7 +568,7 @@ class _$SuccessInitializationStateImpl implements _SuccessInitializationState {
             Dependencies dependencies)
         success,
     required TResult Function(
-            String message,
+            IErrorHandler errorHandler,
             InitializationProgress initializationProgress,
             Dependencies? dependencies)
         error,
@@ -586,7 +586,7 @@ class _$SuccessInitializationStateImpl implements _SuccessInitializationState {
             Dependencies dependencies)?
         success,
     TResult? Function(
-            String message,
+            IErrorHandler errorHandler,
             InitializationProgress initializationProgress,
             Dependencies? dependencies)?
         error,
@@ -604,7 +604,7 @@ class _$SuccessInitializationStateImpl implements _SuccessInitializationState {
             Dependencies dependencies)?
         success,
     TResult Function(
-            String message,
+            IErrorHandler errorHandler,
             InitializationProgress initializationProgress,
             Dependencies? dependencies)?
         error,
@@ -677,7 +677,7 @@ abstract class _$$ErrorInitializationStateImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String message,
+      {IErrorHandler errorHandler,
       InitializationProgress initializationProgress,
       Dependencies? dependencies});
 }
@@ -695,15 +695,15 @@ class __$$ErrorInitializationStateImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? message = null,
+    Object? errorHandler = null,
     Object? initializationProgress = null,
     Object? dependencies = freezed,
   }) {
     return _then(_$ErrorInitializationStateImpl(
-      message: null == message
-          ? _value.message
-          : message // ignore: cast_nullable_to_non_nullable
-              as String,
+      errorHandler: null == errorHandler
+          ? _value.errorHandler
+          : errorHandler // ignore: cast_nullable_to_non_nullable
+              as IErrorHandler,
       initializationProgress: null == initializationProgress
           ? _value.initializationProgress
           : initializationProgress // ignore: cast_nullable_to_non_nullable
@@ -720,12 +720,12 @@ class __$$ErrorInitializationStateImplCopyWithImpl<$Res>
 
 class _$ErrorInitializationStateImpl implements _ErrorInitializationState {
   const _$ErrorInitializationStateImpl(
-      {required this.message,
+      {required this.errorHandler,
       required this.initializationProgress,
       this.dependencies});
 
   @override
-  final String message;
+  final IErrorHandler errorHandler;
   @override
   final InitializationProgress initializationProgress;
   @override
@@ -733,7 +733,7 @@ class _$ErrorInitializationStateImpl implements _ErrorInitializationState {
 
   @override
   String toString() {
-    return 'AppInitializationState.error(message: $message, initializationProgress: $initializationProgress, dependencies: $dependencies)';
+    return 'AppInitializationState.error(errorHandler: $errorHandler, initializationProgress: $initializationProgress, dependencies: $dependencies)';
   }
 
   @override
@@ -741,7 +741,8 @@ class _$ErrorInitializationStateImpl implements _ErrorInitializationState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ErrorInitializationStateImpl &&
-            (identical(other.message, message) || other.message == message) &&
+            (identical(other.errorHandler, errorHandler) ||
+                other.errorHandler == errorHandler) &&
             (identical(other.initializationProgress, initializationProgress) ||
                 other.initializationProgress == initializationProgress) &&
             (identical(other.dependencies, dependencies) ||
@@ -749,8 +750,8 @@ class _$ErrorInitializationStateImpl implements _ErrorInitializationState {
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, message, initializationProgress, dependencies);
+  int get hashCode => Object.hash(
+      runtimeType, errorHandler, initializationProgress, dependencies);
 
   @JsonKey(ignore: true)
   @override
@@ -769,12 +770,12 @@ class _$ErrorInitializationStateImpl implements _ErrorInitializationState {
             Dependencies dependencies)
         success,
     required TResult Function(
-            String message,
+            IErrorHandler errorHandler,
             InitializationProgress initializationProgress,
             Dependencies? dependencies)
         error,
   }) {
-    return error(message, initializationProgress, dependencies);
+    return error(errorHandler, initializationProgress, dependencies);
   }
 
   @override
@@ -787,12 +788,12 @@ class _$ErrorInitializationStateImpl implements _ErrorInitializationState {
             Dependencies dependencies)?
         success,
     TResult? Function(
-            String message,
+            IErrorHandler errorHandler,
             InitializationProgress initializationProgress,
             Dependencies? dependencies)?
         error,
   }) {
-    return error?.call(message, initializationProgress, dependencies);
+    return error?.call(errorHandler, initializationProgress, dependencies);
   }
 
   @override
@@ -805,14 +806,14 @@ class _$ErrorInitializationStateImpl implements _ErrorInitializationState {
             Dependencies dependencies)?
         success,
     TResult Function(
-            String message,
+            IErrorHandler errorHandler,
             InitializationProgress initializationProgress,
             Dependencies? dependencies)?
         error,
     required TResult orElse(),
   }) {
     if (error != null) {
-      return error(message, initializationProgress, dependencies);
+      return error(errorHandler, initializationProgress, dependencies);
     }
     return orElse();
   }
@@ -854,11 +855,11 @@ class _$ErrorInitializationStateImpl implements _ErrorInitializationState {
 
 abstract class _ErrorInitializationState implements AppInitializationState {
   const factory _ErrorInitializationState(
-      {required final String message,
+      {required final IErrorHandler errorHandler,
       required final InitializationProgress initializationProgress,
       final Dependencies? dependencies}) = _$ErrorInitializationStateImpl;
 
-  String get message;
+  IErrorHandler get errorHandler;
   @override
   InitializationProgress get initializationProgress;
   @override

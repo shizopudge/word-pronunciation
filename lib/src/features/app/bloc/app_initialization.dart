@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:word_pronunciation/src/core/error_handler/error_handler.dart';
 import 'package:word_pronunciation/src/core/logger/logger.dart';
 import 'package:word_pronunciation/src/features/app/domain/entity/dependencies.dart';
 import 'package:word_pronunciation/src/features/app/domain/entity/initialization_progress.dart';
@@ -15,7 +16,7 @@ class AppInitializationEvent with _$AppInitializationEvent {
 @freezed
 class AppInitializationState with _$AppInitializationState {
   const factory AppInitializationState.progress({
-    @Default(InitializationProgress.initial)
+    @Default(InitializationProgress.start)
     final InitializationProgress initializationProgress,
     final Dependencies? dependencies,
   }) = _ProgressInitializationState;
@@ -26,7 +27,7 @@ class AppInitializationState with _$AppInitializationState {
   }) = _SuccessInitializationState;
 
   const factory AppInitializationState.error({
-    required final String message,
+    required final IErrorHandler errorHandler,
     required final InitializationProgress initializationProgress,
     final Dependencies? dependencies,
   }) = _ErrorInitializationState;
@@ -57,13 +58,15 @@ class AppInitializationBloc
   ) async {
     emit(const AppInitializationState.progress());
     try {
-      final dependencies = await _repository.initialize(
-        onProgress: (initializationProgress) => emit(
-          AppInitializationState.progress(
-            initializationProgress: initializationProgress,
-          ),
-        ),
-      );
+      final dependencies = await _repository
+          .initialize(
+            onProgress: (initializationProgress) => emit(
+              AppInitializationState.progress(
+                initializationProgress: initializationProgress,
+              ),
+            ),
+          )
+          .timeout(const Duration(seconds: 90));
       emit(
         AppInitializationState.progress(
           initializationProgress: InitializationProgress.end,
@@ -71,16 +74,19 @@ class AppInitializationBloc
         ),
       );
     } on Object catch (error, stackTrace) {
-      final message = 'An error occurred during application initialization. '
-          'Progress: ${state.initializationProgress}';
       emit(
         AppInitializationState.error(
-          message: message,
+          errorHandler: ErrorHandler(
+            error: AppInitializationError(
+              initializationProgress: state.initializationProgress,
+              error: error,
+            ),
+          ),
           initializationProgress: state.initializationProgress,
         ),
       );
       L.error(
-        message,
+        error.toString(),
         error: error,
         stackTrace: stackTrace,
       );

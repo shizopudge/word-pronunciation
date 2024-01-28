@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:meta/meta.dart';
+import 'package:word_pronunciation/src/features/app/domain/entity/app_initialization_step.dart';
 
 /// {@template initialization_progress}
 /// Модель прогресса инициализации
@@ -8,41 +8,40 @@ import 'package:meta/meta.dart';
 @immutable
 class InitializationProgress extends Equatable {
   /// Сообщение
-  final String message;
+  final AppInitializationStep step;
 
   /// Прогресс
   final int progress;
 
   /// {@macro initialization_progress}
   const InitializationProgress({
-    required this.message,
+    required this.step,
     required this.progress,
   });
 
   InitializationProgress copyWith({
-    String? message,
+    AppInitializationStep? step,
     int? progress,
   }) =>
       InitializationProgress(
-        message: message ?? this.message,
+        step: step ?? this.step,
         progress: progress ?? this.progress,
       );
 
   /// Начальный прогресс
-  static const initial = InitializationProgress(message: '', progress: 0);
+  static const start =
+      InitializationProgress(step: AppInitializationStep.start, progress: 0);
 
   /// Конечный прогресс
-  static const end = InitializationProgress(message: '', progress: 100);
+  static const end =
+      InitializationProgress(step: AppInitializationStep.end, progress: 100);
 
-  @override
-  String toString() {
-    if (message.isEmpty) return '$progress%';
-    return '$message - $progress%';
-  }
+  /// Возвращает локализованное сообщение
+  String message(BuildContext context) => step.message(context);
 
   @override
   List<Object?> get props => [
-        message,
+        step,
         progress,
       ];
 }
