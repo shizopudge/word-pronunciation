@@ -33,7 +33,7 @@ class PrimaryBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Тема нижнего всплывающего окна
-    final bottomSheetTheme = context.theme.bottomSheetTheme;
+    final bottomSheetTheme = context.theme.data.bottomSheetTheme;
 
     final bottomSheet = _SheetBody(
       title: title,
@@ -73,7 +73,7 @@ class _SheetAppBar extends StatelessWidget implements PreferredSizeWidget {
         child: Text(
           title,
           style: context.theme.textTheme.titleLarge?.copyWith(
-            color: context.colors.black,
+            color: context.theme.colors.black,
           ),
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
@@ -193,7 +193,7 @@ Future<T?> showPrimaryBottomSheet<T>({
     barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
     isDismissible: isDismissible,
     modalBarrierColor:
-        modalBarrierColor ?? context.colors.black.withOpacity(.4),
+        modalBarrierColor ?? context.theme.colors.black.withOpacity(.4),
     elevation: elevation,
     enableDrag: enableDrag,
     settings: settings,

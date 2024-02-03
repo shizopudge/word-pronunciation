@@ -31,7 +31,7 @@ class AppInitializationProgressPage extends StatelessWidget {
                   children: [
                     PrimaryLoadingIndicator(
                       size: 40,
-                      color: context.colors.black.withOpacity(.5),
+                      color: context.theme.colors.black.withOpacity(.5),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 8),
@@ -40,7 +40,7 @@ class AppInitializationProgressPage extends StatelessWidget {
                         textAlign: TextAlign.center,
                         textDirection: TextDirection.ltr,
                         style: context.theme.textTheme.titleMedium
-                            ?.copyWith(color: context.colors.grey),
+                            ?.copyWith(color: context.theme.colors.grey),
                       ),
                     ),
                     Text(
@@ -48,7 +48,7 @@ class AppInitializationProgressPage extends StatelessWidget {
                       textAlign: TextAlign.center,
                       textDirection: TextDirection.ltr,
                       style: context.theme.textTheme.bodyLarge?.copyWith(
-                        color: context.colors.grey,
+                        color: context.theme.colors.grey,
                       ),
                     ),
                   ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:word_pronunciation/src/core/extensions/extensions.dart';
 import 'package:word_pronunciation/src/core/ui_kit/ui_kit.dart';
 
 /// Кнопка "Перезагрузить"
@@ -20,7 +21,7 @@ class RestartButton extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: PrimaryElevatedButton(
             onTap: onRestart,
-            child: const Text('Перезагрузить'),
+            child: Text(context.localization?.restart ?? 'Restart'),
           ),
         ),
       );

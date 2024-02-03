@@ -41,7 +41,7 @@ class PrimaryAlert extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Dialog(
         insetPadding: const EdgeInsets.all(24),
-        backgroundColor: context.colors.white,
+        backgroundColor: context.theme.colors.white,
         elevation: 8,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
@@ -58,7 +58,7 @@ class PrimaryAlert extends StatelessWidget {
                     title,
                     textAlign: TextAlign.center,
                     style: context.theme.textTheme.titleLarge?.copyWith(
-                      color: context.colors.black,
+                      color: context.theme.colors.black,
                       fontWeight: FontWeight.w900,
                     ),
                   ),

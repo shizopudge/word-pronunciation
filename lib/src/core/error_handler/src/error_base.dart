@@ -1,85 +1,120 @@
-import 'package:equatable/equatable.dart';
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
-import 'package:word_pronunciation/src/features/app/domain/entity/initialization_progress.dart';
+import 'package:word_pronunciation/src/core/error_handler/error_handler.dart';
 
 /// {@template error_base}
 /// Базовый класс ошибки
 /// {@endtemplate}
 @immutable
-abstract interface class IErrorBase extends Equatable {
+sealed class IErrorBase {
   /// Ошибка
-  final Object error;
+  final Object? error;
 
   /// {@macro error_base}
-  const IErrorBase({
-    required this.error,
-  });
+  const IErrorBase({required this.error});
 
-  /// Переводит ошибку в сообщение
-  String message(BuildContext context);
-
-  @override
-  List<Object?> get props => [error];
+  /// Возвращает сообщение об ошибке
+  String get message;
 }
 
 /// {@template message_error}
 /// Класс ошибки с сообщением
 /// {@endtemplate}
 @immutable
-class MessageError extends IErrorBase {
+final class MessageError implements IErrorBase {
+  @override
+  final String error;
+
   /// {@macro message_error}
-  const MessageError({required super.error});
+  const MessageError({required this.error});
 
   @override
-  String message(BuildContext context) => error.toString();
+  String get message => error;
 }
 
 /// {@template timeout_error}
 /// Класс ошибки превышения времени ожидания
 /// {@endtemplate}
 @immutable
-class TimeoutError extends IErrorBase {
+final class TimeoutError implements IErrorBase {
+  @override
+  final TimeoutException error;
+
+  /// Контекст
+  final BuildContext context;
+
   /// {@macro timeout_error}
-  const TimeoutError({required super.error});
+  const TimeoutError({
+    required this.error,
+    required this.context,
+  });
 
   @override
-  String message(BuildContext context) => 'Превышено время ожидания';
-}
-
-/// {@template unknown_error}
-/// Класс неизвестной ошибки
-/// {@endtemplate}
-@immutable
-class UnknownError extends IErrorBase {
-  /// {@macro unknown_error}
-  const UnknownError({required super.error});
-
-  @override
-  String message(BuildContext context) => 'Произошла неизвестная ошибка';
+  String get message => 'Превышено время ожидания';
 }
 
 /// {@template app_initialization_error}
 /// Класс ошибки инициализации приложения
 /// {@endtemplate}
 @immutable
-class AppInitializationError extends IErrorBase {
-  /// {@macro initialization_progress}
-  final InitializationProgress initializationProgress;
+final class AppInitializationError implements IErrorBase {
+  @override
+  final AppInitializationException error;
+
+  /// Контекст
+  final BuildContext context;
 
   /// {@macro app_initialization_error}
   const AppInitializationError({
-    required this.initializationProgress,
-    required super.error,
+    required this.error,
+    required this.context,
   });
 
   @override
-  String message(BuildContext context) =>
-      'Произошла ошибка во время инициализации приложения. '
-      'Прогресс: $initializationProgress';
+  String get message => 'Произошла ошибка во время инициализации приложения. '
+      'Прогресс: ${error.initializationProgress}';
+}
+
+/// {@template app_initialization_error}
+/// Класс ошибки инициализации приложения
+/// {@endtemplate}
+@immutable
+final class CoreInitializationError implements IErrorBase {
+  @override
+  final CoreInitializationException error;
+
+  /// Контекст
+  final BuildContext context;
+
+  /// {@macro app_initialization_error}
+  const CoreInitializationError({
+    required this.error,
+    required this.context,
+  });
 
   @override
-  List<Object?> get props => [
-        initializationProgress,
-        ...super.props,
-      ];
+  String get message =>
+      'Произошла ошибка во время инициализации основы приложения';
+}
+
+/// {@template unknown_error}
+/// Класс неизвестной ошибки
+/// {@endtemplate}
+@immutable
+final class UnknownError implements IErrorBase {
+  @override
+  final Object? error;
+
+  /// Контекст
+  final BuildContext context;
+
+  /// {@macro unknown_error}
+  const UnknownError({
+    required this.error,
+    required this.context,
+  });
+
+  @override
+  String get message => 'Произошла неизвестная ошибка';
 }

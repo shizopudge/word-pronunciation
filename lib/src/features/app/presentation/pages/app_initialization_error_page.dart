@@ -88,7 +88,7 @@ class _AppInitializationErrorPageState
                           textAlign: TextAlign.center,
                           textDirection: TextDirection.ltr,
                           style: context.theme.textTheme.bodyMedium?.copyWith(
-                            color: context.colors.grey,
+                            color: context.theme.colors.grey,
                           ),
                         ),
                       ),

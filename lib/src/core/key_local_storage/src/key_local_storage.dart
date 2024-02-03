@@ -7,13 +7,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 @immutable
 abstract interface class IKeyLocalStorage {
   /// Записывает значение
-  Future<void> setValue(String key, String value);
+  Future<void> write(String key, String value);
 
   /// Получает значение
-  String? getValue(String key);
+  String? read(String key);
 
   /// Возвращает все ключи
-  Set<String> getKeys();
+  Set<String> readKeys();
 
   /// Возвращает все ключи
   bool containsKey(String key);
@@ -37,21 +37,21 @@ class KeyLocalStorage implements IKeyLocalStorage {
   }) : _sharedPreferences = sharedPreferences;
 
   @override
-  Future<void> setValue(String key, String value) async =>
+  Future<void> write(String key, String value) =>
       _sharedPreferences.setString(key, value);
 
   @override
-  String? getValue(String key) => _sharedPreferences.getString(key);
+  String? read(String key) => _sharedPreferences.getString(key);
 
   @override
-  Set<String> getKeys() => _sharedPreferences.getKeys();
+  Set<String> readKeys() => _sharedPreferences.getKeys();
 
   @override
   bool containsKey(String key) => _sharedPreferences.containsKey(key);
 
   @override
-  Future<bool> remove(String key) async => _sharedPreferences.remove(key);
+  Future<bool> remove(String key) => _sharedPreferences.remove(key);
 
   @override
-  Future<bool> clear() async => _sharedPreferences.clear();
+  Future<bool> clear() => _sharedPreferences.clear();
 }

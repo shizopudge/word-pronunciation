@@ -40,6 +40,9 @@ class InitializationProgress extends Equatable {
   String message(BuildContext context) => step.message(context);
 
   @override
+  String toString() => 'AppInitializationStep: $step, Progress: $progress';
+
+  @override
   List<Object?> get props => [
         step,
         progress,

@@ -2,20 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:word_pronunciation/src/features/app/bloc/app_initialization.dart';
 import 'package:word_pronunciation/src/features/app/data/datasource/app_initialization_datasource.dart';
 import 'package:word_pronunciation/src/features/app/data/repository/app_initialization_repository.dart';
+import 'package:word_pronunciation/src/features/app/di/core_dependencies_scope.dart';
 
 /// Область видимости инициализации приложения
 @immutable
 class AppInitializationScope extends StatefulWidget {
-  /// Дочерний виджет
-  final Widget child;
+  /// Конструктор дочернего виджета
+  final WidgetBuilder builder;
 
   /// Создает область видимости инициализации приложения
   const AppInitializationScope({
-    required this.child,
+    required this.builder,
     super.key,
   });
 
-  /// Возвращает [AppInitializationBloc] или завершается с [ArgumentError] - Out
+  /// Возвращает виджет хранящий в себе [AppInitializationBloc] или завершается с [ArgumentError] - Out
   /// of scope
   static InheritedAppInitialization of(BuildContext context) {
     final inheritedAppInitialization =
@@ -43,6 +44,7 @@ class _AppInitializationScopeState extends State<AppInitializationScope> {
   void initState() {
     super.initState();
     _bloc = AppInitializationBloc(
+      coreDependencies: CoreDependenciesScope.of(context),
       repository: AppInitializationRepository(
         datasource: AppInitializationDatasource(),
       ),
@@ -58,14 +60,14 @@ class _AppInitializationScopeState extends State<AppInitializationScope> {
   @override
   Widget build(BuildContext context) => InheritedAppInitialization(
         bloc: _bloc,
-        child: widget.child,
+        child: Builder(builder: widget.builder),
       );
 }
 
 /// Виджет хранящий в себе [AppInitializationBloc]
 @immutable
 class InheritedAppInitialization extends InheritedWidget {
-  /// {@macro dependencies}
+  /// {@macro app_initialization_bloc}
   final AppInitializationBloc bloc;
 
   /// Создает виджет хранящий в себе [AppInitializationBloc]
@@ -76,5 +78,6 @@ class InheritedAppInitialization extends InheritedWidget {
   });
 
   @override
-  bool updateShouldNotify(InheritedAppInitialization oldWidget) => false;
+  bool updateShouldNotify(covariant InheritedAppInitialization oldWidget) =>
+      oldWidget.bloc != bloc;
 }

@@ -64,7 +64,7 @@ class _PrimaryElevatedButtonState extends State<PrimaryElevatedButton>
         style: widget.style,
         child: PrimaryAnimatedSwitcher(
           child: widget.isLoading
-              ? PrimaryLoadingIndicator(color: context.colors.white)
+              ? PrimaryLoadingIndicator(color: context.theme.colors.white)
               : widget.child,
         ),
       ),

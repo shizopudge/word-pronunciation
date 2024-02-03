@@ -12,7 +12,7 @@ class ErrorTitle extends SliverPersistentHeaderDelegate {
   ) =>
       DecoratedBox(
         decoration: BoxDecoration(
-          color: context.theme.scaffoldBackgroundColor,
+          color: context.theme.data.scaffoldBackgroundColor,
           boxShadow: _boxShadow(
             context,
             shrinkOffset: shrinkOffset,
@@ -24,11 +24,11 @@ class ErrorTitle extends SliverPersistentHeaderDelegate {
             horizontal: 24,
           ),
           child: Text(
-            'Error',
+            context.localization?.error ?? 'Error',
             textAlign: TextAlign.center,
             textDirection: TextDirection.ltr,
             style: context.theme.textTheme.headlineLarge?.copyWith(
-              color: context.colors.grey,
+              color: context.theme.colors.grey,
             ),
           ),
         ),
@@ -42,18 +42,18 @@ class ErrorTitle extends SliverPersistentHeaderDelegate {
       shrinkOffset > 0.0
           ? [
               BoxShadow(
-                color: context.colors.black.withOpacity(.025),
+                color: context.theme.colors.black.withOpacity(.025),
                 offset: const Offset(0, 1),
                 blurRadius: 2,
               ),
               BoxShadow(
-                color: context.colors.black.withOpacity(.04),
+                color: context.theme.colors.black.withOpacity(.04),
                 offset: const Offset(0, 1.4),
                 blurRadius: 3,
                 spreadRadius: 1,
               ),
               BoxShadow(
-                color: context.colors.black.withOpacity(.05),
+                color: context.theme.colors.black.withOpacity(.05),
                 offset: const Offset(0, 2),
                 blurRadius: 4,
                 spreadRadius: 2,

@@ -39,11 +39,14 @@ class AppInitializationState with _$AppInitializationState {
 class AppInitializationBloc
     extends Bloc<AppInitializationEvent, AppInitializationState> {
   final IAppInitializationRepository _repository;
+  final CoreDependencies _coreDependencies;
 
   /// {@macro app_initialization_bloc}
   AppInitializationBloc({
     required final IAppInitializationRepository repository,
+    required final CoreDependencies coreDependencies,
   })  : _repository = repository,
+        _coreDependencies = coreDependencies,
         super(const AppInitializationState.progress()) {
     on<AppInitializationEvent>(
       (event, emit) => event.map(
@@ -60,6 +63,7 @@ class AppInitializationBloc
     try {
       final dependencies = await _repository
           .initialize(
+            coreDependencies: _coreDependencies,
             onProgress: (initializationProgress) => emit(
               AppInitializationState.progress(
                 initializationProgress: initializationProgress,
@@ -77,9 +81,8 @@ class AppInitializationBloc
       emit(
         AppInitializationState.error(
           errorHandler: ErrorHandler(
-            error: AppInitializationError(
+            error: AppInitializationException(
               initializationProgress: state.initializationProgress,
-              error: error,
             ),
           ),
           initializationProgress: state.initializationProgress,

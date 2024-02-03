@@ -7,13 +7,13 @@ class DependenciesScope extends StatefulWidget {
   /// {@macro dependencies}
   final Dependencies dependencies;
 
-  /// Постройщик дочернего виджета
-  final WidgetBuilder builder;
+  /// Дочерний виджет
+  final Widget child;
 
   /// Создает область видимости зависимостей приложения
   const DependenciesScope({
     required this.dependencies,
-    required this.builder,
+    required this.child,
     super.key,
   });
 
@@ -47,7 +47,7 @@ class _DependenciesScopeState extends State<DependenciesScope> {
   @override
   Widget build(BuildContext context) => _InheritedDependencies(
         dependencies: widget.dependencies,
-        child: Builder(builder: widget.builder),
+        child: widget.child,
       );
 }
 
@@ -64,5 +64,5 @@ class _InheritedDependencies extends InheritedWidget {
   });
 
   @override
-  bool updateShouldNotify(_InheritedDependencies oldWidget) => false;
+  bool updateShouldNotify(covariant _InheritedDependencies oldWidget) => false;
 }

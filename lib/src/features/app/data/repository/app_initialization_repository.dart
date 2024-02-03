@@ -14,8 +14,10 @@ class AppInitializationRepository implements IAppInitializationRepository {
 
   @override
   Future<Dependencies> initialize({
+    required final CoreDependencies coreDependencies,
     required final void Function(InitializationProgress initializationProgress)
         onProgress,
   }) =>
-      _datasource.initialize(onProgress: onProgress);
+      _datasource.initialize(
+          coreDependencies: coreDependencies, onProgress: onProgress);
 }

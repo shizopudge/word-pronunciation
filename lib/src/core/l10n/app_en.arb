@@ -2,10 +2,9 @@
   "@@locale": "en",
 
   "appInitializationStart": "App initialization starting",
-  "appInitializationKeyLocalStorage": "Initializing key local storage",
   "appInitializationAppRouter": "Creating router",
-  "appInitializationAppTheme": "Loading theme",
-  "appInitializationBlocObserver": "Creating app state observer",
   "appInitializationAppConnect": "Checking connection",
-  "appInitializationEnd": "App initialization finished"
+  "appInitializationEnd": "App initialization finished",
+  "error": "Error",
+  "restart": "Restart"
 }
