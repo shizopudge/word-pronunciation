@@ -16,11 +16,6 @@ class AppLocaleEvent with _$AppLocaleEvent {
 class AppLocaleState with _$AppLocaleState {
   const AppLocaleState._();
 
-  bool get isError => maybeMap(
-        orElse: () => false,
-        error: (_) => true,
-      );
-
   bool get isIdle => maybeMap(
         orElse: () => false,
         idle: (_) => true,

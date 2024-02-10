@@ -35,18 +35,31 @@ class AppInitializationProgressPage extends StatelessWidget {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 8),
-                      child: Text(
-                        '${initializationProgress.progress} %',
-                        textAlign: TextAlign.center,
-                        style: context.theme.textTheme.titleMedium
-                            ?.copyWith(color: context.theme.colors.grey),
+                      child: AnimatedSwitcher(
+                        duration: Durations.short2,
+                        child: Text(
+                          '${initializationProgress.progress} %',
+                          key: ValueKey<int>(initializationProgress.progress),
+                          textAlign: TextAlign.center,
+                          style: context.theme.textTheme.titleMedium
+                              ?.copyWith(color: context.theme.colors.grey),
+                        ),
                       ),
                     ),
-                    Text(
-                      initializationProgress.message(context),
-                      textAlign: TextAlign.center,
-                      style: context.theme.textTheme.bodyLarge?.copyWith(
-                        color: context.theme.colors.grey,
+                    Padding(
+                      padding: const EdgeInsets.only(top: 2),
+                      child: AnimatedSwitcher(
+                        duration: Durations.short2,
+                        child: Text(
+                          initializationProgress.message(context),
+                          key: ValueKey<String>(
+                            initializationProgress.message(context),
+                          ),
+                          textAlign: TextAlign.center,
+                          style: context.theme.textTheme.bodyLarge?.copyWith(
+                            color: context.theme.colors.grey,
+                          ),
+                        ),
                       ),
                     ),
                   ],

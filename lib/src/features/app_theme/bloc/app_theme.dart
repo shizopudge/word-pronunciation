@@ -17,11 +17,6 @@ class AppThemeEvent with _$AppThemeEvent {
 class AppThemeState with _$AppThemeState {
   const AppThemeState._();
 
-  bool get isError => maybeMap(
-        orElse: () => false,
-        error: (_) => true,
-      );
-
   bool get isIdle => maybeMap(
         orElse: () => false,
         idle: (_) => true,

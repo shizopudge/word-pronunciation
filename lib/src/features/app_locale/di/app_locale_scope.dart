@@ -88,12 +88,8 @@ class _AppLocaleScopeState extends State<AppLocaleScope> {
 
   @override
   Widget build(BuildContext context) =>
-      BlocConsumer<AppLocaleBloc, AppLocaleState>(
+      BlocBuilder<AppLocaleBloc, AppLocaleState>(
         bloc: _bloc,
-        listener: (context, state) {
-          // TODO: add showToaster method
-        },
-        listenWhen: (previous, current) => current.isError,
         buildWhen: (previous, current) => current.isIdle,
         builder: (context, state) {
           late final Widget child;

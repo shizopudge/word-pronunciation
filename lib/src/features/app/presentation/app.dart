@@ -12,6 +12,7 @@ import 'package:word_pronunciation/src/features/app/di/dependencies_scope.dart';
 import 'package:word_pronunciation/src/features/app/presentation/pages/pages.dart';
 import 'package:word_pronunciation/src/features/app_locale/di/app_locale_scope.dart';
 import 'package:word_pronunciation/src/features/app_theme/di/app_theme_scope.dart';
+import 'package:word_pronunciation/src/features/toaster/src/toaster_scope.dart';
 
 /// Основой виджет приложения
 @immutable
@@ -23,7 +24,7 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => const _Core(
-        child: _ThemeAndLocale(
+        child: _ThemeLocaleAndToaster(
           child: _MaterialApp(
             child: _AppInitialization(
               router: _Router(),
@@ -49,15 +50,18 @@ class _Core extends StatelessWidget {
         builder: (context) =>
             BlocBuilder<CoreInitializationBloc, CoreInitializationState>(
           bloc: CoreInitializationScope.of(context).bloc,
-          builder: (context, state) => AnimatedSwitcher(
-            duration: Durations.short3,
-            child: state.when(
-              progress: AppSplash.new,
-              error: (errorHandler) =>
-                  CoreInitializationErrorPage(errorHandler: errorHandler),
-              success: (coreDependencies) => CoreDependenciesScope(
-                coreDependencies: coreDependencies,
-                child: child,
+          builder: (context, state) => Material(
+            color: Colors.white,
+            child: AnimatedSwitcher(
+              duration: Durations.short2,
+              child: state.when(
+                progress: AppSplash.new,
+                error: (errorHandler) =>
+                    CoreInitializationErrorPage(errorHandler: errorHandler),
+                success: (coreDependencies) => CoreDependenciesScope(
+                  coreDependencies: coreDependencies,
+                  child: child,
+                ),
               ),
             ),
           ),
@@ -67,18 +71,20 @@ class _Core extends StatelessWidget {
 
 /// Виджет с темой и локализацией приложения
 @immutable
-class _ThemeAndLocale extends StatelessWidget {
+class _ThemeLocaleAndToaster extends StatelessWidget {
   /// Дочерний виджет
   final Widget child;
 
   /// Создает виджет с темой и локализацией приложения
-  const _ThemeAndLocale({
+  const _ThemeLocaleAndToaster({
     required this.child,
   });
 
   @override
   Widget build(BuildContext context) => AppThemeScope(
-        child: AppLocaleScope(child: child),
+        child: AppLocaleScope(
+          child: ToasterScope(child: child),
+        ),
       );
 }
 
@@ -123,7 +129,7 @@ class _AppInitialization extends StatelessWidget {
             BlocBuilder<AppInitializationBloc, AppInitializationState>(
           bloc: AppInitializationScope.of(context).bloc,
           builder: (context, state) => AnimatedSwitcher(
-            duration: Durations.short3,
+            duration: Durations.short2,
             child: state.map(
               progress: (p) => AppInitializationProgressPage(
                   initializationProgress: p.initializationProgress),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:word_pronunciation/src/core/theme/theme.dart';
+import 'package:word_pronunciation/src/core/app_theme/app_theme.dart';
+import 'package:word_pronunciation/src/features/toaster/toaster.dart';
 
 /// {@macro app_theme}
 @immutable
@@ -25,6 +26,7 @@ class LightAppTheme implements IAppTheme {
   @override
   ThemeData get data => ThemeData(
         useMaterial3: true,
+        brightness: Brightness.light,
         fontFamily: 'Plus Jakarta Sans',
         textTheme: _textTheme,
         scaffoldBackgroundColor: colors.white,
@@ -39,6 +41,7 @@ class LightAppTheme implements IAppTheme {
         switchTheme: _switchThemeData,
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         bottomSheetTheme: _bottomSheetThemeData,
+        extensions: <ThemeExtension<Object?>>[_toasterTheme],
       );
 
   /// AppBar Theme
@@ -295,4 +298,40 @@ class LightAppTheme implements IAppTheme {
 
   @override
   SystemUiOverlayStyle get systemUiOverlayStyle => SystemUiOverlayStyle.dark;
+
+  /// {@macro toaster_theme}
+  ToasterTheme get _toasterTheme => ToasterTheme(
+        successBackgroundColor: colors.green,
+        warningBackgroundColor: colors.orange,
+        errorBackgroundColor: colors.red,
+        messageBackgroundColor: colors.black,
+        successIconColor: colors.white,
+        warningIconColor: colors.white,
+        errorIconColor: colors.white,
+        messageIconColor: colors.white,
+        successMessageStyle:
+            textTheme.bodyMedium?.copyWith(color: colors.white),
+        warningMessageStyle:
+            textTheme.bodyMedium?.copyWith(color: colors.white),
+        errorMessageStyle: textTheme.bodyMedium?.copyWith(color: colors.white),
+        messageStyle: textTheme.bodyMedium?.copyWith(color: colors.white),
+        boxShadow: [
+          BoxShadow(
+            color: colors.black.withOpacity(.15),
+            offset: const Offset(0, .5),
+          ),
+          BoxShadow(
+            color: colors.black.withOpacity(.25),
+            blurRadius: 1,
+            offset: const Offset(0, 1),
+          ),
+          BoxShadow(
+            color: colors.black.withOpacity(.3),
+            blurRadius: 2,
+            spreadRadius: 1,
+            offset: const Offset(0, 1.5),
+          ),
+        ],
+        borderRadius: BorderRadius.circular(24),
+      );
 }

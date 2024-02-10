@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:word_pronunciation/src/core/error_handler/error_handler.dart';
-import 'package:word_pronunciation/src/core/theme/theme.dart';
+import 'package:word_pronunciation/src/core/app_theme/app_theme.dart';
 import 'package:word_pronunciation/src/features/app/bloc/core_initialization.dart';
 import 'package:word_pronunciation/src/features/app/di/core_initialization_scope.dart';
 import 'package:word_pronunciation/src/features/app/presentation/widgets/widgets.dart';

@@ -17,11 +17,14 @@ abstract interface class IAppColors {
   /// Blue
   Color get blue;
 
-  /// Purple
-  Color get purple;
-
   /// Grey
   Color get grey;
+
+  /// Orange
+  Color get orange;
+
+  /// Green
+  Color get green;
 }
 
 /// {@macro app_colors}
@@ -34,14 +37,17 @@ class AppColors implements IAppColors {
   Color get black => Colors.black;
 
   @override
-  Color get red => Colors.red;
+  Color get red => Colors.red.shade300;
 
   @override
-  Color get blue => Colors.blue;
-
-  @override
-  Color get purple => Colors.purple.shade300;
+  Color get blue => Colors.blue.shade300;
 
   @override
   Color get grey => Colors.grey.shade400;
+
+  @override
+  Color get orange => Colors.orange.shade300;
+
+  @override
+  Color get green => Colors.green.shade300;
 }

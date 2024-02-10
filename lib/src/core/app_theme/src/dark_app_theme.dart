@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:word_pronunciation/src/core/theme/theme.dart';
+import 'package:word_pronunciation/src/core/app_theme/app_theme.dart';
+import 'package:word_pronunciation/src/features/toaster/toaster.dart';
 
 // TODO: Прописать темную тему
 /// {@macro app_theme}
@@ -26,6 +27,7 @@ class DarkAppTheme implements IAppTheme {
   @override
   ThemeData get data => ThemeData(
         useMaterial3: true,
+        brightness: Brightness.dark,
         fontFamily: 'Plus Jakarta Sans',
         textTheme: _textTheme,
         scaffoldBackgroundColor: colors.black,
@@ -40,6 +42,7 @@ class DarkAppTheme implements IAppTheme {
         switchTheme: _switchThemeData,
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         bottomSheetTheme: _bottomSheetThemeData,
+        extensions: <ThemeExtension<Object?>>[_toasterTheme],
       );
 
   /// AppBar Theme
@@ -195,8 +198,8 @@ class DarkAppTheme implements IAppTheme {
       ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           textStyle: _textTheme.titleSmall,
-          backgroundColor: colors.black,
-          foregroundColor: colors.white,
+          backgroundColor: colors.white,
+          foregroundColor: colors.black,
           minimumSize: const Size.fromHeight(64),
           maximumSize: const Size.fromHeight(64),
           shape: RoundedRectangleBorder(
@@ -211,8 +214,8 @@ class DarkAppTheme implements IAppTheme {
       OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           textStyle: _textTheme.titleMedium,
-          foregroundColor: colors.black,
-          backgroundColor: colors.white,
+          foregroundColor: colors.white,
+          backgroundColor: colors.black,
           minimumSize: const Size.fromHeight(64),
           maximumSize: const Size.fromHeight(64),
           shape: RoundedRectangleBorder(
@@ -227,8 +230,8 @@ class DarkAppTheme implements IAppTheme {
   TextButtonThemeData get _textButtonThemeData => TextButtonThemeData(
         style: TextButton.styleFrom(
           textStyle: _textTheme.titleMedium,
-          foregroundColor: colors.black,
-          backgroundColor: colors.white,
+          foregroundColor: colors.white,
+          backgroundColor: colors.black,
           minimumSize: const Size.fromHeight(64),
           maximumSize: const Size.fromHeight(64),
           shape: RoundedRectangleBorder(
@@ -241,8 +244,8 @@ class DarkAppTheme implements IAppTheme {
   /// Icon button style
   IconButtonThemeData get _iconButtonThemeData => IconButtonThemeData(
         style: IconButton.styleFrom(
-          foregroundColor: colors.black,
-          backgroundColor: colors.white,
+          foregroundColor: colors.white,
+          backgroundColor: colors.black,
           minimumSize: const Size.square(40),
           maximumSize: const Size.square(40),
           padding: const EdgeInsets.all(8),
@@ -296,4 +299,40 @@ class DarkAppTheme implements IAppTheme {
 
   @override
   SystemUiOverlayStyle get systemUiOverlayStyle => SystemUiOverlayStyle.light;
+
+  /// {@macro toaster_theme}
+  ToasterTheme get _toasterTheme => ToasterTheme(
+        successBackgroundColor: colors.green,
+        warningBackgroundColor: colors.orange,
+        errorBackgroundColor: colors.red,
+        messageBackgroundColor: colors.white,
+        successIconColor: colors.white,
+        warningIconColor: colors.white,
+        errorIconColor: colors.white,
+        messageIconColor: colors.black,
+        successMessageStyle:
+            textTheme.bodyMedium?.copyWith(color: colors.white),
+        warningMessageStyle:
+            textTheme.bodyMedium?.copyWith(color: colors.white),
+        errorMessageStyle: textTheme.bodyMedium?.copyWith(color: colors.white),
+        messageStyle: textTheme.bodyMedium?.copyWith(color: colors.black),
+        boxShadow: [
+          BoxShadow(
+            color: colors.black.withOpacity(.05),
+            offset: const Offset(0, .5),
+          ),
+          BoxShadow(
+            color: colors.black.withOpacity(.1),
+            blurRadius: 1,
+            offset: const Offset(0, .75),
+          ),
+          BoxShadow(
+            color: colors.black.withOpacity(.15),
+            blurRadius: 1.5,
+            spreadRadius: 0.5,
+            offset: const Offset(0, 1),
+          ),
+        ],
+        borderRadius: BorderRadius.circular(24),
+      );
 }
