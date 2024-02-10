@@ -31,7 +31,9 @@ class AppInitializationProgressPage extends StatelessWidget {
                   children: [
                     PrimaryLoadingIndicator(
                       size: 40,
-                      color: context.theme.colors.black.withOpacity(.5),
+                      color: context.theme.isDark
+                          ? context.theme.colors.white
+                          : context.theme.colors.black,
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 8),

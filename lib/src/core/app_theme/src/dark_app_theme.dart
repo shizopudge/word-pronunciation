@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:word_pronunciation/src/core/app_theme/app_theme.dart';
 import 'package:word_pronunciation/src/features/toaster/toaster.dart';
 
-// TODO: Прописать темную тему
 /// {@macro app_theme}
 @immutable
 class DarkAppTheme implements IAppTheme {

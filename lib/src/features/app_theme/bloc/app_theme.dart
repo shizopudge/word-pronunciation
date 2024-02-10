@@ -54,8 +54,6 @@ class AppThemeBloc extends Bloc<AppThemeEvent, AppThemeState> {
   }
 
   void _read(_ReadAppThemeEvent event, Emitter<AppThemeState> emit) async {
-    // TODO(Рустам Курмантаев): Убрать на релизе
-    await Future<void>.delayed(const Duration(milliseconds: 500));
     emit(AppThemeState.progress(appThemeMode: state.appThemeMode));
     try {
       final appThemeMode = _repository.readAppThemeModeFromStorage();
