@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:word_pronunciation/src/core/theme/theme.dart';
+import 'package:word_pronunciation/src/core/app_theme/app_theme.dart';
 
 /// {@template app_theme}
 /// Тема приложения

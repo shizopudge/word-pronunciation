@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:word_pronunciation/src/core/theme/theme.dart';
+import 'package:word_pronunciation/src/core/app_theme/app_theme.dart';
 import 'package:word_pronunciation/src/core/ui_kit/ui_kit.dart';
 import 'package:word_pronunciation/src/features/app/domain/entity/core_dependencies.dart';
 import 'package:word_pronunciation/src/features/app_theme/bloc/app_theme.dart';
@@ -109,6 +109,7 @@ class AppThemeScopeState extends State<AppThemeScope> {
   Widget build(BuildContext context) =>
       BlocBuilder<AppThemeBloc, AppThemeState>(
         bloc: _bloc,
+        buildWhen: (previous, current) => current.isIdle,
         builder: (context, state) {
           late final Widget child;
 
