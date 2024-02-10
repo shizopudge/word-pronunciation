@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:word_pronunciation/src/core/theme/theme.dart';
-import 'package:word_pronunciation/src/features/app/domain/entity/dependencies.dart';
+import 'package:word_pronunciation/src/core/ui_kit/ui_kit.dart';
+import 'package:word_pronunciation/src/features/app/domain/entity/core_dependencies.dart';
 import 'package:word_pronunciation/src/features/app_theme/bloc/app_theme.dart';
 import 'package:word_pronunciation/src/features/app_theme/data/datasource/app_theme_datasource.dart';
 import 'package:word_pronunciation/src/features/app_theme/data/repository/app_theme_repository.dart';
@@ -42,6 +43,24 @@ class AppThemeScope extends StatefulWidget {
     return inheritedAppTheme;
   }
 
+  /// Возвращает [InheritedAppTheme] или null
+  static InheritedAppTheme? maybeOf(
+    BuildContext context, {
+    bool listen = true,
+  }) {
+    late final InheritedAppTheme? inheritedAppTheme;
+
+    if (listen) {
+      inheritedAppTheme =
+          context.dependOnInheritedWidgetOfExactType<InheritedAppTheme>();
+    } else {
+      inheritedAppTheme =
+          context.getInheritedWidgetOfExactType<InheritedAppTheme>();
+    }
+
+    return inheritedAppTheme;
+  }
+
   @override
   State<AppThemeScope> createState() => AppThemeScopeState();
 }
@@ -51,28 +70,33 @@ class AppThemeScopeState extends State<AppThemeScope> {
   static final _darkTheme = DarkAppTheme(appColors: AppColors());
 
   /// Светлая тема приложения
-  static final _lightTheme = AppTheme(appColors: AppColors());
-
-  /// Системная тема
-  late final IAppTheme _themeOfSystem;
+  static final _lightTheme = LightAppTheme(appColors: AppColors());
 
   /// {@macro app_theme_bloc}
-  late AppThemeBloc _bloc;
+  late final AppThemeBloc _bloc;
+
+  /// Системная тема
+  late IAppTheme _themeOfSystem;
 
   @override
   void initState() {
     super.initState();
-    _themeOfSystem =
-        WidgetsBinding.instance.platformDispatcher.platformBrightness ==
-                Brightness.dark
-            ? _darkTheme
-            : _lightTheme;
     _bloc = AppThemeBloc(
       repository: AppThemeRepository(
         datasource: AppThemeDatasource(
-            keyLocalStorage: CoreDependencies.of(context).keyLocalStorage),
+          keyLocalStorage: CoreDependencies.of(context).keyLocalStorage,
+        ),
       ),
     )..add(const AppThemeEvent.read());
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _themeOfSystem =
+        MediaQuery.of(context).platformBrightness == Brightness.dark
+            ? _darkTheme
+            : _lightTheme;
   }
 
   @override
@@ -83,20 +107,35 @@ class AppThemeScopeState extends State<AppThemeScope> {
 
   @override
   Widget build(BuildContext context) =>
-      BlocBuilder<AppThemeBloc, AppThemeMode?>(
+      BlocBuilder<AppThemeBloc, AppThemeState>(
         bloc: _bloc,
-        builder: (context, themeMode) => InheritedAppTheme(
-          theme: _theme(themeMode),
-          bloc: _bloc,
-          child: widget.child,
-        ),
+        builder: (context, state) {
+          late final Widget child;
+
+          final appThemeMode = state.appThemeMode;
+
+          if (appThemeMode == null) {
+            child = const AppSplash();
+          } else {
+            child = InheritedAppTheme(
+              theme: _theme(appThemeMode),
+              bloc: _bloc,
+              child: widget.child,
+            );
+          }
+
+          return AnimatedSwitcher(
+            duration: Durations.short3,
+            child: child,
+          );
+        },
       );
 
   /// Возвращает тему приложения
-  IAppTheme _theme(AppThemeMode? themeMode) => switch (themeMode) {
+  IAppTheme _theme(AppThemeMode appThemeMode) => switch (appThemeMode) {
         AppThemeMode.dark => _darkTheme,
         AppThemeMode.light => _lightTheme,
-        _ => _themeOfSystem,
+        AppThemeMode.system => _themeOfSystem,
       };
 }
 

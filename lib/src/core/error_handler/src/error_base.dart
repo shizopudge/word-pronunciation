@@ -1,7 +1,8 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 import 'package:word_pronunciation/src/core/error_handler/error_handler.dart';
+import 'package:word_pronunciation/src/core/extensions/extensions.dart';
 
 /// {@template error_base}
 /// Базовый класс ошибки
@@ -11,8 +12,14 @@ sealed class IErrorBase {
   /// Ошибка
   final Object? error;
 
+  /// Контекст
+  final BuildContext context;
+
   /// {@macro error_base}
-  const IErrorBase({required this.error});
+  const IErrorBase(
+    this.context, {
+    required this.error,
+  });
 
   /// Возвращает сообщение об ошибке
   String get message;
@@ -26,11 +33,38 @@ final class MessageError implements IErrorBase {
   @override
   final String error;
 
+  @override
+  final BuildContext context;
+
   /// {@macro message_error}
-  const MessageError({required this.error});
+  const MessageError(
+    this.context, {
+    required this.error,
+  });
 
   @override
   String get message => error;
+}
+
+/// {@template localized_message_error}
+/// Класс ошибки с локализованным сообщением
+/// {@endtemplate}
+@immutable
+final class LocalizedMessageError implements IErrorBase {
+  @override
+  final LocalizedErrorMessage error;
+
+  @override
+  final BuildContext context;
+
+  /// {@macro localized_message_error}
+  const LocalizedMessageError(
+    this.context, {
+    required this.error,
+  });
+
+  @override
+  String get message => error.message(context);
 }
 
 /// {@template timeout_error}
@@ -41,17 +75,18 @@ final class TimeoutError implements IErrorBase {
   @override
   final TimeoutException error;
 
-  /// Контекст
+  @override
   final BuildContext context;
 
   /// {@macro timeout_error}
-  const TimeoutError({
+  const TimeoutError(
+    this.context, {
     required this.error,
-    required this.context,
   });
 
   @override
-  String get message => 'Превышено время ожидания';
+  String get message =>
+      context.localization?.timeoutError ?? 'Wait time exceeded';
 }
 
 /// {@template app_initialization_error}
@@ -62,40 +97,44 @@ final class AppInitializationError implements IErrorBase {
   @override
   final AppInitializationException error;
 
-  /// Контекст
+  @override
   final BuildContext context;
 
   /// {@macro app_initialization_error}
-  const AppInitializationError({
+  const AppInitializationError(
+    this.context, {
     required this.error,
-    required this.context,
   });
 
   @override
-  String get message => 'Произошла ошибка во время инициализации приложения. '
-      'Прогресс: ${error.initializationProgress}';
+  String get message =>
+      context.localization
+          ?.appInitializationError(error.initializationProgress.toString()) ??
+      'An error occurred while creating the application.\n'
+          'Progress: ${error.initializationProgress}';
 }
 
-/// {@template app_initialization_error}
-/// Класс ошибки инициализации приложения
+/// {@template core_initialization_error}
+/// Класс ошибки инициализации основы приложения
 /// {@endtemplate}
 @immutable
 final class CoreInitializationError implements IErrorBase {
   @override
   final CoreInitializationException error;
 
-  /// Контекст
+  @override
   final BuildContext context;
 
-  /// {@macro app_initialization_error}
-  const CoreInitializationError({
+  /// {@macro core_initialization_error}
+  const CoreInitializationError(
+    this.context, {
     required this.error,
-    required this.context,
   });
 
   @override
   String get message =>
-      'Произошла ошибка во время инициализации основы приложения';
+      context.localization?.coreInitializationError ??
+      'An error occurred while initializing the application core';
 }
 
 /// {@template unknown_error}
@@ -106,15 +145,16 @@ final class UnknownError implements IErrorBase {
   @override
   final Object? error;
 
-  /// Контекст
+  @override
   final BuildContext context;
 
   /// {@macro unknown_error}
-  const UnknownError({
+  const UnknownError(
+    this.context, {
     required this.error,
-    required this.context,
   });
 
   @override
-  String get message => 'Произошла неизвестная ошибка';
+  String get message =>
+      context.localization?.unknownErrorOccurred ?? 'An unknown error occurred';
 }

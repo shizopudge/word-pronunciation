@@ -16,6 +16,9 @@ extension BuildContextX on BuildContext {
   /// {@macro app_router}
   AppRouter get router => Dependencies.of(this).router;
 
+  /// {@macro key_local_storage}
+  IKeyLocalStorage get keyLocalStorage => Dependencies.of(this).keyLocalStorage;
+
   /// Возвращает тему приложения
   IAppTheme get theme => AppThemeScope.of(this).theme;
 
@@ -29,7 +32,4 @@ extension BuildContextX on BuildContext {
   /// Возвращает состояние подключения к интернету
   Future<bool> get hasConnectRead =>
       Dependencies.of(this).appConnect.hasConnect();
-
-  /// {@macro key_local_storage}
-  IKeyLocalStorage get keyLocalStorage => Dependencies.of(this).keyLocalStorage;
 }

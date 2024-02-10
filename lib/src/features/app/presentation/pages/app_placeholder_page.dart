@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:word_pronunciation/src/core/extensions/extensions.dart';
 import 'package:word_pronunciation/src/core/ui_kit/ui_kit.dart';
 
 /// Экран заместитель приложения
@@ -12,7 +13,7 @@ class AppPlaceholderPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.dark
+        value: context.theme.systemUiOverlayStyle
             .copyWith(statusBarColor: Colors.transparent),
         child: const Scaffold(
           body: SafeArea(

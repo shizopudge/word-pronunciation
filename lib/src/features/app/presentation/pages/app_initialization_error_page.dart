@@ -52,10 +52,11 @@ class _AppInitializationErrorPageState
 
   @override
   Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.dark
+        value: context.theme.systemUiOverlayStyle
             .copyWith(statusBarColor: Colors.transparent),
         child: Scaffold(
           body: SafeArea(
+            bottom: false,
             child: AnimatedBuilder(
               animation: Listenable.merge(
                 [
@@ -70,8 +71,8 @@ class _AppInitializationErrorPageState
                   controller: _scrollController,
                   slivers: [
                     // Заголовок "Ошибка"
-                    SliverPersistentHeader(
-                      delegate: ErrorTitle(),
+                    const SliverPersistentHeader(
+                      delegate: ErrorHeaderDelegate(),
                       pinned: true,
                     ),
 
@@ -104,12 +105,12 @@ class _AppInitializationErrorPageState
         ),
       );
 
-  /// Перезапускает приложение
+  /// Перезапускает инициализацию приложения
   void _restart() => AppInitializationScope.of(context)
       .bloc
       .add(const AppInitializationEvent.initialize());
 
-  /// Устанавливает значение [_isScrollable]
+  /// Устанавливает значение [_isScrollableController]
   void _setIsScrollable() => WidgetsBinding.instance.addPostFrameCallback((_) {
         final maxScrollExtent = _scrollController.position.maxScrollExtent;
         _isScrollableController.value = maxScrollExtent > 0.0;

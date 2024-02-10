@@ -15,10 +15,13 @@ class AppThemeRepository implements IAppThemeRepository {
   }) : _datasource = datasource;
 
   @override
-  AppThemeMode readThemeModeFromStorage() =>
-      _datasource.readThemeModeFromStorage();
+  AppThemeMode readAppThemeModeFromStorage() =>
+      _datasource.readAppThemeModeFromStorage();
 
   @override
-  Future<void>? writeThemeModeToStorage(AppThemeMode themeMode) =>
-      _datasource.writeThemeModeToStorage(themeMode);
+  Future<void> writeAppThemeModeToStorage(AppThemeMode themeMode) =>
+      _datasource.writeAppThemeModeToStorage(themeMode);
+
+  @override
+  AppThemeMode get defaultAppThemeMode => _datasource.defaultAppThemeMode;
 }

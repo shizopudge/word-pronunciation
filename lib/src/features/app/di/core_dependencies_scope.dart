@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:word_pronunciation/src/features/app/domain/entity/dependencies.dart';
+import 'package:word_pronunciation/src/features/app/domain/entity/core_dependencies.dart';
 
 /// Область видимости основных зависимостей приложения
 @immutable

@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:word_pronunciation/src/core/error_handler/error_handler.dart';
-import 'package:word_pronunciation/src/core/logger/logger.dart';
+import 'package:word_pronunciation/src/features/app/domain/entity/core_dependencies.dart';
 import 'package:word_pronunciation/src/features/app/domain/entity/dependencies.dart';
 import 'package:word_pronunciation/src/features/app/domain/entity/initialization_progress.dart';
 import 'package:word_pronunciation/src/features/app/domain/repository/i_app_initialization_repository.dart';
@@ -16,8 +16,7 @@ class AppInitializationEvent with _$AppInitializationEvent {
 @freezed
 class AppInitializationState with _$AppInitializationState {
   const factory AppInitializationState.progress({
-    @Default(InitializationProgress.start)
-    final InitializationProgress initializationProgress,
+    required final InitializationProgress initializationProgress,
     final Dependencies? dependencies,
   }) = _ProgressInitializationState;
 
@@ -47,7 +46,8 @@ class AppInitializationBloc
     required final CoreDependencies coreDependencies,
   })  : _repository = repository,
         _coreDependencies = coreDependencies,
-        super(const AppInitializationState.progress()) {
+        super(const AppInitializationState.progress(
+            initializationProgress: InitializationProgress.start)) {
     on<AppInitializationEvent>(
       (event, emit) => event.map(
         initialize: (event) => _initialize(event, emit),
@@ -59,7 +59,8 @@ class AppInitializationBloc
     _InitializeEvent event,
     Emitter<AppInitializationState> emit,
   ) async {
-    emit(const AppInitializationState.progress());
+    emit(const AppInitializationState.progress(
+        initializationProgress: InitializationProgress.start));
     try {
       final dependencies = await _repository
           .initialize(
@@ -77,21 +78,12 @@ class AppInitializationBloc
           dependencies: dependencies,
         ),
       );
-    } on Object catch (error, stackTrace) {
+    } on Object catch (error) {
       emit(
         AppInitializationState.error(
-          errorHandler: ErrorHandler(
-            error: AppInitializationException(
-              initializationProgress: state.initializationProgress,
-            ),
-          ),
+          errorHandler: ErrorHandler(error: error),
           initializationProgress: state.initializationProgress,
         ),
-      );
-      L.error(
-        error.toString(),
-        error: error,
-        stackTrace: stackTrace,
       );
       rethrow;
     } finally {

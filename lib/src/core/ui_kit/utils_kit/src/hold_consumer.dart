@@ -7,9 +7,6 @@ class HoldConsumer extends StatefulWidget {
   /// Если true, то consumer активен
   final bool isEnabled;
 
-  /// Дочерний виджет
-  final Widget? child;
-
   /// Постройщик дочернего виджета
   final Widget Function(BuildContext context, bool isHeldDown)? builder;
 
@@ -19,16 +16,10 @@ class HoldConsumer extends StatefulWidget {
   /// Создает consumer удержания
   const HoldConsumer({
     this.isEnabled = true,
-    this.child,
     this.builder,
     this.listener,
     super.key,
-  })  : assert(child != null || builder != null,
-            'child or builder should not be null'),
-        assert(
-            (child != null && builder == null) ||
-                (builder != null && child == null),
-            'if child != null then builder should be null and vice versa');
+  });
 
   @override
   State<HoldConsumer> createState() => _HoldConsumerState();
@@ -68,7 +59,6 @@ class _HoldConsumerState extends State<HoldConsumer> {
           animation: _childHeldDownController,
           builder: (context, _) =>
               widget.builder?.call(context, _isChildHeldDown) ??
-              widget.child ??
               const SizedBox.shrink(),
         ),
       );

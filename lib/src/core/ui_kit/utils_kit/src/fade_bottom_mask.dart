@@ -60,7 +60,7 @@ class _FadeBottomMaskState extends State<FadeBottomMask>
 
   @override
   Widget build(BuildContext context) => AnimatedBuilder(
-        animation: _animationController,
+        animation: _animation,
         builder: (context, child) => ShaderMask(
           shaderCallback: (Rect rect) => LinearGradient(
             begin: Alignment.topCenter,
@@ -80,14 +80,14 @@ class _FadeBottomMaskState extends State<FadeBottomMask>
       );
 
   /// Анимирует виджет
-  void _animate(covariant FadeBottomMask oldWidget) {
+  Future<void> _animate(covariant FadeBottomMask oldWidget) async {
     final isEnabledChanged = oldWidget.isEnabled != widget.isEnabled;
     if (!isEnabledChanged) return;
     if (_animationController.isAnimating) _animationController.stop();
     if (widget.isEnabled) {
-      _animationController.forward();
+      return _animationController.forward();
     } else {
-      _animationController.reverse();
+      return _animationController.reverse();
     }
   }
 }

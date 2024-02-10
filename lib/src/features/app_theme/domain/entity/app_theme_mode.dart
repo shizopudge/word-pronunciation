@@ -1,6 +1,4 @@
-/// {@template app_theme_mode}
-/// Режим темы приложения
-/// {@endtemplate}
+/// Енум режима темы приложения
 enum AppThemeMode {
   dark,
   light,

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:word_pronunciation/src/core/extensions/extensions.dart';
 
-/// Заголовок ошибки
+/// Делегат заголовка ошибки
 @immutable
-class ErrorTitle extends SliverPersistentHeaderDelegate {
+class ErrorHeaderDelegate extends SliverPersistentHeaderDelegate {
+  /// Создает делегат заголовка ошибки
+  const ErrorHeaderDelegate();
+
   @override
   Widget build(
     BuildContext context,
@@ -25,8 +28,9 @@ class ErrorTitle extends SliverPersistentHeaderDelegate {
           ),
           child: Text(
             context.localization?.error ?? 'Error',
+            maxLines: 1,
             textAlign: TextAlign.center,
-            textDirection: TextDirection.ltr,
+            overflow: TextOverflow.ellipsis,
             style: context.theme.textTheme.headlineLarge?.copyWith(
               color: context.theme.colors.grey,
             ),
@@ -34,7 +38,7 @@ class ErrorTitle extends SliverPersistentHeaderDelegate {
         ),
       );
 
-  /// Возвращает тени заголовка, если [overlapsContent] == true, иначе null
+  /// Возвращает тени заголовка, если [shrinkOffset] > 0.0, иначе null
   List<BoxShadow>? _boxShadow(
     BuildContext context, {
     required double shrinkOffset,
@@ -68,5 +72,5 @@ class ErrorTitle extends SliverPersistentHeaderDelegate {
   double get minExtent => 60;
 
   @override
-  bool shouldRebuild(covariant ErrorTitle oldDelegate) => false;
+  bool shouldRebuild(covariant ErrorHeaderDelegate oldDelegate) => false;
 }

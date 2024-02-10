@@ -1,8 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:word_pronunciation/src/core/error_handler/error_handler.dart';
-import 'package:word_pronunciation/src/core/logger/logger.dart';
-import 'package:word_pronunciation/src/features/app/domain/entity/dependencies.dart';
+import 'package:word_pronunciation/src/features/app/domain/entity/core_dependencies.dart';
 import 'package:word_pronunciation/src/features/app/domain/repository/i_core_initialization_repository.dart';
 
 part 'core_initialization.freezed.dart';
@@ -54,16 +53,11 @@ class CoreInitializationBloc
       final coreDependencies =
           await _repository.initialize().timeout(const Duration(seconds: 90));
       emit(CoreInitializationState.success(coreDependencies: coreDependencies));
-    } on Object catch (error, stackTrace) {
+    } on Object catch (error) {
       emit(
         CoreInitializationState.error(
-          errorHandler: ErrorHandler(error: CoreInitializationException()),
+          errorHandler: ErrorHandler(error: error),
         ),
-      );
-      L.error(
-        error.toString(),
-        error: error,
-        stackTrace: stackTrace,
       );
       rethrow;
     }

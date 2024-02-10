@@ -21,7 +21,11 @@ class RestartButton extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: PrimaryElevatedButton(
             onTap: onRestart,
-            child: Text(context.localization?.restart ?? 'Restart'),
+            child: Text(
+              context.localization?.restart ?? 'Restart',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
         ),
       );

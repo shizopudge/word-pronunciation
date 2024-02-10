@@ -32,21 +32,24 @@ class PrimaryElevatedButton extends StatefulWidget {
 
 class _PrimaryElevatedButtonState extends State<PrimaryElevatedButton>
     with SingleTickerProviderStateMixin {
-  /// {@template scale_animation_controller}
-  /// Контроллер анимации масштаба
-  /// {@endtemplate}
+  /// {@macro animation_controller}
   late final AnimationController _scaleAnimationController;
+
+  /// {@template scale_aniamtion}
+  /// Анимация масштабирования
+  /// {@endtemplate}
+  late final Animation<double> _scaleAnimation;
 
   @override
   void initState() {
     super.initState();
     _scaleAnimationController = AnimationController(
       value: 1.0,
-      lowerBound: 0.96,
-      upperBound: 1.0,
       duration: Durations.short3,
       vsync: this,
     );
+    _scaleAnimation =
+        Tween<double>(begin: 1.0, end: 0.96).animate(_scaleAnimationController);
   }
 
   @override
@@ -58,14 +61,18 @@ class _PrimaryElevatedButtonState extends State<PrimaryElevatedButton>
   @override
   Widget build(BuildContext context) {
     final button = ScaleTransition(
-      scale: _scaleAnimationController,
+      scale: _scaleAnimation,
       child: ElevatedButton(
         onPressed: _onTap,
         style: widget.style,
-        child: PrimaryAnimatedSwitcher(
-          child: widget.isLoading
-              ? PrimaryLoadingIndicator(color: context.theme.colors.white)
-              : widget.child,
+        child: AnimatedSize(
+          duration: Durations.short2,
+          child: AnimatedSwitcher(
+            duration: Durations.short3,
+            child: widget.isLoading
+                ? PrimaryLoadingIndicator(color: context.theme.colors.white)
+                : widget.child,
+          ),
         ),
       ),
     );

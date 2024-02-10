@@ -10,10 +10,13 @@ abstract interface class IAppThemeDatasource {
   /// Записывает режим темы в хранилище
   ///
   /// [themeMode] - режим темы [AppThemeMode]
-  Future<void>? writeThemeModeToStorage(AppThemeMode themeMode);
+  Future<void> writeAppThemeModeToStorage(AppThemeMode themeMode);
 
   /// Читает режим темы из хранилища
-  AppThemeMode readThemeModeFromStorage();
+  AppThemeMode readAppThemeModeFromStorage();
+
+  /// Возвращает режим темы приложения по умолчанию
+  AppThemeMode get defaultAppThemeMode;
 }
 
 /// {@macro app_theme_datasource}
@@ -31,11 +34,14 @@ class AppThemeDatasource implements IAppThemeDatasource {
   static const _themeModeStorageKey = 'themeMode';
 
   @override
-  AppThemeMode readThemeModeFromStorage() =>
+  AppThemeMode get defaultAppThemeMode => AppThemeMode.system;
+
+  @override
+  AppThemeMode readAppThemeModeFromStorage() =>
       AppThemeMode.fromString(_keyLocalStorage.read(_themeModeStorageKey));
 
   @override
-  Future<void>? writeThemeModeToStorage(AppThemeMode themeMode) =>
+  Future<void> writeAppThemeModeToStorage(AppThemeMode themeMode) =>
       _keyLocalStorage.write(
         _themeModeStorageKey,
         themeMode.toString(),

@@ -18,7 +18,7 @@ class AppInitializationProgressPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.dark
+        value: context.theme.systemUiOverlayStyle
             .copyWith(statusBarColor: Colors.transparent),
         child: Scaffold(
           body: SafeArea(
@@ -38,7 +38,6 @@ class AppInitializationProgressPage extends StatelessWidget {
                       child: Text(
                         '${initializationProgress.progress} %',
                         textAlign: TextAlign.center,
-                        textDirection: TextDirection.ltr,
                         style: context.theme.textTheme.titleMedium
                             ?.copyWith(color: context.theme.colors.grey),
                       ),
@@ -46,7 +45,6 @@ class AppInitializationProgressPage extends StatelessWidget {
                     Text(
                       initializationProgress.message(context),
                       textAlign: TextAlign.center,
-                      textDirection: TextDirection.ltr,
                       style: context.theme.textTheme.bodyLarge?.copyWith(
                         color: context.theme.colors.grey,
                       ),

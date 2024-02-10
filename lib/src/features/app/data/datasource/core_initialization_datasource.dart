@@ -6,9 +6,10 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:word_pronunciation/src/core/bloc_observer/bloc_observer.dart';
+import 'package:word_pronunciation/src/core/error_handler/error_handler.dart';
 import 'package:word_pronunciation/src/core/key_local_storage/key_local_storage.dart';
 import 'package:word_pronunciation/src/core/logger/logger.dart';
-import 'package:word_pronunciation/src/features/app/domain/entity/dependencies.dart';
+import 'package:word_pronunciation/src/features/app/domain/entity/core_dependencies.dart';
 
 /// Тип шага инициализации
 typedef _InitializationStep = FutureOr<void> Function(
@@ -24,8 +25,7 @@ abstract interface class ICoreInitializationDatasource {
 class CoreInitializationDatasource implements ICoreInitializationDatasource {
   @override
   Future<CoreDependencies> initialize() async {
-    final widgetsBinding = WidgetsFlutterBinding.ensureInitialized()
-      ..deferFirstFrame();
+    WidgetsFlutterBinding.ensureInitialized();
     final stopwatch = Stopwatch()..start();
     Bloc.observer = const AppBlocObserver();
     await SystemChrome.setPreferredOrientations([
@@ -36,24 +36,30 @@ class CoreInitializationDatasource implements ICoreInitializationDatasource {
     final dependencies = await _initializeDependencies();
     stopwatch.stop();
     L.log('Core was initialized in ${stopwatch.elapsed.inSeconds} seconds');
-    widgetsBinding.addPostFrameCallback(
-      (_) => widgetsBinding.allowFirstFrame(),
-    );
     return dependencies;
   }
 
   Future<CoreDependencies> _initializeDependencies() async {
-    final dependencies = $MutableCoreDependencies();
+    final coreDependencies = $MutableCoreDependencies();
     final totalSteps = _initializationSteps.length;
     var currentStep = 0;
     for (final step in _initializationSteps.entries) {
       currentStep++;
       final percent = (currentStep * 100 ~/ totalSteps).clamp(0, 100);
-      L.log(
-          'Core initialization | $currentStep/$totalSteps ($percent%) | "${step.key}"');
-      await step.value(dependencies);
+      try {
+        L.log(
+            'Core initialization | $currentStep/$totalSteps ($percent%) | "${step.key}"');
+        await step.value(coreDependencies);
+        // TODO(Рустам Курмантаев): Убрать на релизе
+        await Future<void>.delayed(const Duration(milliseconds: 500));
+      } on Object catch (error, stackTrace) {
+        Error.throwWithStackTrace(
+          CoreInitializationException(),
+          stackTrace,
+        );
+      }
     }
-    return dependencies.freeze();
+    return coreDependencies.freeze();
   }
 
   void _initializeExceptionCatchers() {

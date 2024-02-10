@@ -9,8 +9,11 @@ abstract interface class IAppThemeRepository {
   /// Записывает режим темы в хранилище
   ///
   /// [themeMode] - режим темы [AppThemeMode]
-  Future<void>? writeThemeModeToStorage(AppThemeMode themeMode);
+  Future<void> writeAppThemeModeToStorage(AppThemeMode themeMode);
 
   /// Читает режим темы из хранилища
-  AppThemeMode readThemeModeFromStorage();
+  AppThemeMode readAppThemeModeFromStorage();
+
+  /// Возвращает режим темы приложения по умолчанию
+  AppThemeMode get defaultAppThemeMode;
 }
