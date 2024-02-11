@@ -91,7 +91,7 @@ class _PrimaryLoadingIndicatorState extends State<PrimaryLoadingIndicator>
                       size: Size.square(widget.size * 0.15),
                       child: DecoratedBox(
                         decoration: BoxDecoration(
-                          color: widget.color ?? context.theme.colors.black,
+                          color: _indicatorColor,
                           shape: BoxShape.circle,
                         ),
                       ),
@@ -103,4 +103,11 @@ class _PrimaryLoadingIndicatorState extends State<PrimaryLoadingIndicator>
           ),
         ),
       );
+
+  /// Цвет инидкатора
+  Color? get _indicatorColor =>
+      widget.color ??
+      (context.themeMaybe?.isDark ?? false
+          ? context.themeMaybe?.colors.white
+          : context.themeMaybe?.colors.black);
 }

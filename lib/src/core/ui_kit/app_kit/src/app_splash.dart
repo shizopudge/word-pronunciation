@@ -18,10 +18,6 @@ class AppSplash extends StatelessWidget {
   /// {@macro app_theme}
   IAppTheme get _appTheme => appTheme ?? LightAppTheme(appColors: AppColors());
 
-  /// Возвращает цвет индикатора в зависимости от темы
-  Color get _progressIndicatorColor =>
-      _appTheme.isDark ? _appTheme.colors.white : _appTheme.colors.black;
-
   @override
   Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
         value: _appTheme.systemUiOverlayStyle
@@ -31,9 +27,13 @@ class AppSplash extends StatelessWidget {
           child: Material(
             color: _appTheme.data.scaffoldBackgroundColor,
             child: SafeArea(
-              child: ProgressLayout(indicatorColor: _progressIndicatorColor),
+              child: ProgressLayout(indicatorColor: _indicatorColor),
             ),
           ),
         ),
       );
+
+  /// Цвет инидкатора
+  Color? get _indicatorColor =>
+      _appTheme.isDark ? _appTheme.colors.white : _appTheme.colors.black;
 }

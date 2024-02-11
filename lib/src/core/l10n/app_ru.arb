@@ -19,5 +19,6 @@
     }
   },
   "timeoutError": "Превышено время ожидания",
-  "checkInternetConnection": "Проверьте подключение к интернету!"
+  "checkInternetConnection": "Проверьте подключение к интернету!",
+  "wordWasNotReceived": "Слово не было получено"
 }

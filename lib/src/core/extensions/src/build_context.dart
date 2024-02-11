@@ -20,8 +20,18 @@ extension BuildContextX on BuildContext {
   /// {@macro key_local_storage}
   IKeyLocalStorage get keyLocalStorage => Dependencies.of(this).keyLocalStorage;
 
-  /// Возвращает тему приложения
+  /// Слушает тему приложения
   IAppTheme get theme => AppThemeScope.of(this).theme;
+
+  /// Возвращает тему приложения
+  IAppTheme get themeRead => AppThemeScope.of(this, listen: false).theme;
+
+  /// Слушает тему приложения или null
+  IAppTheme? get themeMaybe => AppThemeScope.maybeOf(this)?.theme;
+
+  /// Возвращает тему приложения или null
+  IAppTheme? get themeMaybeRead =>
+      AppThemeScope.maybeOf(this, listen: false)?.theme;
 
   /// Локализация
   AppLocalizations? get localization => AppLocalizations.of(this);

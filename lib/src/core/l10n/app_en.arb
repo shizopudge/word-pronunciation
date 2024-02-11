@@ -19,5 +19,6 @@
     }
   },
   "timeoutError": "Wait time exceeded",
-  "checkInternetConnection": "Check your internet connection!"
+  "checkInternetConnection": "Check your internet connection!",
+  "wordWasNotReceived": "Word was not received"
 }

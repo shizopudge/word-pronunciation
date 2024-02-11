@@ -32,6 +32,7 @@ class AppLocaleDatasource implements IAppLocaleDatasource {
   /// Ключ кода языка приложения в [IKeyLocalStorage]
   static const _languageCodeStorageKey = 'languageCode';
 
+  // TODO: Брать системный язык по умолчанию
   @override
   String get defaultLanguageCode => 'en';
 

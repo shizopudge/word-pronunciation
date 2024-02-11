@@ -2,6 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:word_pronunciation/src/core/extensions/extensions.dart';
+import 'package:word_pronunciation/src/features/word/di/word_scope.dart';
+import 'package:word_pronunciation/src/features/word/presentation/widgets/widgets.dart';
 
 /// Экран с словом
 @immutable
@@ -16,12 +18,8 @@ class WordPage extends StatelessWidget {
   Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
         value: context.theme.systemUiOverlayStyle
             .copyWith(statusBarColor: Colors.transparent),
-        child: const Scaffold(
-          body: SafeArea(
-            child: Center(
-              child: Text('WORD PAGE'),
-            ),
-          ),
+        child: const WordScope(
+          child: WordView(),
         ),
       );
 }
