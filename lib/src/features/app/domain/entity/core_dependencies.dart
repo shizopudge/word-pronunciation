@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:word_pronunciation/src/core/dio/dio.dart';
 import 'package:word_pronunciation/src/core/key_local_storage/key_local_storage.dart';
 import 'package:word_pronunciation/src/features/app/di/core_dependencies_scope.dart';
 
@@ -13,6 +14,9 @@ abstract interface class CoreDependencies {
   /// {@macro key_local_storage}
   abstract final IKeyLocalStorage keyLocalStorage;
 
+  /// {@macro dio_client}
+  abstract final IDioClient dioClient;
+
   /// Вызывается при удалении зависимостей
   Future<void> dispose();
 }
@@ -24,12 +28,19 @@ final class $MutableCoreDependencies implements CoreDependencies {
   @override
   late IKeyLocalStorage keyLocalStorage;
 
+  @override
+  late IDioClient dioClient;
+
   /// Возвращает иммутабельные основные зависимости приложения
-  CoreDependencies freeze() =>
-      _$ImmutableCoreDependencies(keyLocalStorage: keyLocalStorage);
+  CoreDependencies freeze() => _$ImmutableCoreDependencies(
+        keyLocalStorage: keyLocalStorage,
+        dioClient: dioClient,
+      );
 
   @override
-  Future<void> dispose() async {}
+  Future<void> dispose() async {
+    dioClient.close();
+  }
 }
 
 /// {@template immutable_core_dependencies}
@@ -40,11 +51,17 @@ final class _$ImmutableCoreDependencies implements CoreDependencies {
   /// {@macro immutable_core_dependencies}
   const _$ImmutableCoreDependencies({
     required this.keyLocalStorage,
+    required this.dioClient,
   });
 
   @override
   final IKeyLocalStorage keyLocalStorage;
 
   @override
-  Future<void> dispose() async {}
+  final IDioClient dioClient;
+
+  @override
+  Future<void> dispose() async {
+    dioClient.close();
+  }
 }

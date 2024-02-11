@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
@@ -10,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:word_pronunciation/firebase_options.dart';
 import 'package:word_pronunciation/src/core/analytics/analytics.dart';
 import 'package:word_pronunciation/src/core/bloc_observer/bloc_observer.dart';
+import 'package:word_pronunciation/src/core/dio/dio.dart';
 import 'package:word_pronunciation/src/core/error_handler/error_handler.dart';
 import 'package:word_pronunciation/src/core/key_local_storage/key_local_storage.dart';
 import 'package:word_pronunciation/src/core/logger/logger.dart';
@@ -115,6 +117,14 @@ class CoreInitializationDatasource implements ICoreInitializationDatasource {
         );
         rethrow;
       }
+    },
+    'IDioClient': (dependencies) {
+      final options = BaseOptions(
+        connectTimeout: const Duration(milliseconds: 15000),
+        receiveTimeout: const Duration(milliseconds: 15000),
+        sendTimeout: const Duration(milliseconds: 15000),
+      );
+      dependencies.dioClient = DioClient(dio: Dio(options));
     },
     'Core initialization end': (_) => L.log('Core successfully initialized'),
   };
