@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:word_pronunciation/src/core/analytics/analytics.dart';
 import 'package:word_pronunciation/src/core/extensions/extensions.dart';
 import 'package:word_pronunciation/src/core/ui_kit/ui_kit.dart';
 import 'package:word_pronunciation/src/features/app/bloc/app_initialization.dart';
@@ -10,6 +11,7 @@ import 'package:word_pronunciation/src/features/app/di/core_dependencies_scope.d
 import 'package:word_pronunciation/src/features/app/di/core_initialization_scope.dart';
 import 'package:word_pronunciation/src/features/app/di/dependencies_scope.dart';
 import 'package:word_pronunciation/src/features/app/presentation/pages/pages.dart';
+import 'package:word_pronunciation/src/features/app_connect/presentation/widgets/internet_connection_listener.dart';
 import 'package:word_pronunciation/src/features/app_locale/di/app_locale_scope.dart';
 import 'package:word_pronunciation/src/features/app_theme/di/app_theme_scope.dart';
 import 'package:word_pronunciation/src/features/toaster/src/toaster_scope.dart';
@@ -27,7 +29,7 @@ class App extends StatelessWidget {
         child: _ThemeLocaleAndToaster(
           child: _MaterialApp(
             child: _AppInitialization(
-              router: _Router(),
+              router: _RouterAndInternetConnectionListener(),
             ),
           ),
         ),
@@ -69,13 +71,13 @@ class _Core extends StatelessWidget {
       );
 }
 
-/// Виджет с темой и локализацией приложения
+/// Виджет с темой, локализацией приложения и тостером
 @immutable
 class _ThemeLocaleAndToaster extends StatelessWidget {
   /// Дочерний виджет
   final Widget child;
 
-  /// Создает виджет с темой и локализацией приложения
+  /// Создает виджет с темой, локализацией приложения и тостером
   const _ThemeLocaleAndToaster({
     required this.child,
   });
@@ -83,7 +85,9 @@ class _ThemeLocaleAndToaster extends StatelessWidget {
   @override
   Widget build(BuildContext context) => AppThemeScope(
         child: AppLocaleScope(
-          child: ToasterScope(child: child),
+          child: ToasterScope(
+            child: child,
+          ),
         ),
       );
 }
@@ -126,7 +130,11 @@ class _AppInitialization extends StatelessWidget {
   @override
   Widget build(BuildContext context) => AppInitializationScope(
         builder: (context) =>
-            BlocBuilder<AppInitializationBloc, AppInitializationState>(
+            BlocConsumer<AppInitializationBloc, AppInitializationState>(
+          listener: (context, state) => state.mapOrNull(
+            success: (_) => AppAnalytics.instance.logAppOpen(),
+          ),
+          listenWhen: (previous, current) => current.isSuccess,
           bloc: AppInitializationScope.of(context).bloc,
           builder: (context, state) => AnimatedSwitcher(
             duration: Durations.short2,
@@ -146,17 +154,19 @@ class _AppInitialization extends StatelessWidget {
       );
 }
 
-/// Роутер
+/// Роутер и слушатель интернет соединения
 @immutable
-class _Router extends StatelessWidget {
-  /// Создает роутер
-  const _Router();
+class _RouterAndInternetConnectionListener extends StatelessWidget {
+  /// Создает роутер и слушатель интернет соединения
+  const _RouterAndInternetConnectionListener();
 
   @override
-  Widget build(BuildContext context) => Router<Object>.withConfig(
-        restorationScopeId: 'router',
-        config: context.dependencies.router.config(
-          placeholder: (context) => const AppPlaceholderPage(),
+  Widget build(BuildContext context) => InternetConnectionListener(
+        child: Router<Object>.withConfig(
+          restorationScopeId: 'router',
+          config: context.dependencies.router.config(
+            placeholder: (context) => const AppPlaceholderPage(),
+          ),
         ),
       );
 }

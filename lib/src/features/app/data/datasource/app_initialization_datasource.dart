@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:word_pronunciation/src/core/analytics/analytics.dart';
 import 'package:word_pronunciation/src/core/app_connect/app_connect.dart';
 import 'package:word_pronunciation/src/core/error_handler/error_handler.dart';
 import 'package:word_pronunciation/src/core/logger/logger.dart';
@@ -42,6 +43,7 @@ class AppInitializationDatasource implements IAppInitializationDatasource {
     );
     stopwatch.stop();
     L.log('App was initialized in ${stopwatch.elapsed.inSeconds} seconds');
+    await AppAnalytics.instance.logEvent(name: 'App was initialized');
     return dependencies;
   }
 
@@ -64,8 +66,6 @@ class AppInitializationDatasource implements IAppInitializationDatasource {
         L.log(
             'App initialization | $currentStep/$totalSteps ($percent%) | "${step.key}"');
         await step.value(dependencies);
-        // TODO(Рустам Курмантаев): Убрать на релизе
-        await Future<void>.delayed(const Duration(milliseconds: 500));
       } on Object catch (error, stackTrace) {
         Error.throwWithStackTrace(
           AppInitializationException(

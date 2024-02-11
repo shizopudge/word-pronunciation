@@ -1,10 +1,14 @@
 import 'dart:async';
-import 'dart:ui';
 
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:word_pronunciation/firebase_options.dart';
+import 'package:word_pronunciation/src/core/analytics/analytics.dart';
 import 'package:word_pronunciation/src/core/bloc_observer/bloc_observer.dart';
 import 'package:word_pronunciation/src/core/error_handler/error_handler.dart';
 import 'package:word_pronunciation/src/core/key_local_storage/key_local_storage.dart';
@@ -32,10 +36,15 @@ class CoreInitializationDatasource implements ICoreInitializationDatasource {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
     _initializeExceptionCatchers();
+    await AppAnalytics.instance.setAnalyticsCollectionEnabled();
     final dependencies = await _initializeDependencies();
     stopwatch.stop();
     L.log('Core was initialized in ${stopwatch.elapsed.inSeconds} seconds');
+    await AppAnalytics.instance.logEvent(name: 'Core was initialized');
     return dependencies;
   }
 
@@ -50,8 +59,6 @@ class CoreInitializationDatasource implements ICoreInitializationDatasource {
         L.log(
             'Core initialization | $currentStep/$totalSteps ($percent%) | "${step.key}"');
         await step.value(coreDependencies);
-        // TODO(Рустам Курмантаев): Убрать на релизе
-        await Future<void>.delayed(const Duration(milliseconds: 500));
       } on Object catch (error, stackTrace) {
         Error.throwWithStackTrace(
           CoreInitializationException(),
@@ -69,11 +76,13 @@ class CoreInitializationDatasource implements ICoreInitializationDatasource {
         error: error,
         stackTrace: stackTrace,
       );
-      // FirebaseCrashlytics.instance.recordError(
-      //   error,
-      //   stack,
-      //   fatal: true,
-      // );
+      if (kReleaseMode) {
+        FirebaseCrashlytics.instance.recordError(
+          error,
+          stackTrace,
+          fatal: true,
+        );
+      }
       return true;
     };
     final sourceFlutterError = FlutterError.onError;
@@ -83,8 +92,10 @@ class CoreInitializationDatasource implements ICoreInitializationDatasource {
         error: details.exception,
         stackTrace: details.stack,
       );
-      // FirebaseCrashlytics.instance.recordFlutterError(errorDetails);
-      // FlutterError.presentError(details);
+      if (kReleaseMode) {
+        FirebaseCrashlytics.instance.recordFlutterError(details);
+      }
+      FlutterError.presentError(details);
       sourceFlutterError?.call(details);
     };
   }

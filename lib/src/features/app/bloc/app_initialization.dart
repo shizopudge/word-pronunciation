@@ -15,6 +15,13 @@ class AppInitializationEvent with _$AppInitializationEvent {
 
 @freezed
 class AppInitializationState with _$AppInitializationState {
+  const AppInitializationState._();
+
+  bool get isSuccess => maybeMap(
+        orElse: () => false,
+        success: (_) => true,
+      );
+
   const factory AppInitializationState.progress({
     required final InitializationProgress initializationProgress,
     final Dependencies? dependencies,

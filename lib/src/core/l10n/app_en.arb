@@ -18,5 +18,6 @@
       }
     }
   },
-  "timeoutError": "Wait time exceeded"
+  "timeoutError": "Wait time exceeded",
+  "checkInternetConnection": "Check your internet connection!"
 }

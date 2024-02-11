@@ -53,8 +53,6 @@ class AppLocaleBloc extends Bloc<AppLocaleEvent, AppLocaleState> {
   }
 
   void _read(_ReadAppLocaleEvent event, Emitter<AppLocaleState> emit) async {
-    // TODO(Рустам Курмантаев): Убрать на релизе
-    await Future<void>.delayed(const Duration(milliseconds: 500));
     emit(AppLocaleState.progress(languageCode: state.languageCode));
     try {
       final languageCode = _repository.readLanguageCodeFromStorage();
