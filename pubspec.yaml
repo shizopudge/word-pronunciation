@@ -14,6 +14,9 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
 
+  # Network
+  dio: ^5.4.0
+
   # Equatable
   equatable: ^2.0.5
 

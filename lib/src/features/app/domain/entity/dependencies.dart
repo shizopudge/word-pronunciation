@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:word_pronunciation/src/core/app_connect/app_connect.dart';
+import 'package:word_pronunciation/src/core/dio/dio.dart';
 import 'package:word_pronunciation/src/core/key_local_storage/key_local_storage.dart';
 import 'package:word_pronunciation/src/core/router/router.dart';
 import 'package:word_pronunciation/src/features/app/di/dependencies_scope.dart';
@@ -35,10 +36,14 @@ final class $MutableDependencies implements Dependencies {
   /// {@macro mutable_dependencies}
   $MutableDependencies({
     required this.keyLocalStorage,
+    required this.dioClient,
   });
 
   @override
   final IKeyLocalStorage keyLocalStorage;
+
+  @override
+  final IDioClient dioClient;
 
   @override
   late AppRouter router;
@@ -49,6 +54,7 @@ final class $MutableDependencies implements Dependencies {
   /// Возвращает иммутабельные зависимости
   Dependencies freeze() => _$ImmutableDependencies(
         keyLocalStorage: keyLocalStorage,
+        dioClient: dioClient,
         router: router,
         appConnect: appConnect,
       );
@@ -56,6 +62,7 @@ final class $MutableDependencies implements Dependencies {
   @override
   Future<void> dispose() async {
     router.dispose();
+    dioClient.close();
   }
 }
 
@@ -67,12 +74,16 @@ final class _$ImmutableDependencies implements Dependencies {
   /// {@macro immutable_dependencies}
   const _$ImmutableDependencies({
     required this.keyLocalStorage,
+    required this.dioClient,
     required this.router,
     required this.appConnect,
   });
 
   @override
   final IKeyLocalStorage keyLocalStorage;
+
+  @override
+  final IDioClient dioClient;
 
   @override
   final AppRouter router;
@@ -83,5 +94,6 @@ final class _$ImmutableDependencies implements Dependencies {
   @override
   Future<void> dispose() async {
     router.dispose();
+    dioClient.close();
   }
 }

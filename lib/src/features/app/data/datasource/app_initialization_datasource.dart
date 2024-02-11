@@ -52,8 +52,10 @@ class AppInitializationDatasource implements IAppInitializationDatasource {
     required final void Function(InitializationProgress initializationProgress)
         onProgress,
   }) async {
-    final dependencies =
-        $MutableDependencies(keyLocalStorage: coreDependencies.keyLocalStorage);
+    final dependencies = $MutableDependencies(
+      keyLocalStorage: coreDependencies.keyLocalStorage,
+      dioClient: coreDependencies.dioClient,
+    );
     final totalSteps = _initializationSteps.length;
     var currentStep = 0;
     for (final step in _initializationSteps.entries) {
