@@ -86,7 +86,7 @@ class AppInitializationDatasource implements IAppInitializationDatasource {
     AppInitializationStep.appRouter: (dependencies) =>
         dependencies.router = AppRouter(),
     AppInitializationStep.appConnect: (dependencies) =>
-        dependencies.appConnect = AppConnect(),
+        dependencies.appConnect = const AppConnect(),
     AppInitializationStep.end: (_) => L.log('App successfully initialized'),
   };
 }

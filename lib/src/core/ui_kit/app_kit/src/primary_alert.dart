@@ -11,15 +11,15 @@ class PrimaryAlert extends StatelessWidget {
   final String title;
 
   /// Создает основной диалог
-  const PrimaryAlert({
+  const PrimaryAlert._({
     required this.child,
     this.title = '',
-    super.key,
   });
 
   static Future<T?> show<T>({
     required BuildContext context,
-    required WidgetBuilder builder,
+    required Widget child,
+    String title = '',
     bool barrierDismissible = true,
     String? barrierLabel,
     bool useSafeArea = true,
@@ -29,7 +29,10 @@ class PrimaryAlert extends StatelessWidget {
   }) =>
       showDialog<T>(
         context: context,
-        builder: builder,
+        builder: (context) => PrimaryAlert._(
+          title: title,
+          child: child,
+        ),
         barrierDismissible: barrierDismissible,
         barrierLabel: barrierLabel,
         useSafeArea: useSafeArea,
@@ -41,16 +44,15 @@ class PrimaryAlert extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Dialog(
         insetPadding: const EdgeInsets.all(24),
-        backgroundColor: context.theme.colors.white,
-        elevation: 8,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
-        ),
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              Align(
+                alignment: Alignment.topRight,
+                child: CloseButton(onPressed: Navigator.of(context).pop),
+              ),
               if (title.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16),
@@ -58,7 +60,9 @@ class PrimaryAlert extends StatelessWidget {
                     title,
                     textAlign: TextAlign.center,
                     style: context.theme.textTheme.titleLarge?.copyWith(
-                      color: context.theme.colors.black,
+                      color: context.theme.isDark
+                          ? context.theme.colors.white
+                          : context.theme.colors.black,
                       fontWeight: FontWeight.w900,
                     ),
                   ),

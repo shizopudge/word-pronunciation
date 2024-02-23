@@ -46,12 +46,13 @@ class _InternetConnectionListenerState
   Widget build(BuildContext context) => AnimatedBuilder(
         animation: _hasConnectController,
         builder: (context, child) => Stack(
+          alignment: Alignment.topCenter,
           children: [
             IgnorePointer(
               ignoring: !_hasConnect,
               child: ColorFiltered(
                 colorFilter: ColorFilter.mode(
-                  _dimColor(context, hasConnect: _hasConnect),
+                  _dimColor(context),
                   BlendMode.darken,
                 ),
                 child: widget.child,
@@ -84,13 +85,9 @@ class _InternetConnectionListenerState
   }
 
   /// Возвращает цвет затемнения
-  Color _dimColor(
-    BuildContext context, {
-    required bool hasConnect,
-  }) =>
-      !hasConnect
-          ? context.theme.colors.black.withOpacity(.2)
-          : Colors.transparent;
+  Color _dimColor(BuildContext context) => !_hasConnect
+      ? context.theme.colors.black.withOpacity(.2)
+      : Colors.transparent;
 
   /// Возвращает true, если есть подключение к интернету
   bool get _hasConnect => _hasConnectController.value;
@@ -213,7 +210,7 @@ class _NoConnectionBodyState extends State<_NoConnectionBody>
   /// {@macro aniamtion_controller}
   late final AnimationController _animationController;
 
-  /// Анимация
+  /// {@macro animation}
   late Animation<Color?> _animation;
 
   @override
@@ -223,13 +220,9 @@ class _NoConnectionBodyState extends State<_NoConnectionBody>
       vsync: this,
       duration: const Duration(milliseconds: 1500),
     )..repeat(reverse: true);
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
     _animation = ColorTween(
-            begin: context.theme.colors.white, end: context.theme.colors.grey)
+            begin: context.themeRead.colors.white,
+            end: context.themeRead.colors.grey)
         .animate(_animationController);
   }
 
@@ -253,8 +246,7 @@ class _NoConnectionBodyState extends State<_NoConnectionBody>
             Padding(
               padding: const EdgeInsets.only(top: 4),
               child: Text(
-                context.localization?.checkInternetConnection ??
-                    'Check your internet connection!',
+                context.localization.checkInternetConnection,
                 textAlign: TextAlign.center,
                 style: context.theme.textTheme.titleMedium?.copyWith(
                   color: _animation.value,

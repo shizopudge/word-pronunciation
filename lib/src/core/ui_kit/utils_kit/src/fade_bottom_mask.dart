@@ -1,5 +1,60 @@
 import 'package:flutter/material.dart';
 
+/// Миксин для упрощения использования виджета [FadeBottomMask] со
+/// скроллящимися виджетами
+mixin ScrollFadeBottomMaskMixin<T extends StatefulWidget> on State<T> {
+  /// {@template scroll_controller}
+  /// Контроллер скролла
+  /// {@endtemplate}
+  late final ScrollController scrollController;
+
+  /// {@template is_fade_mask_enabled_controller}
+  /// Если true, значит маска включена
+  /// {@endtemplate}
+  late final ValueNotifier<bool> isFadeMaskEnabledController;
+
+  @override
+  void initState() {
+    super.initState();
+    scrollController = ScrollController();
+    isFadeMaskEnabledController = ValueNotifier<bool>(false);
+    _initialize();
+  }
+
+  @override
+  void dispose() {
+    scrollController
+      ..removeListener(_scrollListener)
+      ..dispose();
+    isFadeMaskEnabledController.dispose();
+    super.dispose();
+  }
+
+  /// Инициализирует миксин
+  @protected
+  void _initialize() => WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!scrollController.hasClients) return;
+        final maxScrollExtent = scrollController.position.maxScrollExtent;
+        isFadeMaskEnabledController.value = maxScrollExtent > 0.0;
+        scrollController.addListener(_scrollListener);
+      });
+
+  /// Слушатель скролла
+  @protected
+  void _scrollListener() {
+    if (!scrollController.hasClients) return;
+    final isEndOfScroll =
+        scrollController.position.atEdge && scrollController.offset > 0.0;
+    final isFadeMaskEnabled = !isEndOfScroll;
+    if (isFadeMaskEnabledController.value != isFadeMaskEnabled) {
+      isFadeMaskEnabledController.value = isFadeMaskEnabled;
+    }
+  }
+
+  /// Возвращает true, если [FadeBottomMask] включена
+  bool get isFadeMaskEnabled => isFadeMaskEnabledController.value;
+}
+
 /// Маска с градиентом выцветания нижней части виджета
 @immutable
 class FadeBottomMask extends StatefulWidget {
@@ -40,7 +95,8 @@ class _FadeBottomMaskState extends State<FadeBottomMask>
     _animationController = AnimationController(
       vsync: this,
       value: widget.isEnabled ? 1.0 : 0.0,
-      duration: Durations.short4,
+      duration: Durations.long4,
+      reverseDuration: Durations.short3,
     );
     _animation = ColorTween(begin: Colors.transparent, end: Colors.white)
         .animate(_animationController);
@@ -49,7 +105,7 @@ class _FadeBottomMaskState extends State<FadeBottomMask>
   @override
   void didUpdateWidget(covariant FadeBottomMask oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _animate(oldWidget);
+    if (_isWidgetUpdated(oldWidget)) _animate();
   }
 
   @override
@@ -80,14 +136,14 @@ class _FadeBottomMaskState extends State<FadeBottomMask>
       );
 
   /// Анимирует виджет
-  Future<void> _animate(covariant FadeBottomMask oldWidget) async {
-    final isEnabledChanged = oldWidget.isEnabled != widget.isEnabled;
-    if (!isEnabledChanged) return;
+  Future<void> _animate() {
     if (_animationController.isAnimating) _animationController.stop();
-    if (widget.isEnabled) {
-      return _animationController.forward();
-    } else {
-      return _animationController.reverse();
-    }
+    return widget.isEnabled
+        ? _animationController.forward()
+        : _animationController.reverse();
   }
+
+  /// Возвращает true, если виджет обновился
+  bool _isWidgetUpdated(covariant FadeBottomMask oldWidget) =>
+      oldWidget.isEnabled != widget.isEnabled;
 }

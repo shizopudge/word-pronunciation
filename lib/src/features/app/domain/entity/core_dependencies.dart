@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:word_pronunciation/src/core/dio/dio.dart';
 import 'package:word_pronunciation/src/core/key_local_storage/key_local_storage.dart';
-import 'package:word_pronunciation/src/features/app/di/core_dependencies_scope.dart';
+import 'package:word_pronunciation/src/features/app/scope/scope.dart';
 
 /// {@template core_dependencies}
 /// Основные зависимости приложения

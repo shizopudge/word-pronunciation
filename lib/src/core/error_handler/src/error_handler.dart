@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 import 'package:word_pronunciation/src/core/error_handler/error_handler.dart';
@@ -18,7 +19,7 @@ abstract interface class IErrorHandler extends Equatable {
   });
 
   /// Переводит ошибку в сообщение
-  String message(BuildContext context);
+  String toMessage(BuildContext context);
 
   @override
   List<Object> get props => [error];
@@ -32,34 +33,27 @@ class ErrorHandler extends IErrorHandler {
   });
 
   @override
-  String message(BuildContext context) => switch (error.runtimeType) {
-        // Если ошибка типа String, тогда возвращает [MessageError]
-        const (String) => MessageError(context, error: error as String),
+  String toMessage(BuildContext context) {
+    final error = this.error;
 
-        // Если ошибка типа LocalizedErrorMessage, тогда возвращает [LocalizedMessageError]
-        const (LocalizedErrorMessage) =>
-          LocalizedMessageError(context, error: error as LocalizedErrorMessage),
+    late final IErrorBase errorBase;
 
-        // Если ошибка типа TimeoutException, тогда возвращает [TimeoutError]
-        const (TimeoutException) => TimeoutError(
-            context,
-            error: error as TimeoutException,
-          ),
+    if (error is ErrorMessage) {
+      errorBase = MessageError(error: error);
+    } else if (error is TimeoutException) {
+      errorBase = TimeoutError(error: error);
+    } else if (error is AppInitializationException) {
+      errorBase = AppInitializationError(error: error);
+    } else if (error is CoreInitializationException) {
+      errorBase = CoreInitializationError(error: error);
+    } else if (error is AudioServiceException) {
+      errorBase = AudioServiceError(error: error);
+    } else if (error is DioException) {
+      errorBase = NetworkError(error: error);
+    } else {
+      errorBase = UnknownError(error: error);
+    }
 
-        // Если ошибка типа AppInitializationException, тогда возвращает [AppInitializationError]
-        const (AppInitializationException) => AppInitializationError(
-            context,
-            error: error as AppInitializationException,
-          ),
-
-        // Если ошибка типа CoreInitializationException, тогда возвращает [CoreInitializationError]
-        const (CoreInitializationException) => CoreInitializationError(
-            context,
-            error: error as CoreInitializationException,
-          ),
-
-        // Если ни одно предыдущее условие не было обработано, то возвращает
-        _ => UnknownError(context, error: error),
-      }
-          .message;
+    return errorBase.toMessage(context);
+  }
 }

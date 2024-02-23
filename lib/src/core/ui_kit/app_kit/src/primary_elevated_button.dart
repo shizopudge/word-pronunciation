@@ -33,7 +33,7 @@ class PrimaryElevatedButton extends StatefulWidget {
 class _PrimaryElevatedButtonState extends State<PrimaryElevatedButton>
     with SingleTickerProviderStateMixin {
   /// {@macro animation_controller}
-  late final AnimationController _scaleAnimationController;
+  late final AnimationController _animationController;
 
   /// {@template scale_aniamtion}
   /// Анимация масштабирования
@@ -43,18 +43,18 @@ class _PrimaryElevatedButtonState extends State<PrimaryElevatedButton>
   @override
   void initState() {
     super.initState();
-    _scaleAnimationController = AnimationController(
-      value: 1.0,
+    _animationController = AnimationController(
+      value: 0.0,
       duration: Durations.short3,
       vsync: this,
     );
     _scaleAnimation =
-        Tween<double>(begin: 1.0, end: 0.96).animate(_scaleAnimationController);
+        Tween<double>(begin: 1.0, end: 0.96).animate(_animationController);
   }
 
   @override
   void dispose() {
-    _scaleAnimationController.dispose();
+    _animationController.dispose();
     super.dispose();
   }
 
@@ -80,29 +80,27 @@ class _PrimaryElevatedButtonState extends State<PrimaryElevatedButton>
     if (widget.onTap == null) return button;
 
     return GestureDetector(
-      onTapDown: (_) => _scaleAnimationController.reverse(),
-      onTapUp: (_) => _scaleAnimationController.forward(),
-      onTapCancel: _scaleAnimationController.forward,
+      onTapDown: (_) => _animationController.forward(),
+      onTapUp: (_) => _animationController.reverse(),
+      onTapCancel: _animationController.reverse,
       behavior: HitTestBehavior.opaque,
       child: button,
     );
   }
 
-  /// Возвращает обработчик нажатия если он был передан, иначе null
+  /// Возвращает обработчик нажатия
   VoidCallback? get _onTap {
     if (widget.isLoading) return () {};
     if (widget.onTap != null) return _handler;
     return null;
   }
 
-  /// Обработчик нажатия
+  /// Обработчик
   void _handler() {
-    _scaleAnimationController
+    _animationController
       ..stop()
       ..reset();
     widget.onTap?.call();
-    _scaleAnimationController
-        .reverse()
-        .whenComplete(_scaleAnimationController.forward);
+    _animationController.forward().whenComplete(_animationController.reverse);
   }
 }

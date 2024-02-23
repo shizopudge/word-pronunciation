@@ -27,7 +27,7 @@ class ErrorHeaderDelegate extends SliverPersistentHeaderDelegate {
             horizontal: 24,
           ),
           child: Text(
-            context.localization?.error ?? 'Error',
+            context.localization.error,
             maxLines: 1,
             textAlign: TextAlign.center,
             overflow: TextOverflow.ellipsis,

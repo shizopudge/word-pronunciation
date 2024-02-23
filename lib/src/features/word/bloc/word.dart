@@ -15,6 +15,16 @@ class WordEvent with _$WordEvent {
 class WordState with _$WordState {
   const WordState._();
 
+  bool get isIdle => maybeMap(
+        orElse: () => false,
+        idle: (_) => true,
+      );
+
+  bool get isProgress => maybeMap(
+        orElse: () => false,
+        progress: (_) => true,
+      );
+
   bool get isError => maybeMap(
         orElse: () => false,
         error: (e) => e.word != null,
@@ -28,9 +38,11 @@ class WordState with _$WordState {
   const factory WordState.idle({
     required final Word word,
   }) = _IdleWordState;
+
   const factory WordState.progress({
     final Word? word,
   }) = _ProgressWordState;
+
   const factory WordState.error({
     required final IErrorHandler errorHandler,
     final Word? word,
@@ -58,6 +70,7 @@ class WordBloc extends Bloc<WordEvent, WordState> {
   Future<void> _read(WordEvent event, Emitter<WordState> emit) async {
     final previousWord = state.word;
     try {
+      emit(WordState.progress(word: previousWord));
       final newWord = await _repository
           .readWordFromNetwork()
           .timeout(const Duration(seconds: 15));
@@ -76,11 +89,11 @@ class WordBloc extends Bloc<WordEvent, WordState> {
         emit(WordState.idle(word: word));
       } else if (previousWord != null) {
         emit(WordState.idle(word: previousWord));
-      } else {
+      } else if (!state.isError && !state.isFatalError) {
         emit(
           const WordState.error(
             errorHandler: ErrorHandler(
-              error: LocalizedErrorMessage.wordWasNotReceived,
+              error: ErrorMessage.wordWasNotReceived,
             ),
             word: null,
           ),

@@ -19,6 +19,9 @@ abstract interface class IAppConnect {
 /// {@macro app_connect}
 @immutable
 class AppConnect implements IAppConnect {
+  /// {@macro app_connect}
+  const AppConnect();
+
   @override
   Stream<bool> get onConnectChanged => Connectivity().onConnectivityChanged.map(
         (event) => event != ConnectivityResult.none,

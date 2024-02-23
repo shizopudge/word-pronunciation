@@ -16,9 +16,7 @@ class AppPlaceholderPage extends StatelessWidget {
         value: context.theme.systemUiOverlayStyle
             .copyWith(statusBarColor: Colors.transparent),
         child: const Scaffold(
-          body: SafeArea(
-            child: ProgressLayout(),
-          ),
+          body: ProgressLayout(),
         ),
       );
 }

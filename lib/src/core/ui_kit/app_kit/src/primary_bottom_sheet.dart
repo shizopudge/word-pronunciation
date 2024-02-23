@@ -72,11 +72,13 @@ class _SheetAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
         child: Text(
           title,
-          style: context.theme.textTheme.titleLarge?.copyWith(
-            color: context.theme.colors.black,
-          ),
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
+          style: context.theme.textTheme.titleLarge?.copyWith(
+            color: context.theme.isDark
+                ? context.theme.colors.white
+                : context.theme.colors.black,
+          ),
         ),
       );
 
@@ -120,7 +122,7 @@ class _SheetBody extends StatelessWidget {
               ),
         ),
         child: SafeArea(
-          top: false,
+          bottom: false,
           child: Material(
             color: backgroundColor ?? bottomSheetTheme.backgroundColor,
             child: Column(
@@ -149,9 +151,7 @@ class _SheetBody extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       if (title.isNotEmpty) ...[_SheetAppBar(title: title)],
-                      Flexible(
-                        child: child,
-                      ),
+                      Flexible(child: child),
                     ],
                   ),
                 ),

@@ -15,17 +15,14 @@ class CoreInitializationScope extends StatefulWidget {
     super.key,
   });
 
-  /// Возвращает виджет хранящий в себе [CoreInitializationBloc] или завершается с [ArgumentError] - Out
-  /// of scope
-  static InheritedAppInitialization of(BuildContext context) {
+  /// Возвращает виджет хранящий в себе [CoreInitializationScope] или
+  /// завершается с [FlutterError] - Out of scope
+  static InheritedCoreInitialization of(BuildContext context) {
     final inheritedAppInitialization =
-        context.getInheritedWidgetOfExactType<InheritedAppInitialization>();
+        context.getInheritedWidgetOfExactType<InheritedCoreInitialization>();
 
     if (inheritedAppInitialization == null) {
-      throw ArgumentError(
-        'Out of scope, not found CoreInitializationScope',
-        'out_of_scope',
-      );
+      throw FlutterError('Out of scope, not found CoreInitializationScope');
     }
 
     return inheritedAppInitialization;
@@ -57,26 +54,26 @@ class _CoreInitializationScopeState extends State<CoreInitializationScope> {
   }
 
   @override
-  Widget build(BuildContext context) => InheritedAppInitialization(
+  Widget build(BuildContext context) => InheritedCoreInitialization(
         bloc: _bloc,
         child: Builder(builder: widget.builder),
       );
 }
 
-/// Виджет хранящий в себе [CoreInitializationBloc]
+/// Виджет хранящий в себе [CoreInitializationScope]
 @immutable
-class InheritedAppInitialization extends InheritedWidget {
+class InheritedCoreInitialization extends InheritedWidget {
   /// {@macro core_initialization_bloc}
   final CoreInitializationBloc bloc;
 
-  /// Создает виджет хранящий в себе [CoreInitializationBloc]
-  const InheritedAppInitialization({
+  /// Создает виджет хранящий в себе [CoreInitializationScope]
+  const InheritedCoreInitialization({
     required this.bloc,
     required super.child,
     super.key,
   });
 
   @override
-  bool updateShouldNotify(covariant InheritedAppInitialization oldWidget) =>
+  bool updateShouldNotify(covariant InheritedCoreInitialization oldWidget) =>
       oldWidget.bloc != bloc;
 }

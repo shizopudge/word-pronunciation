@@ -63,7 +63,7 @@ class CoreInitializationDatasource implements ICoreInitializationDatasource {
         await step.value(coreDependencies);
       } on Object catch (error, stackTrace) {
         Error.throwWithStackTrace(
-          CoreInitializationException(),
+          CoreInitializationException(error),
           stackTrace,
         );
       }

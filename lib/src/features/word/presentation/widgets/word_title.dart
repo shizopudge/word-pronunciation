@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:word_pronunciation/src/core/extensions/extensions.dart';
+import 'package:word_pronunciation/src/features/word/presentation/word_page.dart';
 
 /// Заголовок на [WordPage]
 @immutable

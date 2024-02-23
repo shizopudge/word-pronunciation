@@ -18,21 +18,18 @@ class WordCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) => HoldConsumer(
         builder: (context, isHeldDown) => AnimatedScale(
-          scale: isHeldDown ? 0.95 : 1.0,
+          scale: isHeldDown ? 0.96 : 1.0,
           duration: Durations.short3,
-          child: InkWell(
-            onTap: _onTap,
-            borderRadius: BorderRadius.circular(8),
-            child: Ink(
-              padding: const EdgeInsets.all(20.0),
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: context.theme.isDark
-                      ? context.theme.colors.white
-                      : context.theme.colors.black,
-                ),
-                borderRadius: BorderRadius.circular(8),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              border: Border.all(
+                width: 2.5,
+                color: context.theme.colors.blue,
               ),
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
               child: Text(
                 word.data,
                 textAlign: TextAlign.center,
@@ -47,7 +44,4 @@ class WordCard extends StatelessWidget {
           ),
         ),
       );
-
-  /// Обработчик нажатия
-  Future<void> _onTap() => Future<void>.value();
 }

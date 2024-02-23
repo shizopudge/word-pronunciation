@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 import 'package:word_pronunciation/src/core/dio/dio.dart';
+import 'package:word_pronunciation/src/core/logger/logger.dart';
 import 'package:word_pronunciation/src/features/word/data/model/word.dart';
 
 @immutable
@@ -28,14 +29,8 @@ class WordDatasource implements IWordDatasource {
   Future<Word?> readWordFromNetwork() async {
     final wordStr = await _readWordStr();
     if (wordStr == null) return null;
-    final simpleWord = Word(data: wordStr);
-    try {
-      final wordModel = await _readWordModel(wordStr);
-      return wordModel?.copyWith(data: wordStr) ?? simpleWord;
-    } on DioException catch (error) {
-      if (error.response?.statusCode == 404) return simpleWord;
-      rethrow;
-    }
+    final wordModel = await _readWordModel(wordStr);
+    return wordModel?.copyWith(data: wordStr) ?? Word(data: wordStr);
   }
 
   /// Получает слово строкой из сети
@@ -57,16 +52,24 @@ class WordDatasource implements IWordDatasource {
   }
 
   /// Получает модель [Word] из сети
-  Future<Word?> _readWordModel(String word) async {
-    final response =
-        await _dioClient.get<List<Object?>>('$_dictionaryUrl/$word');
-    final data = response.data;
-    if (data != null && data.isNotEmpty) {
-      final wordFromData = data.first;
-      if (wordFromData is Map<String, Object?>) {
-        return Word.fromJson(wordFromData);
+  Future<Word?> _readWordModel(String wordStr) async {
+    try {
+      final response =
+          await _dioClient.get<List<Object?>>('$_dictionaryUrl/$wordStr');
+      final data = response.data;
+      if (data != null && data.isNotEmpty) {
+        final wordFromData = data.first;
+        if (wordFromData is Map<String, Object?>) {
+          return Word.fromJson(wordFromData);
+        }
       }
+      return null;
+    } on DioException catch (error) {
+      if (error.response?.statusCode == 404) {
+        L.error('The word was not found in the dictionary');
+        return Word(data: wordStr);
+      }
+      rethrow;
     }
-    return null;
   }
 }

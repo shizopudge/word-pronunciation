@@ -20,8 +20,8 @@ class AppThemeScope extends StatefulWidget {
     super.key,
   });
 
-  /// Возвращает [InheritedAppTheme] или завершается с [ArgumentError] - Out
-  /// of scope
+  /// Возвращает виджет хранящий в себе [AppThemeScope] или завершается с
+  /// [FlutterError] - Out of scope
   static InheritedAppTheme of(BuildContext context, {bool listen = true}) {
     late final InheritedAppTheme? inheritedAppTheme;
 
@@ -34,16 +34,13 @@ class AppThemeScope extends StatefulWidget {
     }
 
     if (inheritedAppTheme == null) {
-      throw ArgumentError(
-        'Out of scope, not found AppThemeScope',
-        'out_of_scope',
-      );
+      throw FlutterError('Out of scope, not found AppThemeScope');
     }
 
     return inheritedAppTheme;
   }
 
-  /// Возвращает [InheritedAppTheme] или null
+  /// Возвращает виджет хранящий в себе [AppThemeScope] или null
   static InheritedAppTheme? maybeOf(
     BuildContext context, {
     bool listen = true,
@@ -140,7 +137,7 @@ class AppThemeScopeState extends State<AppThemeScope> {
       };
 }
 
-/// Виджет хранящий в себе тему приложения и блок темы
+/// Виджет хранящий в себе [AppThemeScope]
 @immutable
 class InheritedAppTheme extends InheritedWidget {
   /// {@macro app_theme}
@@ -149,7 +146,7 @@ class InheritedAppTheme extends InheritedWidget {
   /// {@macro app_theme_bloc}
   final AppThemeBloc bloc;
 
-  /// Создает виджет хранящий в себе тему приложения и блок темы
+  /// Создает виджет хранящий в себе [AppThemeScope]
   const InheritedAppTheme({
     required this.theme,
     required this.bloc,

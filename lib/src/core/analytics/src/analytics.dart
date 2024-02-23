@@ -43,20 +43,16 @@ class AppAnalytics implements IAppAnalytics {
     required String name,
     Map<String, Object?>? parameters,
     AnalyticsCallOptions? callOptions,
-  }) {
-    if (!kReleaseMode) return Future<void>.value();
-    return _analytics.logEvent(
-        name: name, parameters: parameters, callOptions: callOptions);
-  }
+  }) =>
+      _analytics.logEvent(
+          name: name, parameters: parameters, callOptions: callOptions);
 
   @override
   Future<void> logAppOpen({
     AnalyticsCallOptions? callOptions,
     Map<String, Object?>? parameters,
-  }) {
-    if (!kReleaseMode) return Future<void>.value();
-    return _analytics.logAppOpen();
-  }
+  }) =>
+      _analytics.logAppOpen();
 
   @override
   Future<void> setAnalyticsCollectionEnabled() =>

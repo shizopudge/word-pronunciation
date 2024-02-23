@@ -36,7 +36,7 @@ class _DefinitionsViewState extends State<DefinitionsView> {
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(viewportFraction: .8);
+    _pageController = PageController(viewportFraction: .75);
     _currentPageController = ValueNotifier<int>(0);
   }
 

@@ -18,8 +18,8 @@ class ToasterScope extends StatefulWidget {
     super.key,
   });
 
-  /// Возвращает стейт области видимости тостера, если BuildContext
-  /// содержит ToasterScope, иначе выкидывает ошибку [FlutterError]
+  /// Возвращает [ToasterScopeState], если BuildContext содержит [ToasterScope],
+  /// иначе выкидывает ошибку [FlutterError]
   static ToasterScopeState of(BuildContext context) {
     _InheritedToaster? scope;
 
@@ -90,13 +90,17 @@ class ToasterScopeState extends State<ToasterScope> {
     final overlayEntry = _createOverlayEntry(config);
     final entry = ToasterEntry(config: config, overlayEntry: overlayEntry);
     if (config.priority == ToasterPriority.common) {
-      if (_isCanBeAddedToQueue(entry)) _queue.addLast(entry);
-      if (_state != ToasterState.showed) _updateToaster();
+      if (_isCanBeAddedToQueue(entry)) {
+        _queue.addLast(entry);
+        if (_state != ToasterState.showed) _updateToaster();
+      }
     } else if (config.priority == ToasterPriority.high) {
-      _queue.addFirst(entry);
-      if (_state != ToasterState.showed) _updateToaster();
+      if (_isCanBeAddedToQueue(entry)) {
+        _queue.addFirst(entry);
+        if (_state != ToasterState.showed) _updateToaster();
+      }
     } else {
-      if (!_isCanBeAddedToQueueForHighPriority(entry)) return;
+      if (!_isCanBeAddedToQueue(entry)) return;
       _queue.addFirst(entry);
       _storeToasterConfig();
       hideCurrentToaster();
@@ -156,21 +160,33 @@ class ToasterScopeState extends State<ToasterScope> {
     _state = ToasterState.showed;
   }
 
+  // /// Старые условия добавления в очередь
+  // ///
+  // /// Возвращает true, если тостер может быть добавлен в очередь
+  // ///
+  // /// ## Условия
+  // ///
+  // /// 1. В очереди нет контроллеров равных передавемому
+  // /// 2. Длина очереди не больше 3
+  // /// 3. Текущий контроллер не равен передаваемеому
+  // bool _isCanBeAddedToQueue(ToasterEntry entry) =>
+  //     _queue.where((element) => element == entry).isEmpty &&
+  //     _queue.length <= 3 &&
+  //     _currentEntry != entry;
+  //
+  // /// Возвращает true, если в очереди нет записей равных передавемой и текущая
+  // /// запись не равна передаваемой
+  // bool _isCanBeAddedToQueueForHighPriority(ToasterEntry entry) =>
+  //     _queue.where((element) => element == entry).isEmpty &&
+  //         _currentEntry != entry;
+
   /// Возвращает true, если тостер может быть добавлен в очередь
   ///
   /// ## Условия
   ///
-  /// 1. В очереди нет контроллеров равынх передавемому
-  /// 2. Длина очереди не больше 3
-  /// 3. Текущий контроллер не равен передаваемеому
+  /// 1. В очереди нет контроллеров равных передавемому
+  /// 2. Текущий контроллер не равен передаваемеому
   bool _isCanBeAddedToQueue(ToasterEntry entry) =>
-      _queue.where((element) => element == entry).isEmpty &&
-      _queue.length <= 3 &&
-      _currentEntry != entry;
-
-  /// Возвращает true, если в очереди нет записей равных передавемой и текущая
-  /// запись не равна передаваемой
-  bool _isCanBeAddedToQueueForHighPriority(ToasterEntry entry) =>
       _queue.where((element) => element == entry).isEmpty &&
       _currentEntry != entry;
 
@@ -196,7 +212,8 @@ class _InheritedToaster extends InheritedWidget {
   });
 
   @override
-  bool updateShouldNotify(_InheritedToaster oldWidget) => false;
+  bool updateShouldNotify(covariant _InheritedToaster oldWidget) =>
+      oldWidget.state != state;
 }
 
 /// {@template toaster_entry}

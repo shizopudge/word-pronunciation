@@ -5,7 +5,6 @@ import 'package:word_pronunciation/src/features/app/domain/entity/core_dependenc
 import 'package:word_pronunciation/src/features/app_locale/bloc/app_locale.dart';
 import 'package:word_pronunciation/src/features/app_locale/data/datasource/app_locale_datasource.dart';
 import 'package:word_pronunciation/src/features/app_locale/data/repository/app_locale_repository.dart';
-import 'package:word_pronunciation/src/features/app_theme/di/app_theme_scope.dart';
 
 /// Область видимости локали приложения
 @immutable
@@ -19,8 +18,8 @@ class AppLocaleScope extends StatefulWidget {
     super.key,
   });
 
-  /// Возвращает виджет хранящий в себе зависимости локали приложения или завершается с [ArgumentError] - Out
-  /// of scope
+  /// Возвращает виджет хранящий в себе [AppLocaleScope] или завершается с
+  /// [FlutterError] - Out of scope
   static InheritedAppLocale of(BuildContext context, {bool listen = true}) {
     late final InheritedAppLocale? inheritedAppLocale;
 
@@ -33,16 +32,13 @@ class AppLocaleScope extends StatefulWidget {
     }
 
     if (inheritedAppLocale == null) {
-      throw ArgumentError(
-        'Out of scope, not found AppLocaleScope',
-        'out_of_scope',
-      );
+      throw FlutterError('Out of scope, not found AppLocaleScope');
     }
 
     return inheritedAppLocale;
   }
 
-  /// Возвращает виджет хранящий в себе зависимости локали приложения или null
+  /// Возвращает виджет хранящий в себе [AppLocaleScope] или null
   static InheritedAppLocale? maybeOf(
     BuildContext context, {
     bool listen = true,
@@ -97,7 +93,7 @@ class _AppLocaleScopeState extends State<AppLocaleScope> {
           final languageCode = state.languageCode;
 
           if (languageCode == null) {
-            child = AppSplash(appTheme: AppThemeScope.maybeOf(context)?.theme);
+            child = const AppSplash();
           } else {
             child = InheritedAppLocale(
               locale: Locale(languageCode),
@@ -114,7 +110,7 @@ class _AppLocaleScopeState extends State<AppLocaleScope> {
       );
 }
 
-/// Виджет хранящий в себе зависимости локали приложения
+/// Виджет хранящий в себе [AppLocaleScope]
 @immutable
 class InheritedAppLocale extends InheritedWidget {
   /// Локаль
@@ -123,7 +119,7 @@ class InheritedAppLocale extends InheritedWidget {
   /// {@macro app_locale_bloc}
   final AppLocaleBloc bloc;
 
-  /// Создает хранящий в себе зависимости локали приложения
+  /// Создает виджет хранящий в себе [AppLocaleScope]
   const InheritedAppLocale({
     required this.locale,
     required this.bloc,

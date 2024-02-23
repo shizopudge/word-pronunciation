@@ -1,4 +1,5 @@
 export 'src/app_splash.dart';
+export 'src/blured_app_bar.dart';
 export 'src/primary_alert.dart';
 export 'src/primary_bottom_sheet.dart';
 export 'src/primary_elevated_button.dart';

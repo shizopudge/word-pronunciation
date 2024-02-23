@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:word_pronunciation/src/core/extensions/extensions.dart';
 
 /// Енум с названиями шагов инициализации
 enum AppInitializationStep {
@@ -9,16 +9,13 @@ enum AppInitializationStep {
   end;
 
   /// Возвращает локализованное сообщение
-  String message(BuildContext context) =>
-      switch (this) {
+  String toMessage(BuildContext context) => switch (this) {
         AppInitializationStep.start =>
-          AppLocalizations.of(context)?.appInitializationStart,
+          context.localization.appInitializationStart,
         AppInitializationStep.appRouter =>
-          AppLocalizations.of(context)?.appInitializationAppRouter,
+          context.localization.appInitializationAppRouter,
         AppInitializationStep.appConnect =>
-          AppLocalizations.of(context)?.appInitializationAppConnect,
-        AppInitializationStep.end =>
-          AppLocalizations.of(context)?.appInitializationEnd,
-      } ??
-      '';
+          context.localization.appInitializationAppConnect,
+        AppInitializationStep.end => context.localization.appInitializationEnd,
+      };
 }

@@ -21,51 +21,47 @@ class AppInitializationProgressPage extends StatelessWidget {
         value: context.theme.systemUiOverlayStyle
             .copyWith(statusBarColor: Colors.transparent),
         child: Scaffold(
-          body: SafeArea(
-            child: Center(
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    PrimaryLoadingIndicator(
-                      size: 40,
-                      color: context.theme.isDark
-                          ? context.theme.colors.white
-                          : context.theme.colors.black,
+          body: Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  PrimaryLoadingIndicator(
+                    color: context.theme.isDark
+                        ? context.theme.colors.white
+                        : context.theme.colors.black,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: AnimatedSwitcher(
+                      duration: Durations.short2,
+                      child: Text(
+                        '${initializationProgress.progress} %',
+                        key: ValueKey<int>(initializationProgress.progress),
+                        textAlign: TextAlign.center,
+                        style: context.theme.textTheme.titleMedium
+                            ?.copyWith(color: context.theme.colors.grey),
+                      ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8),
-                      child: AnimatedSwitcher(
-                        duration: Durations.short2,
-                        child: Text(
-                          '${initializationProgress.progress} %',
-                          key: ValueKey<int>(initializationProgress.progress),
-                          textAlign: TextAlign.center,
-                          style: context.theme.textTheme.titleMedium
-                              ?.copyWith(color: context.theme.colors.grey),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2),
+                    child: AnimatedSwitcher(
+                      duration: Durations.short2,
+                      child: Text(
+                        initializationProgress.toMessage(context),
+                        key: ValueKey<String>(
+                          initializationProgress.toMessage(context),
+                        ),
+                        textAlign: TextAlign.center,
+                        style: context.theme.textTheme.bodyLarge?.copyWith(
+                          color: context.theme.colors.grey,
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 2),
-                      child: AnimatedSwitcher(
-                        duration: Durations.short2,
-                        child: Text(
-                          initializationProgress.message(context),
-                          key: ValueKey<String>(
-                            initializationProgress.message(context),
-                          ),
-                          textAlign: TextAlign.center,
-                          style: context.theme.textTheme.bodyLarge?.copyWith(
-                            color: context.theme.colors.grey,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),

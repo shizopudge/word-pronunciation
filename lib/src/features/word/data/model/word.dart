@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_annotation_target
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:word_pronunciation/src/features/word/data/model/definition.dart';
 import 'package:word_pronunciation/src/features/word/data/model/meaning.dart';
@@ -35,6 +37,9 @@ class Word with _$Word {
       }
     }
   }
+
+  Iterable<Phonetic> get phoneticsWithAudio =>
+      phonetics.where((element) => element.audio.isNotEmpty);
 
   /// Generate Class from Map<String, Object?>
   factory Word.fromJson(Map<String, Object?> json) => _$WordFromJson(json);

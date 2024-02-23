@@ -3,8 +3,8 @@ import 'package:word_pronunciation/src/core/app_connect/app_connect.dart';
 import 'package:word_pronunciation/src/core/dio/dio.dart';
 import 'package:word_pronunciation/src/core/key_local_storage/key_local_storage.dart';
 import 'package:word_pronunciation/src/core/router/router.dart';
-import 'package:word_pronunciation/src/features/app/di/dependencies_scope.dart';
 import 'package:word_pronunciation/src/features/app/domain/entity/core_dependencies.dart';
+import 'package:word_pronunciation/src/features/app/scope/scope.dart';
 
 /// {@template dependencies}
 /// Зависимости приложения

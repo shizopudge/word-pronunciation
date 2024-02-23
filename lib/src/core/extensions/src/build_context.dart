@@ -4,7 +4,7 @@ import 'package:word_pronunciation/src/core/app_theme/app_theme.dart';
 import 'package:word_pronunciation/src/core/key_local_storage/key_local_storage.dart';
 import 'package:word_pronunciation/src/core/router/router.dart';
 import 'package:word_pronunciation/src/features/app/domain/entity/dependencies.dart';
-import 'package:word_pronunciation/src/features/app_theme/di/app_theme_scope.dart';
+import 'package:word_pronunciation/src/features/app_theme/scope/app_theme_scope.dart';
 import 'package:word_pronunciation/src/features/toaster/toaster.dart';
 
 extension BuildContextX on BuildContext {
@@ -34,7 +34,13 @@ extension BuildContextX on BuildContext {
       AppThemeScope.maybeOf(this, listen: false)?.theme;
 
   /// Локализация
-  AppLocalizations? get localization => AppLocalizations.of(this);
+  AppLocalizations get localization {
+    final localization = AppLocalizations.of(this);
+    if (localization == null) {
+      throw FlutterError('Out of scope, not found AppLocalizations');
+    }
+    return localization;
+  }
 
   /// Возвращает stream подключения к интернету
   Stream<bool> get hasConnect =>

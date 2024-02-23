@@ -6,14 +6,11 @@ import 'package:word_pronunciation/src/core/extensions/extensions.dart';
 import 'package:word_pronunciation/src/core/ui_kit/ui_kit.dart';
 import 'package:word_pronunciation/src/features/app/bloc/app_initialization.dart';
 import 'package:word_pronunciation/src/features/app/bloc/core_initialization.dart';
-import 'package:word_pronunciation/src/features/app/di/app_initialization_scope.dart';
-import 'package:word_pronunciation/src/features/app/di/core_dependencies_scope.dart';
-import 'package:word_pronunciation/src/features/app/di/core_initialization_scope.dart';
-import 'package:word_pronunciation/src/features/app/di/dependencies_scope.dart';
 import 'package:word_pronunciation/src/features/app/presentation/pages/pages.dart';
+import 'package:word_pronunciation/src/features/app/scope/scope.dart';
 import 'package:word_pronunciation/src/features/app_connect/presentation/widgets/internet_connection_listener.dart';
-import 'package:word_pronunciation/src/features/app_locale/di/app_locale_scope.dart';
-import 'package:word_pronunciation/src/features/app_theme/di/app_theme_scope.dart';
+import 'package:word_pronunciation/src/features/app_locale/scope/app_locale_scope.dart';
+import 'package:word_pronunciation/src/features/app_theme/scope/app_theme_scope.dart';
 import 'package:word_pronunciation/src/features/toaster/src/toaster_scope.dart';
 
 /// Основой виджет приложения
@@ -142,7 +139,7 @@ class _AppInitialization extends StatelessWidget {
               progress: (p) => AppInitializationProgressPage(
                   initializationProgress: p.initializationProgress),
               error: (e) => AppInitializationErrorPage(
-                message: e.errorHandler.message(context),
+                message: e.errorHandler.toMessage(context),
               ),
               success: (s) => DependenciesScope(
                 dependencies: s.dependencies,
