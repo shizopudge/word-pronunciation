@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:word_pronunciation/src/core/extensions/extensions.dart';
 import 'package:word_pronunciation/src/features/word/data/model/definition.dart';
-import 'package:word_pronunciation/src/features/word/presentation/widgets/definition_sheet.dart';
+import 'package:word_pronunciation/src/features/word/scope/word_scope.dart';
 
 /// Плитка с определением
 @immutable
@@ -17,7 +17,8 @@ class DefinitionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => InkWell(
-        onTap: () => _onTap(context),
+        onTap: () =>
+            WordScope.of(context).state.showDefinitionSheet(definition),
         borderRadius: BorderRadius.circular(8),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -36,8 +37,4 @@ class DefinitionTile extends StatelessWidget {
           ),
         ),
       );
-
-  /// Обработчик нажатия
-  Future<void> _onTap(BuildContext context) =>
-      DefinitionSheet.show(context, definition: definition);
 }

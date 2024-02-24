@@ -45,7 +45,7 @@ class PermissionsAlert extends StatelessWidget {
               bottom: 16,
             ),
             child: PrimaryElevatedButton(
-              onTap: () => _openAppSettings(context),
+              onTap: () => Navigator.of(context).pop<bool>(true),
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size.fromHeight(54),
                 maximumSize: const Size.fromHeight(54),
@@ -64,8 +64,4 @@ class PermissionsAlert extends StatelessWidget {
           ),
         ],
       );
-
-  /// Закрывает алерт и возвращает true
-  void _openAppSettings(BuildContext context) =>
-      Navigator.of(context).pop<bool>(true);
 }

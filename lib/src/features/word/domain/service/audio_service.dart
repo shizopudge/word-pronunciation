@@ -44,7 +44,7 @@ class AudioService implements IAudioService {
         stackTrace: stackTrace,
       );
       Error.throwWithStackTrace(
-        AudioServiceException(error),
+        AudioServiceException(error.toString()),
         stackTrace,
       );
     }
@@ -62,7 +62,7 @@ class AudioService implements IAudioService {
         stackTrace: stackTrace,
       );
       Error.throwWithStackTrace(
-        AudioServiceException(error),
+        AudioServiceException(error.toString()),
         stackTrace,
       );
     }
@@ -79,7 +79,7 @@ class AudioService implements IAudioService {
         stackTrace: stackTrace,
       );
       Error.throwWithStackTrace(
-        AudioServiceException(error),
+        AudioServiceException(error.toString()),
         stackTrace,
       );
     }

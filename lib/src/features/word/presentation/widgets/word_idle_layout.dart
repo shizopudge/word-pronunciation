@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:word_pronunciation/src/core/extensions/extensions.dart';
 import 'package:word_pronunciation/src/core/ui_kit/ui_kit.dart';
-import 'package:word_pronunciation/src/features/word/bloc/word.dart';
 import 'package:word_pronunciation/src/features/word/bloc/word_pronunciation.dart';
 import 'package:word_pronunciation/src/features/word/data/model/definition.dart';
 import 'package:word_pronunciation/src/features/word/data/model/phonetic.dart';
@@ -28,16 +27,11 @@ class WordIdleLayout extends StatelessWidget {
       BlocBuilder<WordPronunciationBloc, WordPronunciationState>(
         bloc: WordScope.of(context).wordPronunciationBloc,
         buildWhen: (previous, current) =>
-            current.isPronouncing || current.isIdle,
+            current.isProcessing || current.isIdle,
         builder: (context, state) => IgnorePointer(
-          ignoring: state.isPronouncing,
-          child: ColorFiltered(
-            colorFilter: ColorFilter.mode(
-              state.isPronouncing
-                  ? context.theme.colors.black.withOpacity(.5)
-                  : Colors.transparent,
-              BlendMode.darken,
-            ),
+          ignoring: state.isProcessing,
+          child: PronouncingFilters(
+            enabled: state.isProcessing,
             child: ScrollFadeBottomMask(
               startsAt: .65,
               builder: (context, scrollController) => CustomScrollView(
@@ -64,7 +58,7 @@ class WordIdleLayout extends StatelessWidget {
                         const EdgeInsets.only(top: 32, left: 44, right: 44),
                     sliver: SliverToBoxAdapter(
                       child: _ReadNextButton(
-                        onTap: () => _readNext(context),
+                        onTap: WordScope.of(context).state.readNextWord,
                       ),
                     ),
                   ),
@@ -119,10 +113,6 @@ class WordIdleLayout extends StatelessWidget {
           ),
         ),
       );
-
-  /// Читает следующее слово
-  void _readNext(BuildContext context) =>
-      WordScope.of(context).wordBloc.add(const WordEvent.read());
 
   /// Список фонетики с аудио
   List<Phonetic> get phoneticsWithAudio => word.phoneticsWithAudio.toList();

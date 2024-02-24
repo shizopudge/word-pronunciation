@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 import 'package:word_pronunciation/src/core/extensions/extensions.dart';
-import 'package:word_pronunciation/src/core/resources/recources.dart';
 import 'package:word_pronunciation/src/core/ui_kit/ui_kit.dart';
 import 'package:word_pronunciation/src/features/word/bloc/word_audio.dart';
 import 'package:word_pronunciation/src/features/word/data/model/phonetic.dart';
+import 'package:word_pronunciation/src/features/word/presentation/widgets/widgets.dart';
 import 'package:word_pronunciation/src/features/word/scope/word_scope.dart';
 
 /// Плитка с аудио
@@ -25,7 +24,7 @@ class AudioTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => InkWell(
-        onTap: () => _onTap(context),
+        onTap: () => WordScope.of(context).state.toggleAudio(phonetic),
         borderRadius: BorderRadius.circular(8),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -52,15 +51,6 @@ class AudioTile extends StatelessWidget {
           ),
         ),
       );
-
-  /// Обработчик нажатия
-  void _onTap(BuildContext context) {
-    final bloc = WordScope.of(context).wordAudioBloc;
-    if (state.isPlaying && state.audioUrlOrNull == phonetic.audio) {
-      return bloc.add(const WordAudioEvent.stop());
-    }
-    return bloc.add(WordAudioEvent.play(audioUrl: phonetic.audio));
-  }
 }
 
 /// Иконка аудио
@@ -92,24 +82,10 @@ class _AudioIcon extends StatelessWidget {
       duration: Durations.short4,
       child: state.maybeMap(
         orElse: () => defaultIcon,
-        progress: (value) =>
+        progress: (_) =>
             PrimaryLoadingIndicator(color: context.theme.colors.blue),
-        playing: (value) => ColorFiltered(
-          colorFilter: ColorFilter.mode(
-            context.theme.colors.blue,
-            BlendMode.srcIn,
-          ),
-          child: Lottie.asset(
-            Assets.animations.audioPlaying,
-            width: 32,
-            height: 32,
-            errorBuilder: (context, error, stackTrace) => Icon(
-              Icons.play_arrow_rounded,
-              size: 32,
-              color: context.theme.colors.blue,
-            ),
-          ),
-        ),
+        playing: (_) =>
+            AudioAnimation(color: context.theme.colors.blue, size: 32),
       ),
     );
   }

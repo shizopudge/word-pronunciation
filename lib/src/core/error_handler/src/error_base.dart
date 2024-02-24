@@ -110,15 +110,15 @@ final class AudioServiceError implements IErrorBase {
       context.localization.audioServiceError;
 }
 
-/// {@template audio_service_error}
-/// Класс ошибки аудио сервиса
+/// {@template speech_service_error}
+/// Класс ошибки сервиса произношения
 /// {@endtemplate}
 @immutable
 final class SpeechServiceError implements IErrorBase {
   @override
   final SpeechServiceException error;
 
-  /// {@macro audio_service_error}
+  /// {@macro speech_service_error}
   const SpeechServiceError({
     required this.error,
   });
@@ -126,6 +126,24 @@ final class SpeechServiceError implements IErrorBase {
   @override
   String toMessage(BuildContext context) =>
       context.localization.speechServiceError;
+}
+
+/// {@template speech_service_permission_error}
+/// Класс ошибки разрешений сервиса произношения
+/// {@endtemplate}
+@immutable
+final class SpeechServicePermissionError implements IErrorBase {
+  @override
+  final SpeechServiceException error;
+
+  /// {@macro speech_service_permission_error}
+  const SpeechServicePermissionError({
+    required this.error,
+  });
+
+  @override
+  String toMessage(BuildContext context) =>
+      context.localization.speechServicePermissionError;
 }
 
 /// {@template network_error}

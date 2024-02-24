@@ -17,6 +17,11 @@ abstract interface class ISpeechService {
   /// Инициализирует [ISpeechService]
   Future<void> initialize();
 
+  /// Обрабатывает разрешения
+  ///
+  /// Возвращает true, если разрешения предоставлены
+  Future<void> handlePermissions();
+
   /// Начинает слушать [ISpeechService]
   Future<void> pronounce();
 
@@ -61,38 +66,10 @@ class SpeechService implements ISpeechService {
       StreamController<String>();
 
   @override
-  Future<void> initialize() async {
-    // Handling permissions
+  Future<void> initialize() {
     try {
-      final isAvailable = _speechToText.isAvailable;
-      if (isAvailable) return;
-      final permissionStatus = await Permission.microphone.status;
-      if (!permissionStatus.isGranted) {
-        final requestStatus = await Permission.microphone.request();
-        if (requestStatus.isPermanentlyDenied) {
-          Error.throwWithStackTrace(
-            SpeechServicePermissionException(
-              FlutterError(
-                '[SpeechService] permissions is permanently denied',
-              ),
-            ),
-            StackTrace.current,
-          );
-        }
-        if (requestStatus.isDenied) return;
-      }
-    } on Object catch (error, stackTrace) {
-      L.error(
-        'Something went wrong while handling permissions for [SpeechService]. Error: $error',
-        error: error,
-        stackTrace: stackTrace,
-      );
-      rethrow;
-    }
-
-    // Initializing
-    try {
-      await _speechToText.initialize(onStatus: _onStatus, onError: _onError);
+      if (isInitialized) return Future<void>.value();
+      return _speechToText.initialize(onStatus: _onStatus, onError: _onError);
     } on Object catch (error, stackTrace) {
       L.error(
         'Something went wrong while initializing [SpeechService]. Error: $error',
@@ -100,7 +77,37 @@ class SpeechService implements ISpeechService {
         stackTrace: stackTrace,
       );
       Error.throwWithStackTrace(
-        SpeechServiceException(error),
+        SpeechServiceException(error.toString()),
+        stackTrace,
+      );
+    }
+  }
+
+  @override
+  Future<bool> handlePermissions() async {
+    try {
+      final permissionStatus = await Permission.microphone.status;
+      if (permissionStatus.isPermanentlyDenied) {
+        Error.throwWithStackTrace(
+          const SpeechServicePermissionException(
+            'permissions_permanently_denied',
+          ),
+          StackTrace.current,
+        );
+      }
+      if (!permissionStatus.isGranted) {
+        final requestStatus = await Permission.microphone.request();
+        return requestStatus.isGranted;
+      }
+      return permissionStatus.isGranted;
+    } on Object catch (error, stackTrace) {
+      L.error(
+        'Something went wrong while handling permissions for [SpeechService]. Error: $error',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      Error.throwWithStackTrace(
+        SpeechServicePermissionException(error.toString()),
         stackTrace,
       );
     }
@@ -122,7 +129,7 @@ class SpeechService implements ISpeechService {
         stackTrace: stackTrace,
       );
       Error.throwWithStackTrace(
-        SpeechServiceException(error),
+        SpeechServiceException(error.toString()),
         stackTrace,
       );
     }
@@ -139,7 +146,7 @@ class SpeechService implements ISpeechService {
         stackTrace: stackTrace,
       );
       Error.throwWithStackTrace(
-        SpeechServiceException(error),
+        SpeechServiceException(error.toString()),
         stackTrace,
       );
     }
@@ -159,7 +166,7 @@ class SpeechService implements ISpeechService {
         stackTrace: stackTrace,
       );
       Error.throwWithStackTrace(
-        SpeechServiceException(error),
+        SpeechServiceException(error.toString()),
         stackTrace,
       );
     }

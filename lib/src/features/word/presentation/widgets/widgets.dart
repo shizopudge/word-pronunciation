@@ -1,8 +1,12 @@
+export 'audio_animation.dart';
 export 'audio_tile.dart';
+export 'avatar_glow.dart';
 export 'definition_sheet.dart';
 export 'definition_tile.dart';
 export 'definitions_view.dart';
+export 'permissions_alert.dart';
 export 'phonetics_listview.dart';
+export 'pronouncing_filters.dart';
 export 'word_card.dart';
 export 'word_error_layout.dart';
 export 'word_floating_button.dart';

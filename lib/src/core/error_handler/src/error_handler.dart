@@ -48,6 +48,8 @@ class ErrorHandler extends IErrorHandler {
       errorBase = CoreInitializationError(error: error);
     } else if (error is AudioServiceException) {
       errorBase = AudioServiceError(error: error);
+    } else if (error is SpeechServiceException) {
+      errorBase = SpeechServiceError(error: error);
     } else if (error is DioException) {
       errorBase = NetworkError(error: error);
     } else {

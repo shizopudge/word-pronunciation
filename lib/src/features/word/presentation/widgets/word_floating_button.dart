@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lottie/lottie.dart';
 import 'package:word_pronunciation/src/core/extensions/extensions.dart';
-import 'package:word_pronunciation/src/core/resources/recources.dart';
 import 'package:word_pronunciation/src/core/ui_kit/ui_kit.dart';
 import 'package:word_pronunciation/src/features/word/bloc/word.dart';
 import 'package:word_pronunciation/src/features/word/bloc/word_pronunciation.dart';
+import 'package:word_pronunciation/src/features/word/presentation/widgets/widgets.dart';
 import 'package:word_pronunciation/src/features/word/presentation/word_page.dart';
 import 'package:word_pronunciation/src/features/word/scope/word_scope.dart';
 
@@ -24,10 +23,12 @@ class WordFloatingButton extends StatelessWidget {
           bloc: WordScope.of(context).wordBloc,
           builder: (context, state) {
             if (state.isIdle || state.isError) {
-              return _MicButton(onTap: () => _togglePronunciation(context));
+              return _MicButton(
+                onTap: WordScope.of(context).state.togglePronunciation,
+              );
             } else if (state.isFatalError) {
               return _TryAgainButton(
-                onTap: () => _tryAgain(context),
+                onTap: WordScope.of(context).state.tryAgain,
               );
             }
 
@@ -35,19 +36,6 @@ class WordFloatingButton extends StatelessWidget {
           },
         ),
       );
-
-  /// Обработчик кнопки "Попробовать снова"
-  void _tryAgain(BuildContext context) =>
-      WordScope.of(context).wordBloc.add(const WordEvent.read());
-
-  /// Начинает произношение
-  void _togglePronunciation(BuildContext context) {
-    final bloc = WordScope.of(context).wordPronunciationBloc;
-    if (bloc.state.isPronouncing) {
-      return bloc.add(const WordPronunciationEvent.stop());
-    }
-    return bloc.add(const WordPronunciationEvent.pronounce());
-  }
 }
 
 /// Кнопка "Попробовать снова"
@@ -97,47 +85,40 @@ class _MicButton extends StatelessWidget {
   Widget build(BuildContext context) =>
       BlocBuilder<WordPronunciationBloc, WordPronunciationState>(
         bloc: WordScope.of(context).wordPronunciationBloc,
-        builder: (context, state) => TweenAnimationBuilder<double>(
-          duration: Durations.short4,
-          tween: Tween(begin: 0.0, end: 1.0),
-          builder: (context, scale, child) => ScaleTransition(
-            scale: AlwaysStoppedAnimation<double>(scale),
-            child: IconButton(
-              onPressed: onTap,
-              tooltip: context.localization.startPronunciation,
-              constraints: BoxConstraints.tight(const Size.square(56)),
-              style: IconButton.styleFrom(
-                backgroundColor: context.theme.colors.white,
-                foregroundColor: context.theme.colors.blue,
-                elevation: 12,
-              ),
-              icon: AnimatedSwitcher(
-                duration: Durations.short3,
-                child: state.maybeWhen(
-                  orElse: () => const Icon(
-                    Icons.mic,
-                    size: 40,
+        builder: (context, state) {
+          late final Widget icon;
+
+          if (state.isProcessing) {
+            icon = AudioAnimation(color: context.theme.colors.red, size: 32);
+          } else {
+            icon = const Icon(Icons.mic, size: 40);
+          }
+
+          return TweenAnimationBuilder<double>(
+            duration: Durations.short4,
+            tween: Tween(begin: 0.0, end: 1.0),
+            builder: (context, scale, child) => ScaleTransition(
+              scale: AlwaysStoppedAnimation<double>(scale),
+              child: AvatarGlow(
+                glowColor: context.theme.colors.red,
+                animate: state.isProcessing,
+                child: IconButton(
+                  onPressed: onTap,
+                  tooltip: context.localization.startPronunciation,
+                  constraints: BoxConstraints.tight(const Size.square(56)),
+                  style: IconButton.styleFrom(
+                    backgroundColor: context.theme.colors.white,
+                    foregroundColor: context.theme.colors.blue,
+                    elevation: 12,
                   ),
-                  pronunciation: (_) => ColorFiltered(
-                    colorFilter: ColorFilter.mode(
-                      context.theme.colors.red,
-                      BlendMode.srcIn,
-                    ),
-                    child: Lottie.asset(
-                      Assets.animations.audioPlaying,
-                      width: 32,
-                      height: 32,
-                      errorBuilder: (context, error, stackTrace) => Icon(
-                        Icons.play_arrow_rounded,
-                        size: 32,
-                        color: context.theme.colors.blue,
-                      ),
-                    ),
+                  icon: AnimatedSwitcher(
+                    duration: Durations.medium1,
+                    child: icon,
                   ),
                 ),
               ),
             ),
-          ),
-        ),
+          );
+        },
       );
 }

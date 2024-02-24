@@ -43,5 +43,8 @@
   "microphonePermissions": "Microphone permissions",
   "youHaventGivenPermissionToUseMic": "You have not given permission to use the microphone",
   "cantOpenAppSettings": "Can't open app settings",
-  "speechServiceError": "An error occurred while trying to recognize a spoken word"
+  "speechServiceError": "An error occurred while trying to recognize a spoken word",
+  "errorNoMatch": "No matches found for spoken word",
+  "errorSpeechTimeout": "Pronunciation timed out",
+  "speechServicePermissionError": "There was an error with the permissions for the pronunciation service"
 }
