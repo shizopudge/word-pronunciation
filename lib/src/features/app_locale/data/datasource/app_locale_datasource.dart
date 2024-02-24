@@ -1,5 +1,8 @@
-import 'package:flutter/material.dart';
+import 'dart:io';
+
+import 'package:meta/meta.dart';
 import 'package:word_pronunciation/src/core/key_local_storage/key_local_storage.dart';
+import 'package:word_pronunciation/src/core/logger/logger.dart';
 
 /// {@template app_locale_datasource}
 /// Источник данных локализации приложения
@@ -33,7 +36,17 @@ class AppLocaleDatasource implements IAppLocaleDatasource {
   static const _languageCodeStorageKey = 'languageCode';
 
   @override
-  String get defaultLanguageCode => 'en';
+  String get defaultLanguageCode {
+    try {
+      return Platform.localeName.split('_').first;
+    } on Object catch (error, stackTrace) {
+      L.error(
+          'Something went wrong while getting platform locale name. Error: $error',
+          error: error,
+          stackTrace: stackTrace);
+      rethrow;
+    }
+  }
 
   @override
   String readLanguageCodeFromStorage() =>

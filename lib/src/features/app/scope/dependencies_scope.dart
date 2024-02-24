@@ -17,17 +17,14 @@ class DependenciesScope extends StatefulWidget {
     super.key,
   });
 
-  /// Возвращает зависимости приложения или завершается с [ArgumentError] - Out
+  /// Возвращает [Dependencies] или завершается с [FlutterError] - Out
   /// of scope
   static Dependencies of(BuildContext context) {
     final inheritedDependencies =
         context.getInheritedWidgetOfExactType<_InheritedDependencies>();
 
     if (inheritedDependencies == null) {
-      throw ArgumentError(
-        'Out of scope, not found DependenciesScope',
-        'out_of_scope',
-      );
+      throw FlutterError('Out of scope, not found DependenciesScope');
     }
 
     return inheritedDependencies.dependencies;
@@ -51,18 +48,19 @@ class _DependenciesScopeState extends State<DependenciesScope> {
       );
 }
 
-/// Виджет хранящий в себе зависимости приложения
+/// Виджет хранящий в себе [Dependencies]
 @immutable
 class _InheritedDependencies extends InheritedWidget {
   /// {@macro dependencies}
   final Dependencies dependencies;
 
-  /// Создает виджет хранящий в себе зависимости приложения
+  /// Создает виджет хранящий в себе [Dependencies]
   const _InheritedDependencies({
     required this.dependencies,
     required super.child,
   });
 
   @override
-  bool updateShouldNotify(covariant _InheritedDependencies oldWidget) => false;
+  bool updateShouldNotify(covariant _InheritedDependencies oldWidget) =>
+      oldWidget.dependencies != dependencies;
 }

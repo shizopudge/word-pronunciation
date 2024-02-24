@@ -7,6 +7,16 @@
 // ignore_for_file: type=lint
 // ignore_for_file: directives_ordering,unnecessary_import,implicit_dynamic_list_literal,deprecated_member_use
 
+class $AssetsAnimationsGen {
+  const $AssetsAnimationsGen();
+
+  /// File path: assets/animations/audio_playing.json
+  String get audioPlaying => 'assets/animations/audio_playing.json';
+
+  /// List of all assets
+  List<String> get values => [audioPlaying];
+}
+
 class $AssetsFontsGen {
   const $AssetsFontsGen();
 
@@ -84,5 +94,6 @@ class $AssetsFontsGen {
 class Assets {
   Assets._();
 
+  static const $AssetsAnimationsGen animations = $AssetsAnimationsGen();
   static const $AssetsFontsGen fonts = $AssetsFontsGen();
 }

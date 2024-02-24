@@ -94,6 +94,7 @@ class _ToasterState extends State<Toaster> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) => SafeArea(
+        bottom: false,
         child: Align(
           alignment: Alignment.topCenter,
           child: Padding(

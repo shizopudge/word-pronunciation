@@ -26,15 +26,11 @@ class DelayTween extends Tween<double> {
 /// Primary loading indicator
 @immutable
 class PrimaryLoadingIndicator extends StatefulWidget {
-  /// Размер
-  final double size;
-
   /// Цвет индикатора
   final Color? color;
 
   /// Создает primary loading indicator
   const PrimaryLoadingIndicator({
-    this.size = 32.0,
     this.color,
     super.key,
   });
@@ -48,6 +44,9 @@ class _PrimaryLoadingIndicatorState extends State<PrimaryLoadingIndicator>
     with SingleTickerProviderStateMixin {
   /// Количество точек
   static const _itemCount = 12;
+
+  /// Размер
+  static const _size = 32.0;
 
   /// {@template animation_controller}
   /// Контроллер анимации
@@ -69,14 +68,14 @@ class _PrimaryLoadingIndicatorState extends State<PrimaryLoadingIndicator>
   }
 
   @override
-  Widget build(BuildContext context) => SizedBox.fromSize(
-        size: Size.square(widget.size),
+  Widget build(BuildContext context) => SizedBox.square(
+        dimension: _size,
         child: Stack(
           children: List.generate(
             _itemCount,
             (index) => Positioned.fill(
-              left: widget.size * .5,
-              top: widget.size * .5,
+              left: _size * .5,
+              top: _size * .5,
               child: Transform(
                 transform: Matrix4.rotationZ(30.0 * index * 0.0174533),
                 child: Align(
@@ -87,11 +86,11 @@ class _PrimaryLoadingIndicatorState extends State<PrimaryLoadingIndicator>
                       end: 1.0,
                       delay: index / _itemCount,
                     ).animate(_animationController),
-                    child: SizedBox.fromSize(
-                      size: Size.square(widget.size * 0.15),
+                    child: SizedBox.square(
+                      dimension: _size * 0.15,
                       child: DecoratedBox(
                         decoration: BoxDecoration(
-                          color: widget.color ?? context.theme.colors.black,
+                          color: _indicatorColor,
                           shape: BoxShape.circle,
                         ),
                       ),
@@ -103,4 +102,14 @@ class _PrimaryLoadingIndicatorState extends State<PrimaryLoadingIndicator>
           ),
         ),
       );
+
+  /// Цвет инидкатора
+  Color? get _indicatorColor =>
+      widget.color ??
+      (_isDarkTheme
+          ? context.themeMaybe?.colors.white
+          : context.themeMaybe?.colors.black);
+
+  /// Возвращает true, если тема приложения темная
+  bool get _isDarkTheme => context.themeMaybe?.isDark ?? false;
 }

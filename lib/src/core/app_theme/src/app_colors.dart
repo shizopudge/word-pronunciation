@@ -40,7 +40,7 @@ class AppColors implements IAppColors {
   Color get red => Colors.red.shade300;
 
   @override
-  Color get blue => Colors.blue.shade300;
+  Color get blue => Colors.blue.shade500;
 
   @override
   Color get grey => Colors.grey.shade400;

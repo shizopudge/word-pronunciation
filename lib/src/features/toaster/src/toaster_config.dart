@@ -57,6 +57,7 @@ enum ToasterType {
   success;
 }
 
+/// Енум приоритета тостера
 enum ToasterPriority {
   /// Обычный
   common,

@@ -26,14 +26,17 @@ class LightAppTheme implements IAppTheme {
   @override
   ThemeData get data => ThemeData(
         useMaterial3: true,
-        brightness: Brightness.light,
         fontFamily: 'Plus Jakarta Sans',
         textTheme: _textTheme,
         scaffoldBackgroundColor: colors.white,
         dividerTheme: _dividerThemeData,
         appBarTheme: _appBarTheme,
         elevatedButtonTheme: _elevatedButtonThemeData,
-        colorSchemeSeed: colors.black,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: colors.black,
+          primary: colors.blue,
+          brightness: Brightness.light,
+        ),
         outlinedButtonTheme: _outlinedButtonThemeData,
         textButtonTheme: _textButtonThemeData,
         iconButtonTheme: _iconButtonThemeData,
@@ -41,19 +44,18 @@ class LightAppTheme implements IAppTheme {
         switchTheme: _switchThemeData,
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         bottomSheetTheme: _bottomSheetThemeData,
+        dialogTheme: _dialogThemeData,
         extensions: <ThemeExtension<Object?>>[_toasterTheme],
       );
 
   /// AppBar Theme
   AppBarTheme get _appBarTheme => AppBarTheme(
-        titleTextStyle: _textTheme.headlineLarge?.copyWith(
-          color: colors.black,
-        ),
+        titleTextStyle: _textTheme.headlineLarge?.copyWith(color: colors.black),
         toolbarHeight: 80,
         foregroundColor: colors.black,
         shadowColor: colors.grey,
-        surfaceTintColor: colors.white,
-        scrolledUnderElevation: 0.5,
+        surfaceTintColor: Colors.transparent,
+        scrolledUnderElevation: 0,
         elevation: 0,
         centerTitle: false,
         backgroundColor: colors.white,
@@ -189,6 +191,17 @@ class LightAppTheme implements IAppTheme {
         dragHandleColor: colors.grey,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+        ),
+      );
+
+  /// Тема диалога
+  DialogTheme get _dialogThemeData => DialogTheme(
+        elevation: 8,
+        surfaceTintColor: Colors.transparent,
+        backgroundColor: colors.white,
+        shape: RoundedRectangleBorder(
+          side: BorderSide(color: colors.grey),
+          borderRadius: BorderRadius.circular(24),
         ),
       );
 

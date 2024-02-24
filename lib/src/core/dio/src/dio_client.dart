@@ -65,7 +65,7 @@ abstract interface class IDioClient {
 /// {@macro dio_client}
 @immutable
 class DioClient implements IDioClient {
-  /// Dio instance
+  /// Экземпляр Dio
   final Dio _dio;
 
   /// {@macro dio_client}

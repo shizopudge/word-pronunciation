@@ -8,7 +8,7 @@ class RestartButton extends StatelessWidget {
   /// Обработчик на перезагрузку
   final VoidCallback onRestart;
 
-  /// Созадет кнопку "Перезагрузить"
+  /// Создает кнопку "Перезагрузить"
   const RestartButton({
     required this.onRestart,
     super.key,
@@ -22,7 +22,7 @@ class RestartButton extends StatelessWidget {
           child: PrimaryElevatedButton(
             onTap: onRestart,
             child: Text(
-              context.localization?.restart ?? 'Restart',
+              context.localization.restart,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),

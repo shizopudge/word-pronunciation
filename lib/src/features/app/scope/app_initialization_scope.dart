@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:word_pronunciation/src/features/app/bloc/app_initialization.dart';
 import 'package:word_pronunciation/src/features/app/data/datasource/app_initialization_datasource.dart';
 import 'package:word_pronunciation/src/features/app/data/repository/app_initialization_repository.dart';
-import 'package:word_pronunciation/src/features/app/di/core_dependencies_scope.dart';
+import 'package:word_pronunciation/src/features/app/scope/core_dependencies_scope.dart';
 
 /// Область видимости инициализации приложения
 @immutable
@@ -16,17 +16,14 @@ class AppInitializationScope extends StatefulWidget {
     super.key,
   });
 
-  /// Возвращает виджет хранящий в себе [AppInitializationBloc] или завершается с [ArgumentError] - Out
-  /// of scope
+  /// Возвращает виджет хранящий в себе [AppInitializationScope] или
+  /// завершается с [FlutterError] - Out of scope
   static InheritedAppInitialization of(BuildContext context) {
     final inheritedAppInitialization =
         context.getInheritedWidgetOfExactType<InheritedAppInitialization>();
 
     if (inheritedAppInitialization == null) {
-      throw ArgumentError(
-        'Out of scope, not found AppInitializationScope',
-        'out_of_scope',
-      );
+      throw FlutterError('Out of scope, not found AppInitializationScope');
     }
 
     return inheritedAppInitialization;
@@ -64,13 +61,13 @@ class _AppInitializationScopeState extends State<AppInitializationScope> {
       );
 }
 
-/// Виджет хранящий в себе [AppInitializationBloc]
+/// Виджет хранящий в себе [AppInitializationScope]
 @immutable
 class InheritedAppInitialization extends InheritedWidget {
   /// {@macro app_initialization_bloc}
   final AppInitializationBloc bloc;
 
-  /// Создает виджет хранящий в себе [AppInitializationBloc]
+  /// Создает виджет хранящий в себе [AppInitializationScope]
   const InheritedAppInitialization({
     required this.bloc,
     required super.child,

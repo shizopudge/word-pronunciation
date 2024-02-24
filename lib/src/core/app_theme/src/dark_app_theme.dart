@@ -26,14 +26,17 @@ class DarkAppTheme implements IAppTheme {
   @override
   ThemeData get data => ThemeData(
         useMaterial3: true,
-        brightness: Brightness.dark,
         fontFamily: 'Plus Jakarta Sans',
         textTheme: _textTheme,
         scaffoldBackgroundColor: colors.black,
         dividerTheme: _dividerThemeData,
         appBarTheme: _appBarTheme,
         elevatedButtonTheme: _elevatedButtonThemeData,
-        colorSchemeSeed: colors.black,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: colors.black,
+          primary: colors.blue,
+          brightness: Brightness.dark,
+        ),
         outlinedButtonTheme: _outlinedButtonThemeData,
         textButtonTheme: _textButtonThemeData,
         iconButtonTheme: _iconButtonThemeData,
@@ -41,22 +44,21 @@ class DarkAppTheme implements IAppTheme {
         switchTheme: _switchThemeData,
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         bottomSheetTheme: _bottomSheetThemeData,
+        dialogTheme: _dialogThemeData,
         extensions: <ThemeExtension<Object?>>[_toasterTheme],
       );
 
   /// AppBar Theme
   AppBarTheme get _appBarTheme => AppBarTheme(
-        titleTextStyle: _textTheme.headlineLarge?.copyWith(
-          color: colors.black,
-        ),
+        titleTextStyle: _textTheme.headlineLarge?.copyWith(color: colors.white),
         toolbarHeight: 80,
-        foregroundColor: colors.black,
+        foregroundColor: colors.white,
         shadowColor: colors.grey,
-        surfaceTintColor: colors.white,
-        scrolledUnderElevation: 0.5,
+        surfaceTintColor: Colors.transparent,
+        scrolledUnderElevation: 0,
         elevation: 0,
         centerTitle: false,
-        backgroundColor: colors.white,
+        backgroundColor: colors.black,
       );
 
   /// Text Style
@@ -183,12 +185,23 @@ class DarkAppTheme implements IAppTheme {
         ),
       );
 
-  /// Тема нижненго всплывающего окна
+  /// Тема нижнего всплывающего окна
   BottomSheetThemeData get _bottomSheetThemeData => BottomSheetThemeData(
-        backgroundColor: colors.white,
-        dragHandleColor: colors.grey,
+        backgroundColor: colors.black,
+        dragHandleColor: colors.white,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+        ),
+      );
+
+  /// Тема диалога
+  DialogTheme get _dialogThemeData => DialogTheme(
+        elevation: 8,
+        surfaceTintColor: Colors.transparent,
+        backgroundColor: colors.black,
+        shape: RoundedRectangleBorder(
+          side: BorderSide(color: colors.grey),
+          borderRadius: BorderRadius.circular(24),
         ),
       );
 

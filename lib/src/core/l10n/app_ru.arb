@@ -1,6 +1,5 @@
 {
   "@@locale": "ru",
-
   "appInitializationStart": "Начало инициализации приложения",
   "appInitializationAppRouter": "Создание роутера",
   "appInitializationAppConnect": "Проверка подключения",
@@ -19,5 +18,33 @@
     }
   },
   "timeoutError": "Превышено время ожидания",
-  "checkInternetConnection": "Проверьте подключение к интернету!"
+  "checkInternetConnection": "Проверьте подключение к интернету!",
+  "wordWasNotReceived": "Слово не было получено",
+  "example": "Пример",
+  "startPronunciation": "Начать произношение",
+  "verbDefinitions": "Определения-глаголы",
+  "nounDefinitions": "Определения-существительные",
+  "unknownLicense": "Неизвестная лицензия",
+  "phonetics": "Фонетика",
+  "word": "Слово",
+  "tryAgain": "Попробовать снова",
+  "nextWord": "Следующее слово",
+  "audioServiceError": "Во время попытки проиграть аудио файл произошла ошибка",
+  "connectionTimeout": "Время соединения вышло",
+  "sendTimeout": "Время отправки вышло",
+  "receiveTimeout": "Время получения вышло",
+  "badCertificate": "Неверный сертификат",
+  "badResponse": "Что-то пошло не так",
+  "requestCancel": "Запрос отменен",
+  "connectionError": "Ошибка подключения",
+  "unknownNetworkError": "Неизвестная ошибка сети",
+  "definition": "Определение",
+  "openAppSettings": "Открыть настройки приложения",
+  "microphonePermissions": "Разрешения на использование микрофона",
+  "youHaventGivenPermissionToUseMic": "Вы не дали разрешения на использование микрофона",
+  "cantOpenAppSettings": "Не получается открыть настройки приложения",
+  "speechServiceError": "Во время попытки распознать произносимое слово произошла ошибка",
+  "errorNoMatch": "Не найдено совпадений по произнесенному слову",
+  "errorSpeechTimeout": "Превышено время ожидания произношения",
+  "speechServicePermissionError": "Произошла ошибка с разрешениями для сервиса произношения"
 }

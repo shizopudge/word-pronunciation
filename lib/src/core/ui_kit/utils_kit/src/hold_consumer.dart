@@ -8,15 +8,15 @@ class HoldConsumer extends StatefulWidget {
   final bool isEnabled;
 
   /// Постройщик дочернего виджета
-  final Widget Function(BuildContext context, bool isHeldDown)? builder;
+  final Widget Function(BuildContext context, bool isHeldDown) builder;
 
-  /// Обработчик на взаимодействие с виджетом
+  /// Слушатель взаимодействий с виджетом
   final ValueChanged<bool>? listener;
 
   /// Создает consumer удержания
   const HoldConsumer({
+    required this.builder,
     this.isEnabled = true,
-    this.builder,
     this.listener,
     super.key,
   });
@@ -57,9 +57,7 @@ class _HoldConsumerState extends State<HoldConsumer> {
         onTapCancel: widget.isEnabled ? _handleTapCancel : null,
         child: AnimatedBuilder(
           animation: _childHeldDownController,
-          builder: (context, _) =>
-              widget.builder?.call(context, _isChildHeldDown) ??
-              const SizedBox.shrink(),
+          builder: (context, _) => widget.builder(context, _isChildHeldDown),
         ),
       );
 
@@ -75,12 +73,12 @@ class _HoldConsumerState extends State<HoldConsumer> {
   /// Обработчик на отжатие виджета
   void _handleTapCancel() => _isChildHeldDown = false;
 
-  /// Устанавливает новое значение для контроллера зажатия дочернего виджета.
-  /// Возвращает true, если дочерний виджет зажат
+  /// Устанавливает новое значение для контроллера зажатия дочернего виджета
   set _isChildHeldDown(bool newValue) {
     if (_childHeldDownController.value == newValue) return;
     _childHeldDownController.value = newValue;
   }
 
+  /// Возвращает true, если дочерний виджет зажат
   bool get _isChildHeldDown => _childHeldDownController.value;
 }
