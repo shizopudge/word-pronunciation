@@ -20,7 +20,7 @@ abstract interface class ISpeechService {
   /// Обрабатывает разрешения
   ///
   /// Возвращает true, если разрешения предоставлены
-  Future<void> handlePermissions();
+  Future<bool> handlePermissions();
 
   /// Начинает слушать [ISpeechService]
   Future<void> pronounce();
@@ -106,6 +106,7 @@ class SpeechService implements ISpeechService {
         error: error,
         stackTrace: stackTrace,
       );
+      if (error is SpeechServicePermissionException) rethrow;
       Error.throwWithStackTrace(
         SpeechServicePermissionException(error.toString()),
         stackTrace,

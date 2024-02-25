@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:word_pronunciation/src/core/analytics/analytics.dart';
 import 'package:word_pronunciation/src/core/app_connect/app_connect.dart';
+import 'package:word_pronunciation/src/core/database/database.dart';
 import 'package:word_pronunciation/src/core/error_handler/error_handler.dart';
 import 'package:word_pronunciation/src/core/logger/logger.dart';
 import 'package:word_pronunciation/src/core/router/router.dart';
@@ -68,6 +69,10 @@ class AppInitializationDatasource implements IAppInitializationDatasource {
         L.log(
             'App initialization | $currentStep/$totalSteps ($percent%) | "${step.key}"');
         await step.value(dependencies);
+
+        /// Добавил ожидание, так как не зря же я верстал экран с загрузкой и
+        /// локализировал вывод сообщений по загрузке.
+        await Future<void>.delayed(const Duration(milliseconds: 250));
       } on Object catch (error, stackTrace) {
         Error.throwWithStackTrace(
           AppInitializationException(
@@ -87,6 +92,19 @@ class AppInitializationDatasource implements IAppInitializationDatasource {
         dependencies.router = AppRouter(),
     AppInitializationStep.appConnect: (dependencies) =>
         dependencies.appConnect = const AppConnect(),
+    AppInitializationStep.db: (dependencies) async {
+      try {
+        final db = await DB.instance;
+        dependencies.db = db;
+      } on Object catch (error, stackTrace) {
+        L.error(
+          'Something went wrong during DB initialization',
+          error: error,
+          stackTrace: stackTrace,
+        );
+        rethrow;
+      }
+    },
     AppInitializationStep.end: (_) => L.log('App successfully initialized'),
   };
 }

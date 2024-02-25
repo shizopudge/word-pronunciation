@@ -3,7 +3,8 @@
   "appInitializationStart": "Начало инициализации приложения",
   "appInitializationAppRouter": "Создание роутера",
   "appInitializationAppConnect": "Проверка подключения",
-  "appInitializationEnd": "Инициализации приложения завершена",
+  "appInitializationDB": "Инициализация локальной базы данных",
+  "appInitializationEnd": "Инициализация приложения завершена",
   "error": "Ошибка",
   "restart": "Перезагрузить",
   "unknownErrorOccurred": "Произошла неизвестная ошибка",
@@ -46,5 +47,14 @@
   "speechServiceError": "Во время попытки распознать произносимое слово произошла ошибка",
   "errorNoMatch": "Не найдено совпадений по произнесенному слову",
   "errorSpeechTimeout": "Превышено время ожидания произношения",
-  "speechServicePermissionError": "Произошла ошибка с разрешениями для сервиса произношения"
+  "speechServicePermissionError": "Произошла ошибка с разрешениями для сервиса произношения",
+  "history": "История",
+  "historyFatalError": "Произошла ошибка при загрузке истории",
+  "historyIsEmpty": "История пуста",
+  "historyFilter": "Фильтр истории",
+  "all": "Все",
+  "pronounced": "Произнесенные",
+  "pronouncedIncorrect": "Произнесенные неправильно",
+  "applyFilter": "Применить фильтр",
+  "errorSpeechNetwork": "Произошла ошибка с интернет соединением во время произношения"
 }

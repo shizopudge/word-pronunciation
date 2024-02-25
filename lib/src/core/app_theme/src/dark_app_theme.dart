@@ -269,10 +269,10 @@ class DarkAppTheme implements IAppTheme {
   CheckboxThemeData get _checkboxThemeData => CheckboxThemeData(
         fillColor: MaterialStateProperty.resolveWith(
           (states) => states.contains(MaterialState.selected)
-              ? colors.black
-              : colors.white,
+              ? colors.white
+              : colors.grey,
         ),
-        checkColor: MaterialStateProperty.all(colors.white),
+        checkColor: MaterialStateProperty.all(colors.black),
         splashRadius: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(4),
@@ -280,7 +280,7 @@ class DarkAppTheme implements IAppTheme {
         side: MaterialStateBorderSide.resolveWith(
           (states) => BorderSide(
             color: states.contains(MaterialState.selected)
-                ? colors.black
+                ? colors.white
                 : colors.grey,
           ),
         ),

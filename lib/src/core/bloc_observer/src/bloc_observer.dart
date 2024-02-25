@@ -32,7 +32,7 @@ class AppBlocObserver extends BlocObserver {
   @override
   void onError(BlocBase bloc, Object error, StackTrace stackTrace) {
     super.onError(bloc, error, stackTrace);
-    L.log('Error in $bloc. Error: $error. StackTrace: $stackTrace');
+    L.error('Error in $bloc. Error: $error. StackTrace: $stackTrace');
   }
 
   @override

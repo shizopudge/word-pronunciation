@@ -9,6 +9,10 @@ part 'word.freezed.dart';
 @freezed
 class WordEvent with _$WordEvent {
   const factory WordEvent.read() = _ReadWordEvent;
+
+  const factory WordEvent.readFromDictionary({
+    required final String word,
+  }) = _ReadFromDictionaryWordEvent;
 }
 
 @freezed
@@ -63,16 +67,53 @@ class WordBloc extends Bloc<WordEvent, WordState> {
     on<WordEvent>(
       (event, emit) => event.map(
         read: (event) => _read(event, emit),
+        readFromDictionary: (event) => _readFromDictionary(event, emit),
       ),
     );
   }
 
-  Future<void> _read(WordEvent event, Emitter<WordState> emit) async {
+  Future<void> _read(_ReadWordEvent event, Emitter<WordState> emit) async {
     final previousWord = state.word;
     try {
       emit(WordState.progress(word: previousWord));
       final newWord = await _repository
           .readWordFromNetwork()
+          .timeout(const Duration(seconds: 15));
+      emit(WordState.progress(word: newWord));
+    } on Object catch (error) {
+      emit(
+        WordState.error(
+          errorHandler: ErrorHandler(error: error),
+          word: previousWord,
+        ),
+      );
+      rethrow;
+    } finally {
+      final word = state.word;
+      if (word != null) {
+        emit(WordState.idle(word: word));
+      } else if (previousWord != null) {
+        emit(WordState.idle(word: previousWord));
+      } else if (!state.isError && !state.isFatalError) {
+        emit(
+          const WordState.error(
+            errorHandler: ErrorHandler(
+              error: ErrorMessage.wordWasNotReceived,
+            ),
+            word: null,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _readFromDictionary(
+      _ReadFromDictionaryWordEvent event, Emitter<WordState> emit) async {
+    final previousWord = state.word;
+    try {
+      emit(WordState.progress(word: previousWord));
+      final newWord = await _repository
+          .readWordFromNetworkDictionary(word: event.word)
           .timeout(const Duration(seconds: 15));
       emit(WordState.progress(word: newWord));
     } on Object catch (error) {

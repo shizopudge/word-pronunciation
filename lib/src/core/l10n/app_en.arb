@@ -3,6 +3,7 @@
   "appInitializationStart": "App initialization starting",
   "appInitializationAppRouter": "Creating router",
   "appInitializationAppConnect": "Checking connection",
+  "appInitializationDB": "Initializing the local database",
   "appInitializationEnd": "App initialization finished",
   "error": "Error",
   "restart": "Restart",
@@ -46,5 +47,14 @@
   "speechServiceError": "An error occurred while trying to recognize a spoken word",
   "errorNoMatch": "No matches found for spoken word",
   "errorSpeechTimeout": "Pronunciation timed out",
-  "speechServicePermissionError": "There was an error with the permissions for the pronunciation service"
+  "speechServicePermissionError": "There was an error with the permissions for the pronunciation service",
+  "history": "History",
+  "historyFatalError": "There was an error loading history",
+  "historyIsEmpty": "History is empty",
+  "historyFilter": "History filter",
+  "all": "All",
+  "pronounced": "Pronounced",
+  "pronouncedIncorrect": "Pronounced incorrect",
+  "applyFilter": "Apply filter",
+  "errorSpeechNetwork": "An error occurred with the Internet connection during pronunciation"
 }

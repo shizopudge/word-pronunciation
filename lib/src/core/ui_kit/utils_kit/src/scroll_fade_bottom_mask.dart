@@ -110,9 +110,7 @@ class _ScrollFadeBottomMaskWithControllerState
 
   @override
   void dispose() {
-    _scrollController
-      ..removeListener(_scrollListener)
-      ..dispose();
+    _scrollController.removeListener(_scrollListener);
     _isFadeMaskEnabledController.dispose();
     super.dispose();
   }

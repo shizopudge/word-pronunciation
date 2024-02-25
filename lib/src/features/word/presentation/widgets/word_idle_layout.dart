@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:word_pronunciation/src/core/extensions/extensions.dart';
 import 'package:word_pronunciation/src/core/ui_kit/ui_kit.dart';
+import 'package:word_pronunciation/src/features/word/bloc/word_history.dart';
 import 'package:word_pronunciation/src/features/word/bloc/word_pronunciation.dart';
 import 'package:word_pronunciation/src/features/word/data/model/definition.dart';
 import 'package:word_pronunciation/src/features/word/data/model/phonetic.dart';
@@ -12,7 +13,7 @@ import 'package:word_pronunciation/src/features/word/scope/word_scope.dart';
 
 /// Виджет отображающий idle состояние [WordPage]
 @immutable
-class WordIdleLayout extends StatelessWidget {
+class WordIdleLayout extends StatefulWidget {
   /// Слово
   final Word word;
 
@@ -21,6 +22,28 @@ class WordIdleLayout extends StatelessWidget {
     super.key,
     required this.word,
   });
+
+  @override
+  State<WordIdleLayout> createState() => _WordIdleLayoutState();
+}
+
+class _WordIdleLayoutState extends State<WordIdleLayout> {
+  /// {@macro scroll_controller}
+  late final ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController()..addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController
+      ..removeListener(_onScroll)
+      ..dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) =>
@@ -32,10 +55,11 @@ class WordIdleLayout extends StatelessWidget {
           ignoring: state.isProcessing,
           child: PronouncingFilters(
             enabled: state.isProcessing,
-            child: ScrollFadeBottomMask(
+            child: ScrollFadeBottomMask.withController(
               startsAt: .65,
-              builder: (context, scrollController) => CustomScrollView(
-                controller: scrollController,
+              scrollController: _scrollController,
+              child: CustomScrollView(
+                controller: _scrollController,
                 slivers: [
                   SliverPadding(
                     padding:
@@ -48,7 +72,7 @@ class WordIdleLayout extends StatelessWidget {
                         const EdgeInsets.only(top: 32, left: 32, right: 32),
                     sliver: SliverToBoxAdapter(
                       child: WordCard(
-                        word: word,
+                        word: widget.word,
                       ),
                     ),
                   ),
@@ -101,6 +125,12 @@ class WordIdleLayout extends StatelessWidget {
                     ),
                   ],
 
+                  // История правильно произнесенных слов
+                  const SliverPadding(
+                    padding: EdgeInsets.only(top: 24),
+                    sliver: WordHistoryList(),
+                  ),
+
                   // Отступ снизу
                   SliverPadding(
                     padding: EdgeInsets.only(
@@ -114,14 +144,31 @@ class WordIdleLayout extends StatelessWidget {
         ),
       );
 
+  /// Обработчик на скролл
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+    final bloc = WordScope.of(context).wordHistoryBloc;
+    final maxScrollExtent = _scrollController.position.maxScrollExtent;
+    final offset = _scrollController.offset;
+    final isBottom = offset >= maxScrollExtent * .95;
+    if (isBottom && !bloc.state.isProgress && !bloc.state.isEndOfList) {
+      bloc.add(
+        WordHistoryEvent.read(
+          filter: WordScope.of(context).wordHistoryFilterBloc.state,
+        ),
+      );
+    }
+  }
+
   /// Список фонетики с аудио
-  List<Phonetic> get phoneticsWithAudio => word.phoneticsWithAudio.toList();
+  List<Phonetic> get phoneticsWithAudio =>
+      widget.word.phoneticsWithAudio.toList();
 
   /// Определения-существительные
-  List<Definition> get nounDefinitions => word.nounDefinitions.toList();
+  List<Definition> get nounDefinitions => widget.word.nounDefinitions.toList();
 
   /// Определения-глаголы
-  List<Definition> get verbDefinitions => word.verbDefinitions.toList();
+  List<Definition> get verbDefinitions => widget.word.verbDefinitions.toList();
 }
 
 /// Кнопка "Следующее слово"

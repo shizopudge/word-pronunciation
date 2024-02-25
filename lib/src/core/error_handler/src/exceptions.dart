@@ -58,6 +58,8 @@ class SpeechServiceException implements Exception {
   bool get isNoMatch => message == 'error_no_match';
 
   bool get isSpeechTimeout => message == 'error_speech_timeout';
+
+  bool get isNetwork => message == 'error_network';
 }
 
 /// {@template speech_service_permission_exception}
