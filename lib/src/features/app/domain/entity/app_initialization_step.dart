@@ -6,6 +6,7 @@ enum AppInitializationStep {
   start,
   appRouter,
   appConnect,
+  db,
   end;
 
   /// Возвращает локализованное сообщение
@@ -16,6 +17,7 @@ enum AppInitializationStep {
           context.localization.appInitializationAppRouter,
         AppInitializationStep.appConnect =>
           context.localization.appInitializationAppConnect,
+        AppInitializationStep.db => context.localization.appInitializationDB,
         AppInitializationStep.end => context.localization.appInitializationEnd,
       };
 }

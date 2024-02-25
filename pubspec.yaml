@@ -43,6 +43,7 @@ dependencies:
   just_audio: ^0.9.36
   lottie: ^3.0.0
   permission_handler: ^11.3.0
+  path: ^1.8.3
 
   # Check Connect status
   connectivity_plus: ^4.0.2
@@ -60,6 +61,9 @@ dependencies:
   # SDK extensions
   collection: ^1.17.1
   meta: ^1.9.1
+
+  # DB
+  sqflite: ^2.3.2
 
   # RxDart
   rxdart: ^0.27.7
@@ -89,6 +93,7 @@ flutter:
   assets:
     - assets/animations/
     - assets/fonts/
+    - assets/images/
 
   fonts:
     - family: Plus Jakarta Sans
@@ -138,3 +143,17 @@ flutter:
         - asset: assets/fonts/PlusJakartaSans-ExtraLightItalic.ttf
           weight: 200
           style: italic
+
+flutter_native_splash:
+  color: "#ffffff"
+  image: assets/images/logo.png
+  color_dark: "#ffffff"
+  image_dark: assets/images/logo.png
+
+  android_12:
+    image: assets/images/logo.png
+    icon_background_color: "#ffffff"
+    image_dark: assets/images/logo.png
+    icon_background_color_dark: "#ffffff"
+
+  web: false

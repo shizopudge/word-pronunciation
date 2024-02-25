@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:word_pronunciation/src/core/error_handler/error_handler.dart';
 import 'package:word_pronunciation/src/features/word/domain/entity/speach_service_status.dart';
+import 'package:word_pronunciation/src/features/word/domain/repository/i_word_repository.dart';
 import 'package:word_pronunciation/src/features/word/domain/service/speech_service.dart';
 
 part 'word_pronunciation.freezed.dart';
@@ -126,8 +127,10 @@ class WordPronunciationState with _$WordPronunciationState {
 /// {@endtemplate}
 class WordPronunciationBloc
     extends Bloc<WordPronunciationEvent, WordPronunciationState> {
+  final IWordRepository _repository;
+
   /// {@macro speech_service}
-  static const SpeechService _speechService = SpeechService();
+  final ISpeechService _speechService;
 
   /// Подписка на стрим результатов произношения
   late final StreamSubscription<String> _resultStream;
@@ -139,7 +142,12 @@ class WordPronunciationBloc
   late final StreamSubscription<String> _errorStream;
 
   /// {@macro word_pronunciation_bloc}
-  WordPronunciationBloc() : super(const WordPronunciationState.idle()) {
+  WordPronunciationBloc({
+    required final IWordRepository repository,
+    required final ISpeechService speechService,
+  })  : _speechService = speechService,
+        _repository = repository,
+        super(const WordPronunciationState.idle()) {
     _resultStream = _speechService.resultStream.listen(
         (result) => add(WordPronunciationEvent.onResult(result: result)));
     _statusStream = _speechService.statusStream.listen(
@@ -178,6 +186,8 @@ class WordPronunciationBloc
         ),
       );
       rethrow;
+    } finally {
+      if (state.isError) emit(const WordPronunciationState.idle());
     }
   }
 
@@ -230,16 +240,26 @@ class WordPronunciationBloc
 
   Future<void> _checkResult(_CheckResultWordPronunciationEvent event,
       Emitter<WordPronunciationState> emit) async {
-    final expectedWord = event.expectedWord?.toLowerCase();
-    final result = (state.resultOrNull ?? '').toLowerCase();
-    if (result == expectedWord) {
-      emit(WordPronunciationState.right(result: result));
-    } else {
-      emit(WordPronunciationState.incorrect(result: result));
+    final expectedWord = event.expectedWord ?? '';
+    final result = state.resultOrNull ?? '';
+    if (result.isEmpty || expectedWord.isEmpty) {
+      return emit(const WordPronunciationState.idle());
     }
-    await Future<void>.delayed(const Duration(milliseconds: 2000));
-    if (!state.isPronouncing && !state.isProgress) {
-      emit(const WordPronunciationState.idle());
+    try {
+      final pronounced = result.toLowerCase() == expectedWord.toLowerCase();
+      if (pronounced) {
+        emit(WordPronunciationState.right(result: result));
+      } else {
+        emit(WordPronunciationState.incorrect(result: result));
+      }
+      unawaited(_repository
+          .writeWordToLocalHistory(word: expectedWord, pronounced: pronounced)
+          ?.timeout(const Duration(seconds: 15)));
+    } finally {
+      await Future<void>.delayed(const Duration(milliseconds: 1000));
+      if (!state.isPronouncing && !state.isProgress) {
+        emit(const WordPronunciationState.idle());
+      }
     }
   }
 
@@ -278,7 +298,6 @@ class WordPronunciationBloc
     await _resultStream.cancel();
     await _statusStream.cancel();
     await _errorStream.cancel();
-    await _speechService.dispose();
     return super.close();
   }
 }

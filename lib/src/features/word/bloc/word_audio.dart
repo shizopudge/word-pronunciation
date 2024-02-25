@@ -73,14 +73,16 @@ class WordAudioState with _$WordAudioState {
 /// Блок аудио слова
 /// {@endtemplate}
 class WordAudioBloc extends Bloc<WordAudioEvent, WordAudioState> {
-  /// Аудио сервис
-  static const IAudioService _audioService = AudioService();
+  /// {@macro audio_service}
+  final IAudioService _audioService;
 
   /// Подписка на стрим изменения состояний плеера
   late final StreamSubscription<AudioState> _playerStateStreamSubscription;
 
   /// {@macro word_audio_bloc}
-  WordAudioBloc() : super(const WordAudioState.idle()) {
+  WordAudioBloc({required final IAudioService audioService})
+      : _audioService = audioService,
+        super(const WordAudioState.idle()) {
     _playerStateStreamSubscription = _audioService.playerStateStream.listen(
       (audioState) => switch (audioState) {
         AudioState.ready => add(const WordAudioEvent.setPlayingState()),
@@ -156,7 +158,6 @@ class WordAudioBloc extends Bloc<WordAudioEvent, WordAudioState> {
   @override
   Future<void> close() async {
     await _playerStateStreamSubscription.cancel();
-    await _audioService.dispose();
     return super.close();
   }
 }

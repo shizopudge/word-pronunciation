@@ -8,9 +8,13 @@ class WordTitle extends StatelessWidget {
   /// Данные
   final String data;
 
+  /// Действие
+  final Widget? action;
+
   /// Создает заголовок на [WordPage]
   const WordTitle(
     this.data, {
+    this.action,
     super.key,
   });
 
@@ -20,13 +24,23 @@ class WordTitle extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Text(
-              data,
-              style: context.theme.textTheme.headlineSmall?.copyWith(
-                color: context.theme.isDark
-                    ? context.theme.colors.white
-                    : context.theme.colors.black,
-              ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    data,
+                    style: context.theme.textTheme.headlineSmall?.copyWith(
+                      color: context.theme.isDark
+                          ? context.theme.colors.white
+                          : context.theme.colors.black,
+                    ),
+                  ),
+                ),
+                if (action != null) ...[
+                  const SizedBox(width: 12),
+                  action!,
+                ],
+              ],
             ),
           ),
           const Padding(

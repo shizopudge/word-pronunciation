@@ -270,7 +270,7 @@ class LightAppTheme implements IAppTheme {
         fillColor: MaterialStateProperty.resolveWith(
           (states) => states.contains(MaterialState.selected)
               ? colors.black
-              : colors.white,
+              : colors.grey,
         ),
         checkColor: MaterialStateProperty.all(colors.white),
         splashRadius: 0,

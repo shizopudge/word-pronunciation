@@ -8,11 +8,18 @@ import 'package:word_pronunciation/src/core/extensions/extensions.dart';
 import 'package:word_pronunciation/src/features/toaster/toaster.dart';
 import 'package:word_pronunciation/src/features/word/bloc/word.dart';
 import 'package:word_pronunciation/src/features/word/bloc/word_audio.dart';
+import 'package:word_pronunciation/src/features/word/bloc/word_history.dart';
+import 'package:word_pronunciation/src/features/word/bloc/word_history_filter.dart';
 import 'package:word_pronunciation/src/features/word/bloc/word_pronunciation.dart';
-import 'package:word_pronunciation/src/features/word/data/datasource/word_datasource.dart';
+import 'package:word_pronunciation/src/features/word/data/datasource/word_local_datasource.dart';
+import 'package:word_pronunciation/src/features/word/data/datasource/word_remote_datasource.dart';
 import 'package:word_pronunciation/src/features/word/data/model/definition.dart';
 import 'package:word_pronunciation/src/features/word/data/model/phonetic.dart';
 import 'package:word_pronunciation/src/features/word/data/repository/word_repository.dart';
+import 'package:word_pronunciation/src/features/word/domain/entity/word_history_filter.dart';
+import 'package:word_pronunciation/src/features/word/domain/repository/i_word_repository.dart';
+import 'package:word_pronunciation/src/features/word/domain/service/audio_service.dart';
+import 'package:word_pronunciation/src/features/word/domain/service/speech_service.dart';
 import 'package:word_pronunciation/src/features/word/presentation/widgets/widgets.dart';
 
 /// Область видимости зависимостей модуля word
@@ -56,6 +63,21 @@ class WordScopeState extends State<WordScope> with WidgetsBindingObserver {
   /// {@macro word_pronunciation_bloc}
   late final WordPronunciationBloc _wordPronunciationBloc;
 
+  /// {@macro word_history_bloc}
+  late final WordHistoryBloc _wordHistoryBloc;
+
+  /// {@macro word_history_filter_bloc}
+  late final WordHistoryFilterBloc _wordHistoryFilterBloc;
+
+  /// {@macro speech_service}
+  late final ISpeechService _speechService;
+
+  /// {@macro audio_service}
+  late final IAudioService _audioService;
+
+  /// Репозиторий
+  late final IWordRepository _repository;
+
   /// {@macro overlay}
   OverlayState? _overlay;
 
@@ -68,14 +90,22 @@ class WordScopeState extends State<WordScope> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _wordBloc = WordBloc(
-      repository: WordRepository(
-        datasource: WordDatasource(dioClient: context.dependencies.dioClient),
-      ),
-    )..add(const WordEvent.read());
-    _wordAudioBloc = WordAudioBloc();
-    _wordPronunciationBloc = WordPronunciationBloc()
-      ..add(const WordPronunciationEvent.initialize());
+    _speechService = const SpeechService();
+    _audioService = const AudioService();
+    _repository = WordRepository(
+      remoteDatasource:
+          WordRemoteDatasource(dioClient: context.dependencies.dioClient),
+      localDatasource: WordLocalDatasource(db: context.dependencies.db),
+    );
+    _wordBloc = WordBloc(repository: _repository)..add(const WordEvent.read());
+    _wordAudioBloc = WordAudioBloc(audioService: _audioService);
+    _wordPronunciationBloc = WordPronunciationBloc(
+      repository: _repository,
+      speechService: _speechService,
+    )..add(const WordPronunciationEvent.initialize());
+    _wordHistoryFilterBloc = WordHistoryFilterBloc();
+    _wordHistoryBloc = WordHistoryBloc(repository: _repository)
+      ..add(WordHistoryEvent.read(filter: _wordHistoryFilterBloc.state));
   }
 
   @override
@@ -97,10 +127,14 @@ class WordScopeState extends State<WordScope> with WidgetsBindingObserver {
     _wordBloc.close();
     _wordAudioBloc.close();
     _wordPronunciationBloc.close();
+    _wordHistoryBloc.close();
+    _wordHistoryFilterBloc.close();
     _overlayEntry
       ?..remove()
       ..dispose();
     _overlay?.dispose();
+    _audioService.dispose();
+    _speechService.dispose();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -110,6 +144,8 @@ class WordScopeState extends State<WordScope> with WidgetsBindingObserver {
         wordBloc: _wordBloc,
         wordAudioBloc: _wordAudioBloc,
         wordPronunciationBloc: _wordPronunciationBloc,
+        wordHistoryBloc: _wordHistoryBloc,
+        wordHistoryFilterBloc: _wordHistoryFilterBloc,
         state: this,
         child: _WordScopeListeners(
           child: widget.child,
@@ -128,12 +164,16 @@ class WordScopeState extends State<WordScope> with WidgetsBindingObserver {
   /// Читает следующее слово
   void readNextWord() => _wordBloc.add(const WordEvent.read());
 
+  /// Читает слово из словаря
+  void readFromDictionary(String word) =>
+      _wordBloc.add(WordEvent.readFromDictionary(word: word));
+
   /// Обработчик кнопки "Попробовать снова"
   void tryAgain() => _wordBloc.add(const WordEvent.read());
 
   /// Начинает/останавливает произношение
   void togglePronunciation() {
-    if (_wordPronunciationBloc.state.isPronouncing) {
+    if (_wordPronunciationBloc.state.isProcessing) {
       return _wordPronunciationBloc.add(const WordPronunciationEvent.stop());
     }
     return _wordPronunciationBloc.add(const WordPronunciationEvent.pronounce());
@@ -150,6 +190,8 @@ class WordScopeState extends State<WordScope> with WidgetsBindingObserver {
         message = context.localization.errorNoMatch;
       } else if (err.isSpeechTimeout) {
         message = context.localization.errorSpeechTimeout;
+      } else if (err.isNetwork) {
+        message = context.localization.errorSpeechNetwork;
       } else {
         message = context.localization.unknownErrorOccurred;
       }
@@ -183,6 +225,15 @@ class WordScopeState extends State<WordScope> with WidgetsBindingObserver {
     _overlayEntry?.remove();
     _overlayEntry?.dispose();
     _overlayEntry = null;
+  }
+
+  /// Показывает [WordHistoryFilterSheet]
+  Future<void> showWordHistoryFilterSheet() async {
+    final result = await WordHistoryFilterSheet.show(context,
+        initialValue: _wordHistoryFilterBloc.state);
+    if (result != null && mounted) {
+      _wordHistoryFilterBloc.add(WordHistoryFilterEvent.select(filter: result));
+    }
   }
 
   /// Показывает [DefinitionSheet]
@@ -219,6 +270,12 @@ class InheritedWordScope extends InheritedWidget {
   /// {@macro word_pronunciation_bloc}
   final WordPronunciationBloc wordPronunciationBloc;
 
+  /// {@macro word_history_bloc}
+  final WordHistoryBloc wordHistoryBloc;
+
+  /// {@macro word_history_filter_bloc}
+  final WordHistoryFilterBloc wordHistoryFilterBloc;
+
   /// Состояние [WordScope]
   final WordScopeState state;
 
@@ -227,6 +284,8 @@ class InheritedWordScope extends InheritedWidget {
     required this.wordBloc,
     required this.wordAudioBloc,
     required this.wordPronunciationBloc,
+    required this.wordHistoryBloc,
+    required this.wordHistoryFilterBloc,
     required this.state,
     required super.child,
     super.key,
@@ -237,6 +296,8 @@ class InheritedWordScope extends InheritedWidget {
       oldWidget.wordBloc != wordBloc ||
       oldWidget.wordAudioBloc != wordAudioBloc ||
       oldWidget.wordPronunciationBloc != wordPronunciationBloc ||
+      oldWidget.wordHistoryBloc != wordHistoryBloc ||
+      oldWidget.wordHistoryFilterBloc != wordHistoryFilterBloc ||
       oldWidget.state != state;
 }
 
@@ -254,20 +315,29 @@ class _WordScopeListeners extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MultiBlocListener(
         listeners: [
+          // Обрабатывает ошибки в [WordBloc], останавливает воспроизведение
+          // аудио и произношение при загрузке в [WordBloc]
           BlocListener<WordBloc, WordState>(
             bloc: WordScope.of(context).wordBloc,
             listenWhen: (previous, current) =>
                 current.isError || current.isProgress,
             listener: (context, state) => state.mapOrNull<void>(
-              progress: (p) => WordScope.of(context)
-                  .wordAudioBloc
-                  .add(const WordAudioEvent.stop()),
+              progress: (p) {
+                WordScope.of(context)
+                    .wordAudioBloc
+                    .add(const WordAudioEvent.stop());
+                WordScope.of(context)
+                    .wordPronunciationBloc
+                    .add(const WordPronunciationEvent.stop());
+              },
               error: (e) => context.showToaster(
                 message: e.errorHandler.toMessage(context),
                 type: ToasterType.error,
               ),
             ),
           ),
+
+          // Обрабатывает ошибки при воспроизведении аудио
           BlocListener<WordAudioBloc, WordAudioState>(
             bloc: WordScope.of(context).wordAudioBloc,
             listenWhen: (previous, current) => current.isError,
@@ -278,10 +348,25 @@ class _WordScopeListeners extends StatelessWidget {
               ),
             ),
           ),
+
+          // Скрывает результат произношения, проверяет результат произношения
+          // и обрабатывает ошибки при произношении
           BlocListener<WordPronunciationBloc, WordPronunciationState>(
             bloc: WordScope.of(context).wordPronunciationBloc,
             listener: (context, state) => state.mapOrNull<void>(
-              done: (d) => WordScope.of(context).wordPronunciationBloc.add(
+              right: (_) => WordScope.of(context).wordHistoryBloc.add(
+                    WordHistoryEvent.read(
+                      reset: true,
+                      filter: WordScope.of(context).wordHistoryFilterBloc.state,
+                    ),
+                  ),
+              incorrect: (_) => WordScope.of(context).wordHistoryBloc.add(
+                    WordHistoryEvent.read(
+                      reset: true,
+                      filter: WordScope.of(context).wordHistoryFilterBloc.state,
+                    ),
+                  ),
+              done: (_) => WordScope.of(context).wordPronunciationBloc.add(
                     WordPronunciationEvent.checkResult(
                       expectedWord:
                           WordScope.of(context).wordBloc.state.word?.data,
@@ -294,6 +379,8 @@ class _WordScopeListeners extends StatelessWidget {
                   .onWordPronunciationBlocError(e.errorHandler),
             ),
           ),
+
+          // Показывает результат произношения
           BlocListener<WordPronunciationBloc, WordPronunciationState>(
             bloc: WordScope.of(context).wordPronunciationBloc,
             listenWhen: (previous, current) =>
@@ -302,6 +389,31 @@ class _WordScopeListeners extends StatelessWidget {
               pronunciation: (_) =>
                   WordScope.of(context).state.showPronunciationResult(),
             ),
+          ),
+
+          // Обрабатывает ошибки в [WordHistoryBloc]
+          BlocListener<WordHistoryBloc, WordHistoryState>(
+            bloc: WordScope.of(context).wordHistoryBloc,
+            listenWhen: (previous, current) => current.isError,
+            listener: (context, state) => state.mapOrNull<void>(
+              error: (e) => context.showToaster(
+                message: e.errorHandler.toMessage(context),
+                type: ToasterType.error,
+              ),
+            ),
+          ),
+
+          // Читает историю при изменении фильтра в [WordHistoryFilterBloc]
+          BlocListener<WordHistoryFilterBloc, WordHistoryFilter>(
+            bloc: WordScope.of(context).wordHistoryFilterBloc,
+            listenWhen: (previous, current) => previous != current,
+            listener: (context, state) =>
+                WordScope.of(context).wordHistoryBloc.add(
+                      WordHistoryEvent.read(
+                        reset: true,
+                        filter: state,
+                      ),
+                    ),
           ),
         ],
         child: child,

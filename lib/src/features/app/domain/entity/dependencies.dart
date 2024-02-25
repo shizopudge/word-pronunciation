@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:word_pronunciation/src/core/app_connect/app_connect.dart';
+import 'package:word_pronunciation/src/core/database/database.dart';
 import 'package:word_pronunciation/src/core/dio/dio.dart';
 import 'package:word_pronunciation/src/core/key_local_storage/key_local_storage.dart';
 import 'package:word_pronunciation/src/core/router/router.dart';
@@ -23,6 +24,9 @@ abstract interface class Dependencies implements CoreDependencies {
 
   /// {@macro app_connect.dart}
   abstract final IAppConnect appConnect;
+
+  /// {@macro db}
+  abstract final IDB db;
 
   /// Вызывается при удалении зависимостей
   @override
@@ -51,18 +55,23 @@ final class $MutableDependencies implements Dependencies {
   @override
   late IAppConnect appConnect;
 
+  @override
+  late IDB db;
+
   /// Возвращает иммутабельные зависимости
   Dependencies freeze() => _$ImmutableDependencies(
         keyLocalStorage: keyLocalStorage,
         dioClient: dioClient,
         router: router,
         appConnect: appConnect,
+        db: db,
       );
 
   @override
   Future<void> dispose() async {
     router.dispose();
     dioClient.close();
+    await db.dispose();
   }
 }
 
@@ -77,6 +86,7 @@ final class _$ImmutableDependencies implements Dependencies {
     required this.dioClient,
     required this.router,
     required this.appConnect,
+    required this.db,
   });
 
   @override
@@ -92,8 +102,12 @@ final class _$ImmutableDependencies implements Dependencies {
   final IAppConnect appConnect;
 
   @override
+  final IDB db;
+
+  @override
   Future<void> dispose() async {
     router.dispose();
     dioClient.close();
+    await db.dispose();
   }
 }

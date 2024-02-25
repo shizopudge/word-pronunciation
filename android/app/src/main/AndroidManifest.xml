@@ -10,7 +10,7 @@
         </intent>
     </queries>
     <application
-            android:label="word_pronunciation"
+            android:label="Word Pronunciation"
             android:name="${applicationName}"
             android:icon="@mipmap/ic_launcher"
             android:usesCleartextTraffic="true">
