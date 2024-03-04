@@ -6,7 +6,6 @@ import 'package:word_pronunciation/src/core/app_connect/app_connect.dart';
 import 'package:word_pronunciation/src/core/database/database.dart';
 import 'package:word_pronunciation/src/core/error_handler/error_handler.dart';
 import 'package:word_pronunciation/src/core/logger/logger.dart';
-import 'package:word_pronunciation/src/core/router/router.dart';
 import 'package:word_pronunciation/src/features/app/domain/entity/app_initialization_step.dart';
 import 'package:word_pronunciation/src/features/app/domain/entity/core_dependencies.dart';
 import 'package:word_pronunciation/src/features/app/domain/entity/dependencies.dart';
@@ -88,8 +87,6 @@ class AppInitializationDatasource implements IAppInitializationDatasource {
 
   final Map<AppInitializationStep, _InitializationStep> _initializationSteps =
       <AppInitializationStep, _InitializationStep>{
-    AppInitializationStep.appRouter: (dependencies) =>
-        dependencies.router = AppRouter(),
     AppInitializationStep.appConnect: (dependencies) =>
         dependencies.appConnect = const AppConnect(),
     AppInitializationStep.db: (dependencies) async {

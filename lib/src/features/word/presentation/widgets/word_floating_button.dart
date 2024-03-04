@@ -1,10 +1,10 @@
+import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:word_pronunciation/src/core/extensions/extensions.dart';
 import 'package:word_pronunciation/src/core/ui_kit/ui_kit.dart';
 import 'package:word_pronunciation/src/features/word/bloc/word.dart';
 import 'package:word_pronunciation/src/features/word/bloc/word_pronunciation.dart';
-import 'package:word_pronunciation/src/features/word/presentation/widgets/widgets.dart';
 import 'package:word_pronunciation/src/features/word/presentation/word_page.dart';
 import 'package:word_pronunciation/src/features/word/scope/word_scope.dart';
 
@@ -72,7 +72,7 @@ class _TryAgainButton extends StatelessWidget {
 
 /// Кнопка микрофона
 @immutable
-class _MicButton extends StatelessWidget {
+class _MicButton extends StatefulWidget {
   /// Обрбаотчик нажатия
   final VoidCallback onTap;
 
@@ -82,43 +82,83 @@ class _MicButton extends StatelessWidget {
   });
 
   @override
+  State<_MicButton> createState() => _MicButtonState();
+}
+
+class _MicButtonState extends State<_MicButton>
+    with SingleTickerProviderStateMixin {
+  /// {@macro aniamtion_controller}
+  late final AnimationController _animationController;
+
+  /// {@macro animation}
+  late final Animation<Color?> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2000),
+    );
+    _animation = ColorTween(
+      begin: context.themeRead.colors.blue,
+      end: context.themeRead.colors.red,
+    ).animate(_animationController);
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) =>
-      BlocBuilder<WordPronunciationBloc, WordPronunciationState>(
+      BlocConsumer<WordPronunciationBloc, WordPronunciationState>(
         bloc: WordScope.of(context).wordPronunciationBloc,
-        builder: (context, state) {
-          late final Widget icon;
-
-          if (state.isProcessing) {
-            icon = AudioAnimation(color: context.theme.colors.red, size: 32);
-          } else {
-            icon = const Icon(Icons.mic, size: 40);
-          }
-
-          return TweenAnimationBuilder<double>(
-            duration: Durations.short4,
-            tween: Tween(begin: 0.0, end: 1.0),
-            builder: (context, scale, child) => ScaleTransition(
-              scale: AlwaysStoppedAnimation<double>(scale),
-              child: AvatarGlow(
-                glowColor: context.theme.colors.red,
-                animate: state.isProcessing,
-                child: IconButton(
-                  onPressed: onTap,
+        listenWhen: (previous, current) =>
+            current.isProcessing || current.isIdle,
+        listener: (context, state) => _listener(state),
+        builder: (context, state) => TweenAnimationBuilder<double>(
+          duration: Durations.short4,
+          tween: Tween(begin: 0.0, end: 1.0),
+          builder: (context, scale, child) => ScaleTransition(
+            scale: AlwaysStoppedAnimation<double>(scale),
+            child: AvatarGlow(
+              glowColor: context.theme.colors.red,
+              animate: state.isProcessing,
+              child: AnimatedBuilder(
+                animation: _animation,
+                builder: (context, child) => IconButton(
+                  onPressed: widget.onTap,
                   tooltip: context.localization.startPronunciation,
                   constraints: BoxConstraints.tight(const Size.square(56)),
                   style: IconButton.styleFrom(
-                    backgroundColor: context.theme.colors.white,
-                    foregroundColor: context.theme.colors.blue,
+                    backgroundColor: context.theme.isDark
+                        ? context.theme.colors.white
+                        : context.theme.colors.black,
+                    foregroundColor: _animation.value,
                     elevation: 12,
                   ),
-                  icon: AnimatedSwitcher(
-                    duration: Durations.medium1,
-                    child: icon,
+                  icon: Icon(
+                    Icons.mic,
+                    size: 40,
+                    color: _animation.value,
                   ),
                 ),
               ),
             ),
-          );
-        },
+          ),
+        ),
       );
+
+  /// Слушатель
+  Future<void> _listener(WordPronunciationState state) {
+    if (state.isProcessing) return _animationController.repeat(reverse: true);
+    return Future<void>.sync(
+      () => _animationController
+        ..stop()
+        ..reset(),
+    );
+  }
 }

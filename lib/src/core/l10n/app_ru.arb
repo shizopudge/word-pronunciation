@@ -1,7 +1,6 @@
 {
   "@@locale": "ru",
   "appInitializationStart": "Начало инициализации приложения",
-  "appInitializationAppRouter": "Создание роутера",
   "appInitializationAppConnect": "Проверка подключения",
   "appInitializationDB": "Инициализация локальной базы данных",
   "appInitializationEnd": "Инициализация приложения завершена",
@@ -56,5 +55,6 @@
   "pronounced": "Произнесенные",
   "pronouncedIncorrect": "Произнесенные неправильно",
   "applyFilter": "Применить фильтр",
-  "errorSpeechNetwork": "Произошла ошибка с интернет соединением во время произношения"
+  "errorSpeechNetwork": "Произошла ошибка с интернет соединением во время произношения",
+  "up": "Вверх"
 }

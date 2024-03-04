@@ -1,7 +1,6 @@
 {
   "@@locale": "en",
   "appInitializationStart": "App initialization starting",
-  "appInitializationAppRouter": "Creating router",
   "appInitializationAppConnect": "Checking connection",
   "appInitializationDB": "Initializing the local database",
   "appInitializationEnd": "App initialization finished",
@@ -56,5 +55,6 @@
   "pronounced": "Pronounced",
   "pronouncedIncorrect": "Pronounced incorrect",
   "applyFilter": "Apply filter",
-  "errorSpeechNetwork": "An error occurred with the Internet connection during pronunciation"
+  "errorSpeechNetwork": "An error occurred with the Internet connection during pronunciation",
+  "up": "Up"
 }
