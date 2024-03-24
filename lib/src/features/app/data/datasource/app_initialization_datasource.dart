@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:word_pronunciation/src/core/analytics/analytics.dart';
+import 'package:word_pronunciation/src/core/app_analytics/app_analytics.dart';
 import 'package:word_pronunciation/src/core/app_connect/app_connect.dart';
 import 'package:word_pronunciation/src/core/database/database.dart';
 import 'package:word_pronunciation/src/core/error_handler/error_handler.dart';

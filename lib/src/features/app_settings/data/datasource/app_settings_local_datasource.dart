@@ -4,9 +4,7 @@ import 'package:meta/meta.dart';
 import 'package:word_pronunciation/src/core/key_local_storage/key_local_storage.dart';
 import 'package:word_pronunciation/src/features/app_settings/data/model/app_settings.dart';
 
-/// {@template i_app_settings_local_datasource}
 /// Интерфейс локального источника данных настроек приложения
-/// {@endtemplate}
 @immutable
 abstract interface class IAppSettingsLocalDatasource {
   /// Получает настройки из локального хранилища

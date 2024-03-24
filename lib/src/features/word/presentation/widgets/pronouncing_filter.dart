@@ -22,20 +22,16 @@ class PronouncingFilter extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    if (!enabled) return child;
-
-    return ClipRect(
-      child: IgnorePointer(
+  Widget build(BuildContext context) => IgnorePointer(
         ignoring: enabled,
         child: ColorFiltered(
           colorFilter: ColorFilter.mode(
-            color ?? context.theme.colors.black.withOpacity(.85),
+            enabled
+                ? color ?? context.theme.colors.black.withOpacity(.85)
+                : Colors.transparent,
             BlendMode.darken,
           ),
           child: child,
         ),
-      ),
-    );
-  }
+      );
 }

@@ -39,7 +39,6 @@ class WordAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
             builder: (context, child) {
               late final String title;
-              Widget? action;
 
               final word = wordState.word?.data;
               final showWord = WordScope.of(context).state.showWord;

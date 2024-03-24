@@ -9,7 +9,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:word_pronunciation/firebase_options.dart';
-import 'package:word_pronunciation/src/core/analytics/analytics.dart';
+import 'package:word_pronunciation/src/core/app_analytics/app_analytics.dart';
 import 'package:word_pronunciation/src/core/bloc_observer/bloc_observer.dart';
 import 'package:word_pronunciation/src/core/dio/dio.dart';
 import 'package:word_pronunciation/src/core/error_handler/error_handler.dart';

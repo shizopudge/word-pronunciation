@@ -31,6 +31,8 @@ enum PartOfSpeech {
   /// Глагол
   @JsonValue('verb')
   verb,
+
+  /// Неизвестно
   @JsonValue('unknown')
   unknown;
 }

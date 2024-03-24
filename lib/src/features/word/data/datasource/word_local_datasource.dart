@@ -39,8 +39,11 @@ class WordLocalDatasource implements IWordLocalDatasource {
 
     if (filter != WordHistoryFilter.all) where = 'pronounced = ?';
 
-    if (filter == WordHistoryFilter.pronounced) whereArgs = [1];
-    if (filter == WordHistoryFilter.incorrect) whereArgs = [0];
+    if (filter == WordHistoryFilter.pronounced) {
+      whereArgs = [1];
+    } else if (filter == WordHistoryFilter.incorrect) {
+      whereArgs = [0];
+    }
 
     return _db.readMany<LocalWord>(
       table: _table,

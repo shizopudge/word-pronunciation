@@ -25,7 +25,7 @@ class AppInitializationProgressPage extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   PrimaryLoadingIndicator(
                     color: context.theme.isDark

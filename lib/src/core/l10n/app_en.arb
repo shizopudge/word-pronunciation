@@ -56,5 +56,11 @@
   "pronouncedIncorrect": "Pronounced incorrect",
   "applyFilter": "Apply filter",
   "errorSpeechNetwork": "An error occurred with the Internet connection during pronunciation",
-  "up": "Up"
+  "up": "Up",
+  "settings": "Settings",
+  "theme": "Theme",
+  "light": "Light",
+  "dark": "Dark",
+  "system": "System",
+  "automaticallyReadNextWord": "Automatically read next word"
 }

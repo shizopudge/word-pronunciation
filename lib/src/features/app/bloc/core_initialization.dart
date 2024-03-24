@@ -56,7 +56,7 @@ class CoreInitializationBloc
     } on Object catch (error) {
       emit(
         CoreInitializationState.error(
-          errorHandler: ErrorHandler(error: error),
+          errorHandler: ErrorHandler(error),
         ),
       );
       rethrow;

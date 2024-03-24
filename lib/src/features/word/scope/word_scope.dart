@@ -257,9 +257,9 @@ class WordScopeState extends State<WordScope> with WidgetsBindingObserver {
       title: context.localization.microphonePermissions,
       description: context.localization.youHaventGivenPermissionToUseMic,
     );
-    if (result != null && result && context.mounted) {
+    if (result != null && result && mounted) {
       final isCanOpen = await openAppSettings();
-      if (!isCanOpen && context.mounted) {
+      if (!isCanOpen && mounted) {
         context.showToaster(
           message: context.localization.cantOpenAppSettings,
           type: ToasterType.error,

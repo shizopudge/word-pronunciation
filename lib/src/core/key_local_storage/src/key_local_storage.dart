@@ -1,9 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// {@template key_local_storage}
-/// Локальное key-value хранилище
-/// {@endtemplate}
+/// Интерфейс локального key-value хранилища
 @immutable
 abstract interface class IKeyLocalStorage {
   /// Записывает значение
@@ -25,7 +23,9 @@ abstract interface class IKeyLocalStorage {
   Future<bool> clear();
 }
 
-/// {@macro key_local_storage}
+/// {@template key_local_storage}
+/// Локальное key-value хранилище
+/// {@endtemplate}
 @immutable
 class KeyLocalStorage implements IKeyLocalStorage {
   /// Экземпляр SharedPreferences

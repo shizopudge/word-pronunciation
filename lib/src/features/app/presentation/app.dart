@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:word_pronunciation/src/core/analytics/analytics.dart';
+import 'package:word_pronunciation/src/core/app_analytics/app_analytics.dart';
 import 'package:word_pronunciation/src/core/extensions/extensions.dart';
 import 'package:word_pronunciation/src/core/ui_kit/ui_kit.dart';
 import 'package:word_pronunciation/src/features/app/bloc/app_initialization.dart';

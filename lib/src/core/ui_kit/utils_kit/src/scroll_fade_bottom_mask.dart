@@ -1,6 +1,61 @@
 import 'package:flutter/material.dart';
 import 'package:word_pronunciation/src/core/ui_kit/ui_kit.dart';
 
+/// Миксин для упрощения использования виджета [FadeBottomMask] со
+/// скроллящимися виджетами
+mixin ScrollFadeBottomMaskMixin<T extends StatefulWidget> on State<T> {
+  /// {@template scroll_controller}
+  /// Контроллер скролла
+  /// {@endtemplate}
+  late final ScrollController scrollController;
+
+  /// {@template is_fade_mask_enabled_controller}
+  /// Если true, значит маска включена
+  /// {@endtemplate}
+  late final ValueNotifier<bool> isFadeMaskEnabledController;
+
+  @override
+  void initState() {
+    super.initState();
+    scrollController = ScrollController();
+    isFadeMaskEnabledController = ValueNotifier<bool>(false);
+    _initialize();
+  }
+
+  @override
+  void dispose() {
+    scrollController
+      ..removeListener(_scrollListener)
+      ..dispose();
+    isFadeMaskEnabledController.dispose();
+    super.dispose();
+  }
+
+  /// Инициализирует миксин
+  @protected
+  void _initialize() => WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!scrollController.hasClients) return;
+        final maxScrollExtent = scrollController.position.maxScrollExtent;
+        isFadeMaskEnabledController.value = maxScrollExtent > 0.0;
+        scrollController.addListener(_scrollListener);
+      });
+
+  /// Слушатель скролла
+  @protected
+  void _scrollListener() {
+    if (!scrollController.hasClients) return;
+    final isEndOfScroll =
+        scrollController.position.atEdge && scrollController.offset > 0.0;
+    final isFadeMaskEnabled = !isEndOfScroll;
+    if (isFadeMaskEnabledController.value != isFadeMaskEnabled) {
+      isFadeMaskEnabledController.value = isFadeMaskEnabled;
+    }
+  }
+
+  /// Возвращает true, если [FadeBottomMask] включена
+  bool get isFadeMaskEnabled => isFadeMaskEnabledController.value;
+}
+
 /// Маска с градиентом выцветания нижней части прокручиваемого виджета
 @immutable
 class ScrollFadeBottomMask extends StatelessWidget {
@@ -44,28 +99,17 @@ class ScrollFadeBottomMask extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (_withController) {
-      final scrollController = _scrollController;
-      final child = _child;
-
-      if (scrollController != null && child != null) {
-        return _ScrollFadeBottomMaskWithController(
-          startsAt: startsAt,
-          scrollController: scrollController,
-          child: child,
-        );
-      }
-    }
-
-    final builder = _builder;
-
-    if (builder != null) {
-      return _ScrollFadeBottomMaskWithMixin(
+      return _ScrollFadeBottomMaskWithController(
         startsAt: startsAt,
-        builder: builder,
+        scrollController: _scrollController!,
+        child: _child!,
       );
     }
 
-    return const SizedBox.shrink();
+    return _ScrollFadeBottomMaskWithMixin(
+      startsAt: startsAt,
+      builder: _builder!,
+    );
   }
 }
 

@@ -1,9 +1,7 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
 
-/// {@template app_analytics}
-/// Аналитика приложения
-/// {@endtemplate}
+/// Интерфейс аналитики приложения
 @immutable
 abstract interface class IAppAnalytics {
   /// Логирует событие
@@ -23,7 +21,9 @@ abstract interface class IAppAnalytics {
   Future<void> setAnalyticsCollectionEnabled();
 }
 
-/// {@macro app_analytics}
+/// {@template app_analytics}
+/// Аналитика приложения
+/// {@endtemplate}
 @immutable
 class AppAnalytics implements IAppAnalytics {
   final FirebaseAnalytics _analytics;

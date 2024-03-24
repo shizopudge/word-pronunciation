@@ -64,7 +64,7 @@ class AppThemeBloc extends Bloc<AppThemeEvent, AppThemeState> {
     } on Object catch (error) {
       emit(
         AppThemeState.error(
-          errorHandler: ErrorHandler(error: error),
+          errorHandler: ErrorHandler(error),
           appThemeMode: state.appThemeMode,
         ),
       );
@@ -91,7 +91,7 @@ class AppThemeBloc extends Bloc<AppThemeEvent, AppThemeState> {
     } on Object catch (error) {
       emit(
         AppThemeState.error(
-          errorHandler: ErrorHandler(error: error),
+          errorHandler: ErrorHandler(error),
           appThemeMode: previousAppThemeMode,
         ),
       );

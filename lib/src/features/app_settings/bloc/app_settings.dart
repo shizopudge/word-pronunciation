@@ -66,7 +66,7 @@ class AppSettingsBloc extends Bloc<AppSettingsEvent, AppSettingsState> {
       emit(
         AppSettingsState.error(
           appSettings: state.appSettings,
-          errorHandler: ErrorHandler(error: error),
+          errorHandler: ErrorHandler(error),
         ),
       );
       rethrow;
@@ -91,7 +91,7 @@ class AppSettingsBloc extends Bloc<AppSettingsEvent, AppSettingsState> {
     } on Object catch (error) {
       emit(
         AppSettingsState.error(
-          errorHandler: ErrorHandler(error: error),
+          errorHandler: ErrorHandler(error),
           appSettings: previousAppSettings,
         ),
       );

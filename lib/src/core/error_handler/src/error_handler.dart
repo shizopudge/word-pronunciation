@@ -14,9 +14,7 @@ abstract interface class IErrorHandler extends Equatable {
   final Object error;
 
   /// {@macro error_handler}
-  const IErrorHandler({
-    required this.error,
-  });
+  const IErrorHandler(this.error);
 
   /// Переводит ошибку в сообщение
   String toMessage(BuildContext context);
@@ -28,9 +26,7 @@ abstract interface class IErrorHandler extends Equatable {
 @immutable
 class ErrorHandler extends IErrorHandler {
   /// {@macro error_base}
-  const ErrorHandler({
-    required super.error,
-  });
+  const ErrorHandler(super.error);
 
   @override
   String toMessage(BuildContext context) {
@@ -39,21 +35,21 @@ class ErrorHandler extends IErrorHandler {
     late final IErrorBase errorBase;
 
     if (error is ErrorMessage) {
-      errorBase = MessageError(error: error);
+      errorBase = MessageError(errorMessage: error);
     } else if (error is TimeoutException) {
-      errorBase = TimeoutError(error: error);
+      errorBase = const TimeoutError();
     } else if (error is AppInitializationException) {
-      errorBase = AppInitializationError(error: error);
+      errorBase = AppInitializationError(exception: error);
     } else if (error is CoreInitializationException) {
-      errorBase = CoreInitializationError(error: error);
+      errorBase = const CoreInitializationError();
     } else if (error is AudioServiceException) {
-      errorBase = AudioServiceError(error: error);
+      errorBase = const AudioServiceError();
     } else if (error is SpeechServiceException) {
-      errorBase = SpeechServiceError(error: error);
+      errorBase = const SpeechServiceError();
     } else if (error is DioException) {
-      errorBase = NetworkError(error: error);
+      errorBase = NetworkError(dioException: error);
     } else {
-      errorBase = UnknownError(error: error);
+      errorBase = const UnknownError();
     }
 
     return errorBase.toMessage(context);

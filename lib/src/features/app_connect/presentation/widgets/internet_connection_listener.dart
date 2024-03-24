@@ -120,6 +120,7 @@ class _NoConnectionBannerState extends State<_NoConnectionBanner>
   void initState() {
     super.initState();
     _animationController = AnimationController(
+      value: widget.hasConnect ? 0.0 : 1.0,
       vsync: this,
       duration: Durations.medium1,
     );

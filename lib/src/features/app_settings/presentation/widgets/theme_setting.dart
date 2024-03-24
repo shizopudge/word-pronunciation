@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:word_pronunciation/src/core/extensions/extensions.dart';
 import 'package:word_pronunciation/src/core/ui_kit/ui_kit.dart';
 import 'package:word_pronunciation/src/features/app_settings/presentation/widgets/widgets.dart';
 import 'package:word_pronunciation/src/features/app_theme/bloc/app_theme.dart';
@@ -16,9 +17,8 @@ class ThemeSetting extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SettingTitle(
-        title: 'Тема',
+        title: context.localization.theme,
         child: BlocBuilder<AppThemeBloc, AppThemeState>(
-          // TODO: Подумать над add(const AppThemeEvent.read())
           bloc: AppThemeScope.of(context).bloc..add(const AppThemeEvent.read()),
           buildWhen: (previous, current) => current.isIdle,
           builder: (context, state) {
@@ -41,21 +41,21 @@ class ThemeSetting extends StatelessWidget {
                     onTap: () => AppThemeScope.of(context)
                         .state
                         .writeAppThemeMode(AppThemeMode.light),
-                    name: 'Светлая',
+                    name: context.localization.light,
                     isEnabled: appThemeMode == AppThemeMode.light,
                   ),
                   Setting.withCheckbox(
                     onTap: () => AppThemeScope.of(context)
                         .state
                         .writeAppThemeMode(AppThemeMode.dark),
-                    name: 'Темная',
+                    name: context.localization.dark,
                     isEnabled: appThemeMode == AppThemeMode.dark,
                   ),
                   Setting.withCheckbox(
                     onTap: () => AppThemeScope.of(context)
                         .state
                         .writeAppThemeMode(AppThemeMode.system),
-                    name: 'Системная',
+                    name: context.localization.system,
                     isEnabled: appThemeMode == AppThemeMode.system,
                   ),
                 ],

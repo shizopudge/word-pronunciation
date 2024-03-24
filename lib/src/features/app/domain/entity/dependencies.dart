@@ -61,7 +61,7 @@ final class $MutableDependencies implements Dependencies {
 
   @override
   Future<void> dispose() async {
-    dioClient.close();
+    dioClient.close(force: true);
     await db.dispose();
   }
 }
@@ -93,7 +93,7 @@ final class _$ImmutableDependencies implements Dependencies {
 
   @override
   Future<void> dispose() async {
-    dioClient.close();
+    dioClient.close(force: true);
     await db.dispose();
   }
 }

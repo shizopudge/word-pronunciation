@@ -109,8 +109,12 @@ class WordScopeListeners extends StatelessWidget {
             listenWhen: (previous, current) =>
                 !previous.isPreviousStatePronunciation,
             listener: (context, state) => state.mapOrNull<void>(
-              pronunciation: (_) =>
-                  WordScope.of(context).state.showPronunciationResult(),
+              pronunciation: (_) {
+                WordScope.of(context)
+                    .wordAudioBloc
+                    .add(const WordAudioEvent.stop());
+                WordScope.of(context).state.showPronunciationResult();
+              },
             ),
           ),
 

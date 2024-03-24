@@ -21,8 +21,8 @@ class AppSettingsPage extends StatelessWidget {
                     ? context.theme.colors.black
                     : context.theme.colors.white)
                 .withOpacity(.2),
-            title: const Text(
-              'Настройки',
+            title: Text(
+              context.localization.settings,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -41,6 +41,11 @@ class AppSettingsPage extends StatelessWidget {
               // Тема
               const SliverToBoxAdapter(
                 child: ThemeSetting(),
+              ),
+
+              // Тема
+              const SliverToBoxAdapter(
+                child: AutoNextWordSetting(),
               ),
 
               // Отступ снизу
