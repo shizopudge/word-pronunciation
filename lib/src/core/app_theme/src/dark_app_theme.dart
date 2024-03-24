@@ -293,7 +293,7 @@ class DarkAppTheme implements IAppTheme {
         ),
         trackColor: MaterialStateProperty.resolveWith(
           (states) => states.contains(MaterialState.selected)
-              ? colors.black
+              ? colors.blue
               : colors.grey,
         ),
         trackOutlineColor: MaterialStateProperty.all(Colors.transparent),

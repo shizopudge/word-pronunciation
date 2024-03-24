@@ -104,11 +104,12 @@ class _PrimaryLoadingIndicatorState extends State<PrimaryLoadingIndicator>
       );
 
   /// Цвет инидкатора
-  Color? get _indicatorColor =>
-      widget.color ??
-      (_isDarkTheme
-          ? context.themeMaybe?.colors.white
-          : context.themeMaybe?.colors.black);
+  Color? get _indicatorColor {
+    if (widget.color != null) return widget.color;
+    return _isDarkTheme
+        ? context.themeMaybe?.colors.white
+        : context.themeMaybe?.colors.black;
+  }
 
   /// Возвращает true, если тема приложения темная
   bool get _isDarkTheme => context.themeMaybe?.isDark ?? false;

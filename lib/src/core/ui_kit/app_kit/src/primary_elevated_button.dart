@@ -65,14 +65,11 @@ class _PrimaryElevatedButtonState extends State<PrimaryElevatedButton>
       child: ElevatedButton(
         onPressed: _onTap,
         style: widget.style,
-        child: AnimatedSize(
-          duration: Durations.short2,
-          child: AnimatedSwitcher(
-            duration: Durations.short3,
-            child: widget.isLoading
-                ? PrimaryLoadingIndicator(color: context.theme.colors.white)
-                : widget.child,
-          ),
+        child: AnimatedSwitcher(
+          duration: Durations.short3,
+          child: widget.isLoading
+              ? PrimaryLoadingIndicator(color: context.theme.colors.white)
+              : widget.child,
         ),
       ),
     );

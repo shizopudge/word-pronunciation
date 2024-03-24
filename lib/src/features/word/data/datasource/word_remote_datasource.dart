@@ -57,7 +57,7 @@ class WordRemoteDatasource implements IWordRemoteDatasource {
       queryParameters: queryParameters,
     );
     final data = response.data;
-    if (data != null && data.isNotEmpty) {
+    if (response.statusCode == 200 && data != null && data.isNotEmpty) {
       final word = data.first;
       if (word is String) return word;
     }
@@ -70,16 +70,20 @@ class WordRemoteDatasource implements IWordRemoteDatasource {
       final response =
           await _dioClient.get<List<Object?>>('$_dictionaryUrl/$wordStr');
       final data = response.data;
-      if (data != null && data.isNotEmpty) {
+      if (response.statusCode == 200 && data != null && data.isNotEmpty) {
         final wordFromData = data.first;
         if (wordFromData is Map<String, Object?>) {
           return Word.fromJson(wordFromData);
         }
       }
       return null;
-    } on DioException catch (error) {
+    } on DioException catch (error, stackTrace) {
       if (error.response?.statusCode == 404) {
-        L.error('The word was not found in the dictionary');
+        L.error(
+          'The word was not found in the dictionary',
+          error: error,
+          stackTrace: stackTrace,
+        );
         return Word(data: wordStr);
       }
       rethrow;

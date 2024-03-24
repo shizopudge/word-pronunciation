@@ -102,7 +102,7 @@ class WordHistoryBloc extends Bloc<WordHistoryEvent, WordHistoryState> {
     } on Object catch (error) {
       emit(
         WordHistoryState.error(
-          errorHandler: ErrorHandler(error: error),
+          errorHandler: ErrorHandler(error),
           words: state.words,
           isEndOfList: state.isEndOfList,
         ),

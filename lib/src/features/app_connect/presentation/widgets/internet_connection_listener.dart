@@ -120,6 +120,7 @@ class _NoConnectionBannerState extends State<_NoConnectionBanner>
   void initState() {
     super.initState();
     _animationController = AnimationController(
+      value: widget.hasConnect ? 0.0 : 1.0,
       vsync: this,
       duration: Durations.medium1,
     );
@@ -211,7 +212,7 @@ class _NoConnectionBodyState extends State<_NoConnectionBody>
   late final AnimationController _animationController;
 
   /// {@macro animation}
-  late Animation<Color?> _animation;
+  late final Animation<Color?> _animation;
 
   @override
   void initState() {
@@ -221,9 +222,9 @@ class _NoConnectionBodyState extends State<_NoConnectionBody>
       duration: const Duration(milliseconds: 1500),
     )..repeat(reverse: true);
     _animation = ColorTween(
-            begin: context.themeRead.colors.white,
-            end: context.themeRead.colors.grey)
-        .animate(_animationController);
+      begin: context.themeRead.colors.white,
+      end: context.themeRead.colors.grey,
+    ).animate(_animationController);
   }
 
   @override

@@ -39,7 +39,7 @@ final class $MutableCoreDependencies implements CoreDependencies {
 
   @override
   Future<void> dispose() async {
-    dioClient.close();
+    dioClient.close(force: true);
   }
 }
 
@@ -62,6 +62,6 @@ final class _$ImmutableCoreDependencies implements CoreDependencies {
 
   @override
   Future<void> dispose() async {
-    dioClient.close();
+    dioClient.close(force: true);
   }
 }

@@ -1,9 +1,7 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:meta/meta.dart';
 
-/// {@template app_connect}
-/// Класс проверяющий подключение к интернету
-/// {@endtemplate}
+/// Интерфейс класса проверяющего подключение к интернету
 @immutable
 abstract interface class IAppConnect {
   /// Слушает изменение интернет соединения
@@ -16,7 +14,9 @@ abstract interface class IAppConnect {
   Future<bool> hasConnect();
 }
 
-/// {@macro app_connect}
+/// {@template app_connect}
+/// Класс проверяющий подключение к интернету
+/// {@endtemplate}
 @immutable
 class AppConnect implements IAppConnect {
   /// {@macro app_connect}

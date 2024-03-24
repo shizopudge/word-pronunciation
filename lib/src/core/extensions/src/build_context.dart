@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:word_pronunciation/src/core/app_theme/app_theme.dart';
 import 'package:word_pronunciation/src/core/key_local_storage/key_local_storage.dart';
-import 'package:word_pronunciation/src/core/router/router.dart';
 import 'package:word_pronunciation/src/features/app/domain/entity/dependencies.dart';
 import 'package:word_pronunciation/src/features/app_theme/scope/app_theme_scope.dart';
 import 'package:word_pronunciation/src/features/toaster/toaster.dart';
@@ -13,9 +12,6 @@ extension BuildContextX on BuildContext {
 
   /// {@macro dependencies}
   Dependencies get dependencies => Dependencies.of(this);
-
-  /// {@macro app_router}
-  AppRouter get router => Dependencies.of(this).router;
 
   /// {@macro key_local_storage}
   IKeyLocalStorage get keyLocalStorage => Dependencies.of(this).keyLocalStorage;

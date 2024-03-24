@@ -1,7 +1,13 @@
 name: word_pronunciation
-description: "word pronunciation project"
+description: "word pronunciation app"
 publish_to: 'none'
-version: 1.0.0+1
+version: 1.0.0
+homepage: https://github.com/shizopudge/word-pronunciation
+repository: https://github.com/shizopudge/word-pronunciation
+
+platforms:
+  android:
+  ios:
 
 environment:
   sdk: '>=3.2.4 <4.0.0'
@@ -16,6 +22,7 @@ dependencies:
 
   # Widgets
   smooth_page_indicator: ^1.1.0
+  avatar_glow: ^3.0.1
 
   # Network
   dio: ^5.4.0
@@ -38,7 +45,6 @@ dependencies:
 
   # Utils
   speech_to_text: ^6.4.1
-  auto_route: ^7.8.4
   flutter_svg: ^2.0.9
   just_audio: ^0.9.36
   lottie: ^3.0.0
@@ -75,8 +81,8 @@ dev_dependencies:
     sdk: flutter
   freezed: ^2.4.5
   json_serializable: ^6.7.1
-  auto_route_generator: ^7.3.2
   flutter_gen_runner: ^5.3.1
+  flutter_native_splash: ^2.3.10
 
 flutter_gen:
   output: lib/src/core/resources/src
@@ -147,13 +153,13 @@ flutter:
 flutter_native_splash:
   color: "#ffffff"
   image: assets/images/logo.png
-  color_dark: "#ffffff"
-  image_dark: assets/images/logo.png
+  color_dark: "#000000"
+  image_dark: assets/images/logo_dark.png
 
   android_12:
     image: assets/images/logo.png
     icon_background_color: "#ffffff"
-    image_dark: assets/images/logo.png
-    icon_background_color_dark: "#ffffff"
+    image_dark: assets/images/logo_dark.png
+    icon_background_color_dark: "#000000"
 
   web: false

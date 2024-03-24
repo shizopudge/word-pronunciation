@@ -181,7 +181,7 @@ class WordPronunciationBloc
     } on Object catch (error) {
       emit(
         WordPronunciationState.error(
-          errorHandler: ErrorHandler(error: error),
+          errorHandler: ErrorHandler(error),
           result: state.resultOrNull,
         ),
       );
@@ -208,7 +208,7 @@ class WordPronunciationBloc
     } on Object catch (error) {
       emit(
         WordPronunciationState.error(
-          errorHandler: ErrorHandler(error: error),
+          errorHandler: ErrorHandler(error),
           result: state.resultOrNull,
         ),
       );
@@ -228,7 +228,7 @@ class WordPronunciationBloc
     } on Object catch (error) {
       emit(
         WordPronunciationState.error(
-          errorHandler: ErrorHandler(error: error),
+          errorHandler: ErrorHandler(error),
           result: state.resultOrNull,
         ),
       );
@@ -279,7 +279,7 @@ class WordPronunciationBloc
     emit(
       WordPronunciationState.error(
         errorHandler: ErrorHandler(
-          error: SpeechServiceException(event.message),
+          SpeechServiceException(event.message),
         ),
         result: state.resultOrNull,
       ),

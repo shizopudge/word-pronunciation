@@ -3,7 +3,6 @@ import 'package:word_pronunciation/src/core/app_connect/app_connect.dart';
 import 'package:word_pronunciation/src/core/database/database.dart';
 import 'package:word_pronunciation/src/core/dio/dio.dart';
 import 'package:word_pronunciation/src/core/key_local_storage/key_local_storage.dart';
-import 'package:word_pronunciation/src/core/router/router.dart';
 import 'package:word_pronunciation/src/features/app/domain/entity/core_dependencies.dart';
 import 'package:word_pronunciation/src/features/app/scope/scope.dart';
 
@@ -18,9 +17,6 @@ abstract interface class Dependencies implements CoreDependencies {
   /// {@macro key_local_storage}
   @override
   abstract final IKeyLocalStorage keyLocalStorage;
-
-  /// {@macro app_router}
-  abstract final AppRouter router;
 
   /// {@macro app_connect.dart}
   abstract final IAppConnect appConnect;
@@ -50,9 +46,6 @@ final class $MutableDependencies implements Dependencies {
   final IDioClient dioClient;
 
   @override
-  late AppRouter router;
-
-  @override
   late IAppConnect appConnect;
 
   @override
@@ -62,15 +55,13 @@ final class $MutableDependencies implements Dependencies {
   Dependencies freeze() => _$ImmutableDependencies(
         keyLocalStorage: keyLocalStorage,
         dioClient: dioClient,
-        router: router,
         appConnect: appConnect,
         db: db,
       );
 
   @override
   Future<void> dispose() async {
-    router.dispose();
-    dioClient.close();
+    dioClient.close(force: true);
     await db.dispose();
   }
 }
@@ -84,7 +75,6 @@ final class _$ImmutableDependencies implements Dependencies {
   const _$ImmutableDependencies({
     required this.keyLocalStorage,
     required this.dioClient,
-    required this.router,
     required this.appConnect,
     required this.db,
   });
@@ -96,9 +86,6 @@ final class _$ImmutableDependencies implements Dependencies {
   final IDioClient dioClient;
 
   @override
-  final AppRouter router;
-
-  @override
   final IAppConnect appConnect;
 
   @override
@@ -106,8 +93,7 @@ final class _$ImmutableDependencies implements Dependencies {
 
   @override
   Future<void> dispose() async {
-    router.dispose();
-    dioClient.close();
+    dioClient.close(force: true);
     await db.dispose();
   }
 }

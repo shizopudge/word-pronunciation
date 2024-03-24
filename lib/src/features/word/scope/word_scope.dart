@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:word_pronunciation/src/core/error_handler/error_handler.dart';
 import 'package:word_pronunciation/src/core/extensions/extensions.dart';
@@ -16,7 +15,6 @@ import 'package:word_pronunciation/src/features/word/data/datasource/word_remote
 import 'package:word_pronunciation/src/features/word/data/model/definition.dart';
 import 'package:word_pronunciation/src/features/word/data/model/phonetic.dart';
 import 'package:word_pronunciation/src/features/word/data/repository/word_repository.dart';
-import 'package:word_pronunciation/src/features/word/domain/entity/word_history_filter.dart';
 import 'package:word_pronunciation/src/features/word/domain/repository/i_word_repository.dart';
 import 'package:word_pronunciation/src/features/word/domain/service/audio_service.dart';
 import 'package:word_pronunciation/src/features/word/domain/service/speech_service.dart';
@@ -78,6 +76,16 @@ class WordScopeState extends State<WordScope> with WidgetsBindingObserver {
   /// Репозиторий
   late final IWordRepository _repository;
 
+  /// {@template show_word_in_app_bar_controller}
+  /// Контроллер показа слова в апп баре
+  /// {@endtemplate}
+  late final ValueNotifier<bool> _showWordInAppBarController;
+
+  /// {@template show_up_button_controller}
+  /// Контроллер показа кнопки вверх в апп баре
+  /// {@endtemplate}
+  late final ValueNotifier<bool> _showUpButtonController;
+
   /// {@macro overlay}
   OverlayState? _overlay;
 
@@ -106,6 +114,8 @@ class WordScopeState extends State<WordScope> with WidgetsBindingObserver {
     _wordHistoryFilterBloc = WordHistoryFilterBloc();
     _wordHistoryBloc = WordHistoryBloc(repository: _repository)
       ..add(WordHistoryEvent.read(filter: _wordHistoryFilterBloc.state));
+    _showWordInAppBarController = ValueNotifier<bool>(false);
+    _showUpButtonController = ValueNotifier<bool>(false);
   }
 
   @override
@@ -135,6 +145,8 @@ class WordScopeState extends State<WordScope> with WidgetsBindingObserver {
     _overlay?.dispose();
     _audioService.dispose();
     _speechService.dispose();
+    _showWordInAppBarController.dispose();
+    _showUpButtonController.dispose();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -147,9 +159,7 @@ class WordScopeState extends State<WordScope> with WidgetsBindingObserver {
         wordHistoryBloc: _wordHistoryBloc,
         wordHistoryFilterBloc: _wordHistoryFilterBloc,
         state: this,
-        child: _WordScopeListeners(
-          child: widget.child,
-        ),
+        child: WordScopeListeners(child: widget.child),
       );
 
   /// Включает/выключает воспроизведение аудио
@@ -247,14 +257,42 @@ class WordScopeState extends State<WordScope> with WidgetsBindingObserver {
       title: context.localization.microphonePermissions,
       description: context.localization.youHaventGivenPermissionToUseMic,
     );
-    if (result != null && result && context.mounted) {
+    if (result != null && result && mounted) {
       final isCanOpen = await openAppSettings();
-      if (!isCanOpen && context.mounted) {
+      if (!isCanOpen && mounted) {
         context.showToaster(
           message: context.localization.cantOpenAppSettings,
           type: ToasterType.error,
         );
       }
+    }
+  }
+
+  /// {@macro show_word_in_app_bar_controller}
+  ValueNotifier<bool> get showWordInAppBarController =>
+      _showWordInAppBarController;
+
+  /// Возвращает true, если слово должно быть показано в апп баре, иначе false.
+  bool get showWord => _showWordInAppBarController.value;
+
+  /// Устанавливает значение для [_showWordInAppBarController]
+  set showWord(bool newValue) {
+    if (_showWordInAppBarController.value != newValue) {
+      _showWordInAppBarController.value = newValue;
+    }
+  }
+
+  /// {@macro show_up_button_controller}
+  ValueNotifier<bool> get showUpButtonController => _showUpButtonController;
+
+  /// Возвращает true, если кнопка вверх должна быть показана в апп баре,
+  /// иначе false.
+  bool get showUpButton => _showUpButtonController.value;
+
+  /// Устанавливает значение для [showUpButtonController]
+  set showUpButton(bool newValue) {
+    if (_showUpButtonController.value != newValue) {
+      _showUpButtonController.value = newValue;
     }
   }
 }
@@ -299,123 +337,4 @@ class InheritedWordScope extends InheritedWidget {
       oldWidget.wordHistoryBloc != wordHistoryBloc ||
       oldWidget.wordHistoryFilterBloc != wordHistoryFilterBloc ||
       oldWidget.state != state;
-}
-
-/// Слушатели [WordScope]
-@immutable
-class _WordScopeListeners extends StatelessWidget {
-  /// Дочерний виджет
-  final Widget child;
-
-  /// Создает слушателей [WordScope]
-  const _WordScopeListeners({
-    required this.child,
-  });
-
-  @override
-  Widget build(BuildContext context) => MultiBlocListener(
-        listeners: [
-          // Обрабатывает ошибки в [WordBloc], останавливает воспроизведение
-          // аудио и произношение при загрузке в [WordBloc]
-          BlocListener<WordBloc, WordState>(
-            bloc: WordScope.of(context).wordBloc,
-            listenWhen: (previous, current) =>
-                current.isError || current.isProgress,
-            listener: (context, state) => state.mapOrNull<void>(
-              progress: (p) {
-                WordScope.of(context)
-                    .wordAudioBloc
-                    .add(const WordAudioEvent.stop());
-                WordScope.of(context)
-                    .wordPronunciationBloc
-                    .add(const WordPronunciationEvent.stop());
-              },
-              error: (e) => context.showToaster(
-                message: e.errorHandler.toMessage(context),
-                type: ToasterType.error,
-              ),
-            ),
-          ),
-
-          // Обрабатывает ошибки при воспроизведении аудио
-          BlocListener<WordAudioBloc, WordAudioState>(
-            bloc: WordScope.of(context).wordAudioBloc,
-            listenWhen: (previous, current) => current.isError,
-            listener: (context, state) => state.mapOrNull<void>(
-              error: (e) => context.showToaster(
-                message: e.errorHandler.toMessage(context),
-                type: ToasterType.error,
-              ),
-            ),
-          ),
-
-          // Скрывает результат произношения, проверяет результат произношения
-          // и обрабатывает ошибки при произношении
-          BlocListener<WordPronunciationBloc, WordPronunciationState>(
-            bloc: WordScope.of(context).wordPronunciationBloc,
-            listener: (context, state) => state.mapOrNull<void>(
-              right: (_) => WordScope.of(context).wordHistoryBloc.add(
-                    WordHistoryEvent.read(
-                      reset: true,
-                      filter: WordScope.of(context).wordHistoryFilterBloc.state,
-                    ),
-                  ),
-              incorrect: (_) => WordScope.of(context).wordHistoryBloc.add(
-                    WordHistoryEvent.read(
-                      reset: true,
-                      filter: WordScope.of(context).wordHistoryFilterBloc.state,
-                    ),
-                  ),
-              done: (_) => WordScope.of(context).wordPronunciationBloc.add(
-                    WordPronunciationEvent.checkResult(
-                      expectedWord:
-                          WordScope.of(context).wordBloc.state.word?.data,
-                    ),
-                  ),
-              idle: (_) =>
-                  WordScope.of(context).state.hidePronunciationResult(),
-              error: (e) => WordScope.of(context)
-                  .state
-                  .onWordPronunciationBlocError(e.errorHandler),
-            ),
-          ),
-
-          // Показывает результат произношения
-          BlocListener<WordPronunciationBloc, WordPronunciationState>(
-            bloc: WordScope.of(context).wordPronunciationBloc,
-            listenWhen: (previous, current) =>
-                !previous.isPreviousStatePronunciation,
-            listener: (context, state) => state.mapOrNull<void>(
-              pronunciation: (_) =>
-                  WordScope.of(context).state.showPronunciationResult(),
-            ),
-          ),
-
-          // Обрабатывает ошибки в [WordHistoryBloc]
-          BlocListener<WordHistoryBloc, WordHistoryState>(
-            bloc: WordScope.of(context).wordHistoryBloc,
-            listenWhen: (previous, current) => current.isError,
-            listener: (context, state) => state.mapOrNull<void>(
-              error: (e) => context.showToaster(
-                message: e.errorHandler.toMessage(context),
-                type: ToasterType.error,
-              ),
-            ),
-          ),
-
-          // Читает историю при изменении фильтра в [WordHistoryFilterBloc]
-          BlocListener<WordHistoryFilterBloc, WordHistoryFilter>(
-            bloc: WordScope.of(context).wordHistoryFilterBloc,
-            listenWhen: (previous, current) => previous != current,
-            listener: (context, state) =>
-                WordScope.of(context).wordHistoryBloc.add(
-                      WordHistoryEvent.read(
-                        reset: true,
-                        filter: state,
-                      ),
-                    ),
-          ),
-        ],
-        child: child,
-      );
 }

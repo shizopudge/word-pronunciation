@@ -83,7 +83,7 @@ class WordBloc extends Bloc<WordEvent, WordState> {
     } on Object catch (error) {
       emit(
         WordState.error(
-          errorHandler: ErrorHandler(error: error),
+          errorHandler: ErrorHandler(error),
           word: previousWord,
         ),
       );
@@ -98,7 +98,7 @@ class WordBloc extends Bloc<WordEvent, WordState> {
         emit(
           const WordState.error(
             errorHandler: ErrorHandler(
-              error: ErrorMessage.wordWasNotReceived,
+              ErrorMessage.wordWasNotReceived,
             ),
             word: null,
           ),
@@ -119,7 +119,7 @@ class WordBloc extends Bloc<WordEvent, WordState> {
     } on Object catch (error) {
       emit(
         WordState.error(
-          errorHandler: ErrorHandler(error: error),
+          errorHandler: ErrorHandler(error),
           word: previousWord,
         ),
       );
@@ -134,7 +134,7 @@ class WordBloc extends Bloc<WordEvent, WordState> {
         emit(
           const WordState.error(
             errorHandler: ErrorHandler(
-              error: ErrorMessage.wordWasNotReceived,
+              ErrorMessage.wordWasNotReceived,
             ),
             word: null,
           ),

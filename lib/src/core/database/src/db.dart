@@ -1,10 +1,9 @@
+import 'package:meta/meta.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:word_pronunciation/src/core/database/database.dart';
 
-/// {@template db}
-/// БД
-/// {@endtemplate}
+/// Интерфейс базы данных приложения.
+@immutable
 abstract interface class IDB {
   /// Записывает элемент в БД
   ///
@@ -44,10 +43,13 @@ abstract interface class IDB {
   Future<void> dispose();
 }
 
-/// {@macro db}
+/// {@template db}
+/// БД приложения
+/// {@endtemplate}
+@immutable
 class DB implements IDB {
   /// {@macro db}
-  DB._();
+  const DB._();
 
   /// Экземпляр БД
   static Database? _database;
@@ -63,24 +65,19 @@ class DB implements IDB {
         onCreate: _onCreate,
       );
     }
-    return DB._();
+    return const DB._();
   }
 
   /// Таблицы
-  static const Iterable<DBTable> _tables = [
-    DBTable(
-      name: 'words',
-      sqlString:
-          'CREATE TABLE words (id INTEGER PRIMARY KEY AUTOINCREMENT, data '
-          'TEXT NOT NULL UNIQUE, pronounced INTEGER NOT NULL)',
-    ),
+  static const _tableSqlCreationStrings = [
+    'CREATE TABLE words (id INTEGER PRIMARY KEY AUTOINCREMENT, data '
+        'TEXT NOT NULL UNIQUE, pronounced INTEGER NOT NULL)',
   ];
 
   /// Обработчик на создание БД
   static Future<void> _onCreate(Database db, int version) async {
-    final tables = _tables.toList();
-    for (final table in tables) {
-      await db.execute(table.sqlString);
+    for (final sqlString in _tableSqlCreationStrings) {
+      await db.execute(sqlString);
     }
   }
 
@@ -142,7 +139,7 @@ class DB implements IDB {
       where: 'id = ?',
       whereArgs: [id],
     );
-    if (result == null) return -1;
+    if (result == null) return 0;
     return result;
   }
 

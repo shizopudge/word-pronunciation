@@ -88,7 +88,7 @@ class AppInitializationBloc
     } on Object catch (error) {
       emit(
         AppInitializationState.error(
-          errorHandler: ErrorHandler(error: error),
+          errorHandler: ErrorHandler(error),
           initializationProgress: state.initializationProgress,
         ),
       );

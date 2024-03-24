@@ -106,6 +106,7 @@ class AppThemeScopeState extends State<AppThemeScope> {
   Widget build(BuildContext context) =>
       BlocBuilder<AppThemeBloc, AppThemeState>(
         bloc: _bloc,
+        // TODO: Подумать над состояниями ошибки
         buildWhen: (previous, current) => current.isIdle,
         builder: (context, state) {
           late final Widget child;
@@ -118,6 +119,7 @@ class AppThemeScopeState extends State<AppThemeScope> {
             child = InheritedAppTheme(
               theme: _theme(appThemeMode),
               bloc: _bloc,
+              state: this,
               child: widget.child,
             );
           }
@@ -128,6 +130,10 @@ class AppThemeScopeState extends State<AppThemeScope> {
           );
         },
       );
+
+  /// Записывает режим темы приложения в локальное хранилище
+  void writeAppThemeMode(AppThemeMode appThemeMode) =>
+      _bloc.add(AppThemeEvent.write(appThemeMode));
 
   /// Возвращает тему приложения
   IAppTheme _theme(AppThemeMode appThemeMode) => switch (appThemeMode) {
@@ -146,15 +152,21 @@ class InheritedAppTheme extends InheritedWidget {
   /// {@macro app_theme_bloc}
   final AppThemeBloc bloc;
 
+  /// Состояние [AppThemeScope]
+  final AppThemeScopeState state;
+
   /// Создает виджет хранящий в себе [AppThemeScope]
   const InheritedAppTheme({
     required this.theme,
     required this.bloc,
+    required this.state,
     required super.child,
     super.key,
   });
 
   @override
   bool updateShouldNotify(covariant InheritedAppTheme oldWidget) =>
-      oldWidget.theme != theme || oldWidget.bloc != bloc;
+      oldWidget.theme != theme ||
+      oldWidget.bloc != bloc ||
+      oldWidget.state != state;
 }

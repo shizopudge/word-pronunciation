@@ -9,6 +9,7 @@ part 'app_theme.freezed.dart';
 @freezed
 class AppThemeEvent with _$AppThemeEvent {
   const factory AppThemeEvent.read() = _ReadAppThemeEvent;
+
   const factory AppThemeEvent.write(AppThemeMode appThemeMode) =
       _WriteAppThemeEvent;
 }
@@ -25,9 +26,11 @@ class AppThemeState with _$AppThemeState {
   const factory AppThemeState.progress({
     AppThemeMode? appThemeMode,
   }) = _ProgressAppThemeState;
+
   const factory AppThemeState.idle({
     required final AppThemeMode appThemeMode,
   }) = _IdleAppThemeState;
+
   const factory AppThemeState.error({
     required final IErrorHandler errorHandler,
     AppThemeMode? appThemeMode,
@@ -53,7 +56,7 @@ class AppThemeBloc extends Bloc<AppThemeEvent, AppThemeState> {
     );
   }
 
-  void _read(_ReadAppThemeEvent event, Emitter<AppThemeState> emit) async {
+  void _read(_ReadAppThemeEvent event, Emitter<AppThemeState> emit) {
     emit(AppThemeState.progress(appThemeMode: state.appThemeMode));
     try {
       final appThemeMode = _repository.readAppThemeModeFromStorage();
@@ -61,7 +64,7 @@ class AppThemeBloc extends Bloc<AppThemeEvent, AppThemeState> {
     } on Object catch (error) {
       emit(
         AppThemeState.error(
-          errorHandler: ErrorHandler(error: error),
+          errorHandler: ErrorHandler(error),
           appThemeMode: state.appThemeMode,
         ),
       );
@@ -88,7 +91,7 @@ class AppThemeBloc extends Bloc<AppThemeEvent, AppThemeState> {
     } on Object catch (error) {
       emit(
         AppThemeState.error(
-          errorHandler: ErrorHandler(error: error),
+          errorHandler: ErrorHandler(error),
           appThemeMode: previousAppThemeMode,
         ),
       );

@@ -8,6 +8,7 @@ part 'app_locale.freezed.dart';
 @freezed
 class AppLocaleEvent with _$AppLocaleEvent {
   const factory AppLocaleEvent.read() = _ReadAppLocaleEvent;
+
   const factory AppLocaleEvent.write(String languageCode) =
       _WriteAppLocaleEvent;
 }
@@ -24,9 +25,11 @@ class AppLocaleState with _$AppLocaleState {
   const factory AppLocaleState.progress({
     String? languageCode,
   }) = _ProgressAppLocaleState;
+
   const factory AppLocaleState.idle({
     required final String languageCode,
   }) = _IdleAppLocaleState;
+
   const factory AppLocaleState.error({
     required final IErrorHandler errorHandler,
     String? languageCode,
@@ -60,7 +63,7 @@ class AppLocaleBloc extends Bloc<AppLocaleEvent, AppLocaleState> {
     } on Object catch (error) {
       emit(
         AppLocaleState.error(
-          errorHandler: ErrorHandler(error: error),
+          errorHandler: ErrorHandler(error),
           languageCode: state.languageCode,
         ),
       );
@@ -87,7 +90,7 @@ class AppLocaleBloc extends Bloc<AppLocaleEvent, AppLocaleState> {
     } on Object catch (error) {
       emit(
         AppLocaleState.error(
-          errorHandler: ErrorHandler(error: error),
+          errorHandler: ErrorHandler(error),
           languageCode: previousLanguageCode,
         ),
       );

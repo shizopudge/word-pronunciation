@@ -70,7 +70,7 @@ class DioClient implements IDioClient {
 
   /// {@macro dio_client}
   const DioClient({
-    required Dio dio,
+    required final Dio dio,
   }) : _dio = dio;
 
   @override

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
 import 'package:word_pronunciation/src/core/error_handler/error_handler.dart';
@@ -10,13 +8,8 @@ import 'package:word_pronunciation/src/core/extensions/extensions.dart';
 /// {@endtemplate}
 @immutable
 sealed class IErrorBase {
-  /// Ошибка
-  final Object? error;
-
   /// {@macro error_base}
-  const IErrorBase({
-    required this.error,
-  });
+  const IErrorBase();
 
   /// Возвращает сообщение об ошибке
   String toMessage(BuildContext context);
@@ -27,16 +20,16 @@ sealed class IErrorBase {
 /// {@endtemplate}
 @immutable
 final class MessageError implements IErrorBase {
-  @override
-  final ErrorMessage error;
+  /// Сообщение об ошибке.
+  final ErrorMessage errorMessage;
 
   /// {@macro message_error}
   const MessageError({
-    required this.error,
+    required this.errorMessage,
   });
 
   @override
-  String toMessage(BuildContext context) => error.toMessage(context);
+  String toMessage(BuildContext context) => errorMessage.toMessage(context);
 }
 
 /// {@template timeout_error}
@@ -44,13 +37,8 @@ final class MessageError implements IErrorBase {
 /// {@endtemplate}
 @immutable
 final class TimeoutError implements IErrorBase {
-  @override
-  final TimeoutException error;
-
   /// {@macro timeout_error}
-  const TimeoutError({
-    required this.error,
-  });
+  const TimeoutError();
 
   @override
   String toMessage(BuildContext context) => context.localization.timeoutError;
@@ -61,17 +49,17 @@ final class TimeoutError implements IErrorBase {
 /// {@endtemplate}
 @immutable
 final class AppInitializationError implements IErrorBase {
-  @override
-  final AppInitializationException error;
+  /// Исключение призошедшее при инициализации приложения
+  final AppInitializationException exception;
 
   /// {@macro app_initialization_error}
   const AppInitializationError({
-    required this.error,
+    required this.exception,
   });
 
   @override
   String toMessage(BuildContext context) => context.localization
-      .appInitializationError(error.initializationProgress.toString());
+      .appInitializationError(exception.initializationProgress.toString());
 }
 
 /// {@template core_initialization_error}
@@ -79,13 +67,8 @@ final class AppInitializationError implements IErrorBase {
 /// {@endtemplate}
 @immutable
 final class CoreInitializationError implements IErrorBase {
-  @override
-  final CoreInitializationException error;
-
   /// {@macro core_initialization_error}
-  const CoreInitializationError({
-    required this.error,
-  });
+  const CoreInitializationError();
 
   @override
   String toMessage(BuildContext context) =>
@@ -97,13 +80,8 @@ final class CoreInitializationError implements IErrorBase {
 /// {@endtemplate}
 @immutable
 final class AudioServiceError implements IErrorBase {
-  @override
-  final AudioServiceException error;
-
   /// {@macro audio_service_error}
-  const AudioServiceError({
-    required this.error,
-  });
+  const AudioServiceError();
 
   @override
   String toMessage(BuildContext context) =>
@@ -115,13 +93,8 @@ final class AudioServiceError implements IErrorBase {
 /// {@endtemplate}
 @immutable
 final class SpeechServiceError implements IErrorBase {
-  @override
-  final SpeechServiceException error;
-
   /// {@macro speech_service_error}
-  const SpeechServiceError({
-    required this.error,
-  });
+  const SpeechServiceError();
 
   @override
   String toMessage(BuildContext context) =>
@@ -133,13 +106,8 @@ final class SpeechServiceError implements IErrorBase {
 /// {@endtemplate}
 @immutable
 final class SpeechServicePermissionError implements IErrorBase {
-  @override
-  final SpeechServiceException error;
-
   /// {@macro speech_service_permission_error}
-  const SpeechServicePermissionError({
-    required this.error,
-  });
+  const SpeechServicePermissionError();
 
   @override
   String toMessage(BuildContext context) =>
@@ -151,16 +119,16 @@ final class SpeechServicePermissionError implements IErrorBase {
 /// {@endtemplate}
 @immutable
 final class NetworkError implements IErrorBase {
-  @override
-  final DioException error;
+  /// Исключение DIO
+  final DioException dioException;
 
   /// {@macro network_error}
   const NetworkError({
-    required this.error,
+    required this.dioException,
   });
 
   @override
-  String toMessage(BuildContext context) => switch (error.type) {
+  String toMessage(BuildContext context) => switch (dioException.type) {
         DioExceptionType.connectionTimeout =>
           context.localization.connectionTimeout,
         DioExceptionType.sendTimeout => context.localization.sendTimeout,
@@ -179,13 +147,8 @@ final class NetworkError implements IErrorBase {
 /// {@endtemplate}
 @immutable
 final class UnknownError implements IErrorBase {
-  @override
-  final Object? error;
-
   /// {@macro unknown_error}
-  const UnknownError({
-    required this.error,
-  });
+  const UnknownError();
 
   @override
   String toMessage(BuildContext context) =>

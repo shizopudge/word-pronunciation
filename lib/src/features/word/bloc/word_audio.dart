@@ -115,7 +115,7 @@ class WordAudioBloc extends Bloc<WordAudioEvent, WordAudioState> {
     } on Object catch (error) {
       emit(
         WordAudioState.error(
-          errorHandler: ErrorHandler(error: error),
+          errorHandler: ErrorHandler(error),
         ),
       );
       rethrow;
@@ -136,7 +136,7 @@ class WordAudioBloc extends Bloc<WordAudioEvent, WordAudioState> {
     } on Object catch (error) {
       emit(
         WordAudioState.error(
-          errorHandler: ErrorHandler(error: error),
+          errorHandler: ErrorHandler(error),
         ),
       );
       rethrow;
