@@ -117,8 +117,8 @@ class WordIdleLayout extends StatelessWidget {
                           builder: (context) => const AppSettingsPage(),
                         ),
                       ),
-                      child: const Text(
-                        'Настройки',
+                      child: Text(
+                        context.localization.settings,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),

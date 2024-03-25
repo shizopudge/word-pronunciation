@@ -19,7 +19,7 @@ class ThemeSetting extends StatelessWidget {
   Widget build(BuildContext context) => SettingTitle(
         title: context.localization.theme,
         child: BlocBuilder<AppThemeBloc, AppThemeState>(
-          bloc: AppThemeScope.of(context).bloc..add(const AppThemeEvent.read()),
+          bloc: AppThemeScope.of(context).bloc,
           buildWhen: (previous, current) => current.isIdle,
           builder: (context, state) {
             late final Widget child;
@@ -38,21 +38,21 @@ class ThemeSetting extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Setting.withCheckbox(
-                    onTap: () => AppThemeScope.of(context)
+                    onTap: () => AppThemeScope.of(context, listen: false)
                         .state
                         .writeAppThemeMode(AppThemeMode.light),
                     name: context.localization.light,
                     isEnabled: appThemeMode == AppThemeMode.light,
                   ),
                   Setting.withCheckbox(
-                    onTap: () => AppThemeScope.of(context)
+                    onTap: () => AppThemeScope.of(context, listen: false)
                         .state
                         .writeAppThemeMode(AppThemeMode.dark),
                     name: context.localization.dark,
                     isEnabled: appThemeMode == AppThemeMode.dark,
                   ),
                   Setting.withCheckbox(
-                    onTap: () => AppThemeScope.of(context)
+                    onTap: () => AppThemeScope.of(context, listen: false)
                         .state
                         .writeAppThemeMode(AppThemeMode.system),
                     name: context.localization.system,

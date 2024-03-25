@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:word_pronunciation/src/core/error_handler/error_handler.dart';
 import 'package:word_pronunciation/src/core/extensions/extensions.dart';
+import 'package:word_pronunciation/src/features/app_locale/scope/app_locale_scope.dart';
 import 'package:word_pronunciation/src/features/toaster/toaster.dart';
+import 'package:word_pronunciation/src/features/translation/domain/service/translation_service.dart';
 import 'package:word_pronunciation/src/features/word/bloc/word.dart';
 import 'package:word_pronunciation/src/features/word/bloc/word_audio.dart';
 import 'package:word_pronunciation/src/features/word/bloc/word_history.dart';
@@ -73,6 +75,9 @@ class WordScopeState extends State<WordScope> with WidgetsBindingObserver {
   /// {@macro audio_service}
   late final IAudioService _audioService;
 
+  /// {@macro translation_service}
+  late final ITranslationService _translationService;
+
   /// Репозиторий
   late final IWordRepository _repository;
 
@@ -100,12 +105,18 @@ class WordScopeState extends State<WordScope> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     _speechService = const SpeechService();
     _audioService = const AudioService();
+    _translationService = TranslationService();
     _repository = WordRepository(
       remoteDatasource:
           WordRemoteDatasource(dioClient: context.dependencies.dioClient),
       localDatasource: WordLocalDatasource(db: context.dependencies.db),
     );
-    _wordBloc = WordBloc(repository: _repository)..add(const WordEvent.read());
+    _wordBloc = WordBloc(
+      repository: _repository,
+      translationService: _translationService,
+      needTranslation: () =>
+          AppLocaleScope.of(context, listen: false).locale.languageCode == 'ru',
+    )..add(const WordEvent.read());
     _wordAudioBloc = WordAudioBloc(audioService: _audioService);
     _wordPronunciationBloc = WordPronunciationBloc(
       repository: _repository,

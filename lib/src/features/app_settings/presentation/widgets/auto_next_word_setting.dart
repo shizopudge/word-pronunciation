@@ -4,10 +4,10 @@ import 'package:word_pronunciation/src/features/app_settings/bloc/app_settings.d
 import 'package:word_pronunciation/src/features/app_settings/presentation/widgets/widgets.dart';
 import 'package:word_pronunciation/src/features/app_settings/scope/app_settings_scope.dart';
 
-/// Настройка "Автоматически получать следующее слово".
+/// Настройка "Автоматически получать следующее слово"
 @immutable
 class AutoNextWordSetting extends StatelessWidget {
-  /// Создает настройку "Автоматически получать следующее слово".
+  /// Создает настройку "Автоматически получать следующее слово"
   const AutoNextWordSetting({
     super.key,
   });

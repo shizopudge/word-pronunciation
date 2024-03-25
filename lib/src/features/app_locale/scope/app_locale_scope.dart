@@ -86,7 +86,6 @@ class _AppLocaleScopeState extends State<AppLocaleScope> {
   Widget build(BuildContext context) =>
       BlocBuilder<AppLocaleBloc, AppLocaleState>(
         bloc: _bloc,
-        // TODO: Подумать над состояниями ошибки
         buildWhen: (previous, current) => current.isIdle,
         builder: (context, state) {
           late final Widget child;

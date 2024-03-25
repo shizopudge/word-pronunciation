@@ -34,6 +34,25 @@ class WordScopeListeners extends StatelessWidget {
                 current.isError || current.isProgress,
             listener: (context, state) => state.mapOrNull<void>(
               progress: (p) {
+                if (WordScope.of(context).wordAudioBloc.state.isPlaying ||
+                    WordScope.of(context).wordAudioBloc.state.isProgress) {
+                  WordScope.of(context)
+                      .wordAudioBloc
+                      .add(const WordAudioEvent.stop());
+                }
+                if (WordScope.of(context)
+                        .wordPronunciationBloc
+                        .state
+                        .isProcessing ||
+                    WordScope.of(context)
+                        .wordPronunciationBloc
+                        .state
+                        .isProgress) {
+                  WordScope.of(context)
+                      .wordPronunciationBloc
+                      .add(const WordPronunciationEvent.stop());
+                }
+
                 WordScope.of(context)
                     .wordAudioBloc
                     .add(const WordAudioEvent.stop());

@@ -13,8 +13,6 @@ class AppBlocObserver extends BlocObserver {
   @override
   void onChange(BlocBase bloc, Change change) {
     super.onChange(bloc, change);
-    L.log(
-        '$bloc changed. Current state: ${change.currentState}. Next state: ${change.nextState}');
   }
 
   @override

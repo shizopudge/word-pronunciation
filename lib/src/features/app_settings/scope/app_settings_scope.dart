@@ -96,8 +96,6 @@ class _AppSettingsScopeState extends State<AppSettingsScope> {
   Widget build(BuildContext context) =>
       BlocBuilder<AppSettingsBloc, AppSettingsState>(
         bloc: _appSettingsBloc,
-        // TODO: Подумать над состояниями ошибки + слушатели на ошибки в
-        // подобных скоупах
         buildWhen: (previous, current) => current.isIdle,
         builder: (context, state) {
           late final Widget child;

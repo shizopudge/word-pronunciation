@@ -38,14 +38,28 @@ class AppSettingsPage extends StatelessWidget {
                 padding: EdgeInsets.only(top: context.mediaQuery.padding.top),
               ),
 
-              // Тема
-              const SliverToBoxAdapter(
-                child: ThemeSetting(),
+              // Настройка темы
+              const SliverPadding(
+                padding: EdgeInsets.only(top: 16),
+                sliver: SliverToBoxAdapter(
+                  child: ThemeSetting(),
+                ),
               ),
 
-              // Тема
-              const SliverToBoxAdapter(
-                child: AutoNextWordSetting(),
+              // Настройка "Автоматически получать следующее слово"
+              const SliverPadding(
+                padding: EdgeInsets.only(top: 16),
+                sliver: SliverToBoxAdapter(
+                  child: AutoNextWordSetting(),
+                ),
+              ),
+
+              // Настройка локализации
+              const SliverPadding(
+                padding: EdgeInsets.only(top: 16),
+                sliver: SliverToBoxAdapter(
+                  child: LocaleSetting(),
+                ),
               ),
 
               // Отступ снизу
