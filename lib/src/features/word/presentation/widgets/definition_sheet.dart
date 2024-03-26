@@ -1,6 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:word_pronunciation/src/core/extensions/extensions.dart';
 import 'package:word_pronunciation/src/core/ui_kit/ui_kit.dart';
+import 'package:word_pronunciation/src/core/utils/utils.dart';
 import 'package:word_pronunciation/src/features/word/data/model/definition.dart';
 
 @immutable
@@ -33,12 +35,16 @@ class DefinitionSheet extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              definition.data,
-              style: context.theme.textTheme.titleMedium?.copyWith(
-                color: context.theme.isDark
-                    ? context.theme.colors.white
-                    : context.theme.colors.black,
+            GestureDetector(
+              onTap: () => CopyUtil.copy(context, text: definition.data),
+              behavior: HitTestBehavior.opaque,
+              child: Text(
+                definition.data,
+                style: context.theme.textTheme.titleMedium?.copyWith(
+                  color: context.theme.isDark
+                      ? context.theme.colors.white
+                      : context.theme.colors.black,
+                ),
               ),
             ),
             if (definition.example.isNotEmpty) ...[
@@ -55,12 +61,16 @@ class DefinitionSheet extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 4),
-                child: Text(
-                  definition.example,
-                  style: context.theme.textTheme.bodyMedium?.copyWith(
-                    color: context.theme.isDark
-                        ? context.theme.colors.white
-                        : context.theme.colors.black,
+                child: GestureDetector(
+                  onTap: () => CopyUtil.copy(context, text: definition.example),
+                  behavior: HitTestBehavior.opaque,
+                  child: Text(
+                    definition.example,
+                    style: context.theme.textTheme.bodyMedium?.copyWith(
+                      color: context.theme.isDark
+                          ? context.theme.colors.white
+                          : context.theme.colors.black,
+                    ),
                   ),
                 ),
               ),

@@ -38,13 +38,30 @@ class WordAppBar extends StatelessWidget implements PreferredSizeWidget {
               ],
             ),
             builder: (context, child) {
+              late final Color appBarBackgroundColor;
               late final String title;
 
+              final isWordProgress = wordState.isProgress;
               final word = wordState.word?.data;
+              final isWordPronunciationProcessing = state.isProcessing;
               final showWord = WordScope.of(context).state.showWord;
-              final showUpButton = WordScope.of(context).state.showUpButton;
+              final showUpButton =
+                  WordScope.of(context).state.showUpButton && !isWordProgress;
 
-              if (showWord && word != null && word.isNotEmpty) {
+              if (isWordPronunciationProcessing) {
+                appBarBackgroundColor =
+                    context.theme.colors.black.withOpacity(.2);
+              } else {
+                appBarBackgroundColor = (context.theme.isDark
+                        ? context.theme.colors.black
+                        : context.theme.colors.white)
+                    .withOpacity(.2);
+              }
+
+              if (showWord &&
+                  word != null &&
+                  word.isNotEmpty &&
+                  !isWordProgress) {
                 title = word;
               } else {
                 title = context.localization.word;
@@ -54,10 +71,7 @@ class WordAppBar extends StatelessWidget implements PreferredSizeWidget {
                 enabled: state.isProcessing,
                 color: context.theme.colors.black.withOpacity(.65),
                 child: BluredAppBar(
-                  backgroundColor: (context.theme.isDark
-                          ? context.theme.colors.black
-                          : context.theme.colors.white)
-                      .withOpacity(.2),
+                  backgroundColor: appBarBackgroundColor,
                   action: _UpButton(
                     onTap: _scrollToTop,
                     show: showUpButton,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:word_pronunciation/src/core/extensions/extensions.dart';
 import 'package:word_pronunciation/src/core/ui_kit/ui_kit.dart';
+import 'package:word_pronunciation/src/core/utils/src/copy_util.dart';
 import 'package:word_pronunciation/src/features/word/data/model/word.dart';
 
 /// Карточка с словом
@@ -17,6 +18,11 @@ class WordCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => HoldConsumer(
+        listener: (isHeldDown) {
+          if (isHeldDown) {
+            CopyUtil.copy(context, text: word.data);
+          }
+        },
         builder: (context, isHeldDown) => AnimatedScale(
           scale: isHeldDown ? 0.96 : 1.0,
           duration: Durations.short3,

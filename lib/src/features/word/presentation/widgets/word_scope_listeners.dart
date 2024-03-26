@@ -34,6 +34,25 @@ class WordScopeListeners extends StatelessWidget {
                 current.isError || current.isProgress,
             listener: (context, state) => state.mapOrNull<void>(
               progress: (p) {
+                if (WordScope.of(context).wordAudioBloc.state.isPlaying ||
+                    WordScope.of(context).wordAudioBloc.state.isProgress) {
+                  WordScope.of(context)
+                      .wordAudioBloc
+                      .add(const WordAudioEvent.stop());
+                }
+                if (WordScope.of(context)
+                        .wordPronunciationBloc
+                        .state
+                        .isProcessing ||
+                    WordScope.of(context)
+                        .wordPronunciationBloc
+                        .state
+                        .isProgress) {
+                  WordScope.of(context)
+                      .wordPronunciationBloc
+                      .add(const WordPronunciationEvent.stop());
+                }
+
                 WordScope.of(context)
                     .wordAudioBloc
                     .add(const WordAudioEvent.stop());
@@ -92,16 +111,20 @@ class WordScopeListeners extends StatelessWidget {
             ),
           ),
 
-          if (AppSettingsScope.of(context).appSettings.autoNextWord) ...[
-            // Получает новое слово при правильном произношении
-            BlocListener<WordPronunciationBloc, WordPronunciationState>(
-              bloc: WordScope.of(context).wordPronunciationBloc,
-              listenWhen: (previous, current) => previous.isRight,
-              listener: (context, state) => state.mapOrNull<void>(
-                idle: (_) => WordScope.of(context).state.readNextWord(),
-              ),
+          // Получает новое слово при правильном произношении
+          BlocListener<WordPronunciationBloc, WordPronunciationState>(
+            bloc: WordScope.of(context).wordPronunciationBloc,
+            listenWhen: (previous, current) => previous.isRight,
+            listener: (context, state) => state.mapOrNull<void>(
+              idle: (_) {
+                if (AppSettingsScope.of(context, listen: false)
+                    .appSettings
+                    .autoNextWord) {
+                  WordScope.of(context).state.readNextWord();
+                }
+              },
             ),
-          ],
+          ),
 
           // Показывает результат произношения
           BlocListener<WordPronunciationBloc, WordPronunciationState>(

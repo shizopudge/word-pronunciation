@@ -106,7 +106,6 @@ class AppThemeScopeState extends State<AppThemeScope> {
   Widget build(BuildContext context) =>
       BlocBuilder<AppThemeBloc, AppThemeState>(
         bloc: _bloc,
-        // TODO: Подумать над состояниями ошибки
         buildWhen: (previous, current) => current.isIdle,
         builder: (context, state) {
           late final Widget child;

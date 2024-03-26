@@ -62,5 +62,9 @@
   "light": "Светлая",
   "dark": "Темная",
   "system": "Системная",
-  "automaticallyReadNextWord": "Автоматически получать следующее слово"
+  "automaticallyReadNextWord": "Автоматически получать следующее слово",
+  "language": "Язык",
+  "russian": "Русский",
+  "english": "Английский",
+  "version": "Версия"
 }

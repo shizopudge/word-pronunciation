@@ -62,5 +62,9 @@
   "light": "Light",
   "dark": "Dark",
   "system": "System",
-  "automaticallyReadNextWord": "Automatically read next word"
+  "automaticallyReadNextWord": "Automatically read next word",
+  "language": "Language",
+  "russian": "Russian",
+  "english": "English",
+  "version": "Version"
 }

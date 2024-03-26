@@ -105,7 +105,9 @@ class WordScopeState extends State<WordScope> with WidgetsBindingObserver {
           WordRemoteDatasource(dioClient: context.dependencies.dioClient),
       localDatasource: WordLocalDatasource(db: context.dependencies.db),
     );
-    _wordBloc = WordBloc(repository: _repository)..add(const WordEvent.read());
+    _wordBloc = WordBloc(
+      repository: _repository,
+    )..add(const WordEvent.read());
     _wordAudioBloc = WordAudioBloc(audioService: _audioService);
     _wordPronunciationBloc = WordPronunciationBloc(
       repository: _repository,

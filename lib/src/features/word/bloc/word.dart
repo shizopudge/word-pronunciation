@@ -61,7 +61,7 @@ class WordBloc extends Bloc<WordEvent, WordState> {
 
   /// {@macro word_bloc}
   WordBloc({
-    required IWordRepository repository,
+    required final IWordRepository repository,
   })  : _repository = repository,
         super(const WordState.progress()) {
     on<WordEvent>(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:word_pronunciation/src/core/extensions/extensions.dart';
 import 'package:word_pronunciation/src/core/ui_kit/ui_kit.dart';
 import 'package:word_pronunciation/src/features/app_settings/presentation/widgets/widgets.dart';
@@ -26,6 +27,20 @@ class AppSettingsPage extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
+            leading: IconButton(
+              onPressed: Navigator.of(context).pop,
+              style: IconButton.styleFrom(
+                backgroundColor: Colors.transparent,
+                foregroundColor: context.theme.isDark
+                    ? context.theme.colors.white
+                    : context.theme.colors.black,
+              ),
+              constraints: BoxConstraints.tight(const Size.square(40)),
+              icon: const Icon(
+                Icons.arrow_back_rounded,
+                size: 24,
+              ),
+            ),
           ),
         ),
         body: ScrollFadeBottomMask(
@@ -38,14 +53,96 @@ class AppSettingsPage extends StatelessWidget {
                 padding: EdgeInsets.only(top: context.mediaQuery.padding.top),
               ),
 
-              // Тема
-              const SliverToBoxAdapter(
-                child: ThemeSetting(),
+              // Настройка темы
+              const SliverPadding(
+                padding: EdgeInsets.only(top: 16),
+                sliver: SliverToBoxAdapter(
+                  child: ThemeSetting(),
+                ),
               ),
 
-              // Тема
-              const SliverToBoxAdapter(
-                child: AutoNextWordSetting(),
+              // Настройка "Автоматически получать следующее слово"
+              const SliverPadding(
+                padding: EdgeInsets.only(top: 16),
+                sliver: SliverToBoxAdapter(
+                  child: AutoNextWordSetting(),
+                ),
+              ),
+
+              // Настройка локализации
+              const SliverPadding(
+                padding: EdgeInsets.only(top: 16),
+                sliver: SliverToBoxAdapter(
+                  child: LocaleSetting(),
+                ),
+              ),
+
+              // Версия приложения
+              SliverToBoxAdapter(
+                child: FutureBuilder(
+                  future: PackageInfo.fromPlatform(),
+                  builder: (context, snapshot) {
+                    late final Widget child;
+                    String? versionText;
+                    String? appName;
+
+                    final hasError = snapshot.hasError;
+
+                    if (hasError) {
+                      versionText = '${context.localization.version}: unknown';
+                      appName = 'Unknown';
+                    } else {
+                      final data = snapshot.data;
+
+                      if (data == null) {
+                        child = const Padding(
+                          padding: EdgeInsets.only(top: 16),
+                          child: PrimaryLoadingIndicator(),
+                        );
+                      } else {
+                        versionText =
+                            '${context.localization.version}: ${data.version}';
+                        appName = data.appName;
+                      }
+                    }
+
+                    if (versionText != null) {
+                      child = Padding(
+                        padding: const EdgeInsets.only(
+                          top: 16,
+                          left: 32,
+                          right: 32,
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              'App name: $appName',
+                              textAlign: TextAlign.center,
+                              style:
+                                  context.theme.textTheme.bodyMedium?.copyWith(
+                                color: context.theme.colors.grey,
+                              ),
+                            ),
+                            Text(
+                              versionText,
+                              textAlign: TextAlign.center,
+                              style:
+                                  context.theme.textTheme.bodyMedium?.copyWith(
+                                color: context.theme.colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+
+                    return AnimatedSwitcher(
+                      duration: Durations.short4,
+                      child: child,
+                    );
+                  },
+                ),
               ),
 
               // Отступ снизу
