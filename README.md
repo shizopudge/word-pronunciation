@@ -1,16 +1,23 @@
-# word_pronunciation
+# Word Pronunciation
 
-word pronunciation project
+an app for pronunciation of words.
 
-## Getting Started
+## Screenshots
 
-This project is a starting point for a Flutter application.
+<div style="text-align:center"><img src="assets/screenshots/1.png" width="75%"></div>
 
-A few resources to get you started if this is your first Flutter project:
+<div style="text-align:center"><img src="assets/screenshots/2.png" width="75%"></div>
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+<div style="text-align:center"><img src="assets/screenshots/3.png" width="75%"></div>
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+<div style="text-align:center"><img src="assets/screenshots/4.png" width="75%"></div>
+
+<div style="text-align:center"><img src="assets/screenshots/5.png" width="75%"></div>
+
+<div style="text-align:center"><img src="assets/screenshots/6.png" width="75%"></div>
+
+<div style="text-align:center"><img src="assets/screenshots/7.png" width="75%"></div>
+
+<div style="text-align:center"><img src="assets/screenshots/8.png" width="75%"></div>
+
+<div style="text-align:center"><img src="assets/screenshots/9.png" width="75%"></div>
