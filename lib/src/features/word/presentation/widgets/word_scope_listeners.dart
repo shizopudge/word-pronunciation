@@ -111,16 +111,20 @@ class WordScopeListeners extends StatelessWidget {
             ),
           ),
 
-          if (AppSettingsScope.of(context).appSettings.autoNextWord) ...[
-            // Получает новое слово при правильном произношении
-            BlocListener<WordPronunciationBloc, WordPronunciationState>(
-              bloc: WordScope.of(context).wordPronunciationBloc,
-              listenWhen: (previous, current) => previous.isRight,
-              listener: (context, state) => state.mapOrNull<void>(
-                idle: (_) => WordScope.of(context).state.readNextWord(),
-              ),
+          // Получает новое слово при правильном произношении
+          BlocListener<WordPronunciationBloc, WordPronunciationState>(
+            bloc: WordScope.of(context).wordPronunciationBloc,
+            listenWhen: (previous, current) => previous.isRight,
+            listener: (context, state) => state.mapOrNull<void>(
+              idle: (_) {
+                if (AppSettingsScope.of(context, listen: false)
+                    .appSettings
+                    .autoNextWord) {
+                  WordScope.of(context).state.readNextWord();
+                }
+              },
             ),
-          ],
+          ),
 
           // Показывает результат произношения
           BlocListener<WordPronunciationBloc, WordPronunciationState>(

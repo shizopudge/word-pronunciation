@@ -26,6 +26,20 @@ class AppSettingsPage extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
+            leading: IconButton(
+              onPressed: Navigator.of(context).pop,
+              style: IconButton.styleFrom(
+                backgroundColor: Colors.transparent,
+                foregroundColor: context.theme.isDark
+                    ? context.theme.colors.white
+                    : context.theme.colors.black,
+              ),
+              constraints: BoxConstraints.tight(const Size.square(40)),
+              icon: const Icon(
+                Icons.arrow_back_rounded,
+                size: 24,
+              ),
+            ),
           ),
         ),
         body: ScrollFadeBottomMask(

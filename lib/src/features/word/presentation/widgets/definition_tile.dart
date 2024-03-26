@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:word_pronunciation/src/core/extensions/extensions.dart';
+import 'package:word_pronunciation/src/core/utils/utils.dart';
 import 'package:word_pronunciation/src/features/word/data/model/definition.dart';
 import 'package:word_pronunciation/src/features/word/scope/word_scope.dart';
 
@@ -19,6 +20,7 @@ class DefinitionTile extends StatelessWidget {
   Widget build(BuildContext context) => InkWell(
         onTap: () =>
             WordScope.of(context).state.showDefinitionSheet(definition),
+        onLongPress: () => CopyUtil.copy(context, text: definition.data),
         borderRadius: BorderRadius.circular(8),
         child: Padding(
           padding: const EdgeInsets.all(8.0),

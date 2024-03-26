@@ -14,15 +14,23 @@ class BluredAppBar extends AppBar {
   /// Действие
   final Widget? _action;
 
+  /// Ведущий виджет.
+  final Widget? _leading;
+
   /// Создает апп бар с заблюренным фоном
   BluredAppBar({
     required Widget title,
     required Color backgroundColor,
     Widget? action,
+    Widget? leading,
     super.key,
   })  : _title = title,
         _backgroundColor = backgroundColor,
-        _action = action;
+        _action = action,
+        _leading = leading;
+
+  @override
+  Widget? get leading => _leading;
 
   @override
   Color? get backgroundColor => _backgroundColor;
