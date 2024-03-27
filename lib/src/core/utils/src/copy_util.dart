@@ -17,7 +17,7 @@ abstract final class CopyUtil {
       await Clipboard.setData(ClipboardData(text: text));
       if (context.mounted) {
         context.showToaster(
-          message: 'Successfully copied.',
+          message: context.localization.copySuccess,
           type: ToasterType.success,
         );
       }
@@ -29,7 +29,7 @@ abstract final class CopyUtil {
       );
       if (context.mounted) {
         context.showToaster(
-          message: 'An error occurred during a copy attempt.',
+          message: context.localization.copyError,
           type: ToasterType.error,
         );
       }

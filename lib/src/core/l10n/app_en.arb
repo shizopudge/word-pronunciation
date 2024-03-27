@@ -66,5 +66,8 @@
   "language": "Language",
   "russian": "Russian",
   "english": "English",
-  "version": "Version"
+  "version": "Version",
+  "appName": "App name",
+  "copyError": "An error occurred during a copy attempt",
+  "copySuccess": "Successfully copied"
 }

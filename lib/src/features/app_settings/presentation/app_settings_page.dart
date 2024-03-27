@@ -83,13 +83,13 @@ class AppSettingsPage extends StatelessWidget {
                   future: PackageInfo.fromPlatform(),
                   builder: (context, snapshot) {
                     late final Widget child;
-                    String? versionText;
+                    String? version;
                     String? appName;
 
                     final hasError = snapshot.hasError;
 
                     if (hasError) {
-                      versionText = '${context.localization.version}: unknown';
+                      version = 'unknown';
                       appName = 'Unknown';
                     } else {
                       final data = snapshot.data;
@@ -100,13 +100,12 @@ class AppSettingsPage extends StatelessWidget {
                           child: PrimaryLoadingIndicator(),
                         );
                       } else {
-                        versionText =
-                            '${context.localization.version}: ${data.version}';
+                        version = data.version;
                         appName = data.appName;
                       }
                     }
 
-                    if (versionText != null) {
+                    if (version != null) {
                       child = Padding(
                         padding: const EdgeInsets.only(
                           top: 16,
@@ -117,7 +116,7 @@ class AppSettingsPage extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              'App name: $appName',
+                              '${context.localization.appName}: $appName',
                               textAlign: TextAlign.center,
                               style:
                                   context.theme.textTheme.bodyMedium?.copyWith(
@@ -125,7 +124,7 @@ class AppSettingsPage extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              versionText,
+                              '${context.localization.version}: $version',
                               textAlign: TextAlign.center,
                               style:
                                   context.theme.textTheme.bodyMedium?.copyWith(

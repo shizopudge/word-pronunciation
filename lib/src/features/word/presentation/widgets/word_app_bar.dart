@@ -112,7 +112,7 @@ class WordAppBar extends StatelessWidget implements PreferredSizeWidget {
 
 /// Кнопка "Вверх"
 @immutable
-class _UpButton extends StatelessWidget {
+class _UpButton extends StatefulWidget {
   /// Обработчик нажатия
   final VoidCallback onTap;
 
@@ -126,29 +126,74 @@ class _UpButton extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => TweenAnimationBuilder(
-        duration: Durations.short4,
-        tween: show
-            ? Tween<double>(begin: 0.0, end: 1.0)
-            : Tween<double>(begin: 1.0, end: 0.0),
-        builder: (context, opacity, child) {
+  State<_UpButton> createState() => _UpButtonState();
+}
+
+class _UpButtonState extends State<_UpButton>
+    with SingleTickerProviderStateMixin {
+  /// {@macro animation_controller}
+  late final AnimationController _animationController;
+
+  /// Анимация прозрачности
+  late final Animation<double> _opacityAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      value: widget.show ? 1.0 : 0.0,
+      vsync: this,
+      duration: Durations.short4,
+    );
+    _opacityAnimation =
+        Tween<double>(begin: 0.0, end: 1.0).animate(_animationController);
+  }
+
+  @override
+  void didUpdateWidget(covariant _UpButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (_isWidgetUpdated(oldWidget)) _playAnimation();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => AnimatedBuilder(
+        animation: _opacityAnimation,
+        builder: (context, child) {
+          final opacity = _opacityAnimation.value;
+
           if (opacity == 0.0) return const SizedBox.shrink();
 
           return Opacity(
             opacity: opacity,
-            child: CupertinoButton(
-              onPressed: onTap,
-              minSize: 32,
-              child: Text(
-                context.localization.up,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: context.theme.textTheme.titleSmall?.copyWith(
-                  color: context.theme.colors.blue,
-                ),
-              ),
-            ),
+            child: child,
           );
         },
+        child: CupertinoButton(
+          onPressed: widget.onTap,
+          minSize: 32,
+          child: Text(
+            context.localization.up,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: context.theme.textTheme.titleSmall?.copyWith(
+              color: context.theme.colors.blue,
+            ),
+          ),
+        ),
       );
+
+  /// Проигрывает анимацию
+  Future<void> _playAnimation() => widget.show
+      ? _animationController.forward()
+      : _animationController.reverse();
+
+  /// Возвращает true, если виджет изменился
+  bool _isWidgetUpdated(covariant _UpButton oldWidget) =>
+      oldWidget.show != widget.show;
 }
