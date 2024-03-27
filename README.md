@@ -1,6 +1,6 @@
 # Word Pronunciation
 
-an app for pronunciation of words.
+an app for pronunciation of words. ONLY ANDROID.
 
 ## Screenshots
 
